@@ -17,11 +17,11 @@ mode: "wide"
 
 ## Лимиты аллокации
 
-Общие для волта:
-
-- **Max utilization 80%** — не больше 80% LP-волта в активных FA
-- **Max single account 10%** — один FA не больше 10% от `totalAssets`, но не более $20k
-- **Builder leverage 10x** — суммарный accountSize FA билдера ≤ `sharesValue × 10`
+| Параметр | Значение | Что ограничивает |
+|----------|----------|------------------|
+| Max utilization | **80%** | Доля LP-волта в активных FA |
+| Max single account | **10%** / $20k | Размер одного FA от `totalAssets` |
+| Builder leverage | **10x** | Суммарный accountSize FA билдера ≤ `sharesValue × 10` |
 
 `getMaxAccountSize()` и `builderAvailableFunded(builder)` показывают актуальные лимиты.
 
