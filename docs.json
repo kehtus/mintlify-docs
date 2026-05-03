@@ -43,7 +43,7 @@
     "groups": [
       {
         "group": "Intro",
-        "pages": ["index"]
+        "pages": ["index", "offering"]
       },
       {
         "group": "Trade",
