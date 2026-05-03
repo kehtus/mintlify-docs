@@ -4,9 +4,9 @@
   "name": "Proportion",
   "description": "Prop firm для prop firms. Капитал, риск-движок и сеттлмент as-a-service на HyperEVM.",
   "colors": {
-    "primary": "#4FD2C1",
-    "light": "#4FD2C1",
-    "dark": "#3dbdad"
+    "primary": "#00D4FF",
+    "light": "#00D4FF",
+    "dark": "#00A3CC"
   },
   "favicon": "/favicon.svg",
   "appearance": {
@@ -16,7 +16,7 @@
   "background": {
     "color": {
       "light": "#FFFFFF",
-      "dark": "#0F1A1F"
+      "dark": "#06080F"
     }
   },
   "fonts": {
