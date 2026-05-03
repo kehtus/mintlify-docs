@@ -44,7 +44,6 @@
     "languages": [
       {
         "language": "ru",
-        "default": true,
         "groups": [
           {
             "group": "Intro",
@@ -75,6 +74,7 @@
       },
       {
         "language": "en",
+        "default": true,
         "groups": [
           {
             "group": "Intro",
