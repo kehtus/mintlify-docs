@@ -104,6 +104,12 @@ h3 { font-size: 1.2rem; margin-top: 1.5rem; }
   background-color: rgba(0, 212, 255, 0.35);
 }
 
+/* === CONTENT IMAGES === */
+main img {
+  display: block;
+  border-radius: 8px;
+}
+
 /* === SIDEBAR ACTIVE === */
 #sidebar a[aria-current="page"],
 #sidebar a.active {
