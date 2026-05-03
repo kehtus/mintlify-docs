@@ -1,0 +1,42 @@
+---
+title: "Onboarding"
+description: "How to become a builder and activate the first funded account"
+---
+
+<Steps>
+  <Step title="Connect wallet">
+    Any EVM wallet on HyperEVM
+  </Step>
+  <Step title="Deposit into the LP vault">
+    Minimum $10,000 USDC. The builder receives shares and becomes an LP of the protocol
+  </Step>
+  <Step title="Register">
+    `registerBuilder()` — activates the funding quota (10x of sharesValue)
+  </Step>
+  <Step title="Activate funded accounts">
+    Through the SDK for selected traders
+  </Step>
+</Steps>
+
+## Dual Role and Skin in the Game
+
+- The builder is both product operator (FA issuance, challenge monetization) and LP (shares work across the whole pool)
+- Shares are locked while the builder has active FAs
+- Builder leverage 10x: total accountSize of all active FAs ≤ `sharesValue × 10`
+- If shares value falls below the minimum ($10k) on withdrawal, the builder is automatically deactivated (`BuilderDeactivated`) and cannot activate new FAs
+- The builder pays an activation fee for every activation (risk compensation for the LP vault)
+
+<Warning>
+A $10k+ deposit is not collateral that returns unchanged. It is working LP capital: it earns from activations and trader profits across the protocol; drawdown from traders who blow up reduces pool yield. Upside and downside are proportional to the builder's share in the vault.
+</Warning>
+
+## Trader Onboarding
+
+When a builder activates an FA, the account is linked to the trader's EVM address on HyperEVM. The trader does not need to hold HYPE in the wallet: the protocol covers gas for all operations, including profit withdrawal. In theory, the trader may not interact with onchain infrastructure until the moment they withdraw funds — all technical operations are performed by the protocol.
+
+This simplifies the builder's product: the trader pays for a challenge through the builder storefront, passes evaluation, and receives an FA — without needing to understand gas, wallets, or signing.
+
+<Info>
+Onboarding is currently early-access by whitelist. Contact the team on Telegram: [@keysigner](https://t.me/keysigner).
+</Info>
+

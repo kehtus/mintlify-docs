@@ -1,0 +1,50 @@
+---
+title: "How It Works"
+description: "Central liquidity contract — flows, shares, limits"
+---
+
+The central element of Proportion is the Vault contract. All protocol liquidity flows meet there: LP deposits, funded-account financing, USDC custody, fees, and profit distribution. Everything that moves capital in the system passes through Vault.
+
+## Flows
+
+<CardGroup cols={3}>
+  <Card title="FA Funding" icon="banknote">
+    At the builder's request, Vault allocates `accountSize` and transfers USDC through Hypercore Spot to the FundedAccount
+  </Card>
+  <Card title="Fees" icon="coins">
+    Activation fees and the trader profit share accrue to Vault, increasing `sharePrice`
+  </Card>
+  <Card title="Returns" icon="rotate-ccw">
+    When an FA closes, principal and residual return to Vault
+  </Card>
+</CardGroup>
+
+## Shares and sharePrice
+
+An LP's share in Vault is represented by shares. Accumulated profit automatically increases `sharePrice` — yield does not need to be claimed separately.
+
+```
+sharePrice = totalAssets / totalShares
+totalAssets = USDC on EVM + USDC allocated to active FAs
+```
+
+## Allocation Limits
+
+| Parameter | Value | What it limits |
+|-----------|-------|----------------|
+| Max utilization | **80%** | Share of Vault allocated to active FAs |
+| Max single account | **10%** / $20k | Size of one FA relative to `totalAssets` |
+| Builder leverage | **10x** | Max builder funding relative to `sharesValue` |
+
+## Lock-Up
+
+LPs without a builder role can withdraw shares at any time. Builder shares are locked while they have active FAs. `withdrawableShares()` shows the available withdrawal amount.
+
+## Governance
+
+Vault parameters (`feeMultiplier`, `MIN/MAX_ACCOUNT_SIZE`, `MIN/MAX_DRAWDOWN_BPS`, `BUILDER_LEVERAGE`, utilization, per-FA limits) are changed by the admin through setters.
+
+<Card title="Yield and Risks" icon="trending-up" href="/en/vault/yield">
+  Where LP yield comes from and what risks Vault has
+</Card>
+

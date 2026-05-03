@@ -41,31 +41,67 @@
     "options": []
   },
   "navigation": {
-    "groups": [
+    "languages": [
       {
-        "group": "Intro",
-        "pages": ["index", "offering"]
-      },
-      {
-        "group": "Trade",
-        "pages": [
-          "traders/index",
-          "traders/rules",
-          "traders/payouts"
+        "language": "ru",
+        "default": true,
+        "groups": [
+          {
+            "group": "Intro",
+            "pages": ["index", "offering"]
+          },
+          {
+            "group": "Trade",
+            "pages": [
+              "traders/index",
+              "traders/rules",
+              "traders/payouts"
+            ]
+          },
+          {
+            "group": "Build",
+            "pages": [
+              "builders/index",
+              "builders/onboarding",
+              "builders/rules",
+              "builders/fees"
+            ]
+          },
+          {
+            "group": "Vault",
+            "pages": ["vault/index", "vault/yield"]
+          }
         ]
       },
       {
-        "group": "Build",
-        "pages": [
-          "builders/index",
-          "builders/onboarding",
-          "builders/rules",
-          "builders/fees"
+        "language": "en",
+        "groups": [
+          {
+            "group": "Intro",
+            "pages": ["en/index", "en/offering"]
+          },
+          {
+            "group": "Trade",
+            "pages": [
+              "en/traders/index",
+              "en/traders/rules",
+              "en/traders/payouts"
+            ]
+          },
+          {
+            "group": "Build",
+            "pages": [
+              "en/builders/index",
+              "en/builders/onboarding",
+              "en/builders/rules",
+              "en/builders/fees"
+            ]
+          },
+          {
+            "group": "Vault",
+            "pages": ["en/vault/index", "en/vault/yield"]
+          }
         ]
-      },
-      {
-        "group": "Vault",
-        "pages": ["vault/index", "vault/yield"]
       }
     ]
   },
