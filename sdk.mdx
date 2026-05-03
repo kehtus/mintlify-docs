@@ -1,0 +1,86 @@
+---
+title: "SDK"
+description: "TypeScript-клиент @proportion/sdk: quickstart и референс"
+---
+
+`@proportion/sdk` — TypeScript-клиент для протокола. Используется билдерами для активации funded-аккаунтов, фронтендом для чтения состояния, скриптами для интеграций.
+
+## Установка
+
+```bash
+npm install @proportion/sdk
+```
+
+## Инициализация
+
+```typescript
+import { ProportionClient } from "@proportion/sdk";
+
+const client = new ProportionClient({
+  rpcUrl: "https://rpc.hyperliquid.xyz/evm",
+  signer: yourWallet,
+});
+```
+
+## Builder flow
+
+Депозит в LP-волт и регистрация билдера:
+
+```typescript
+// Депозит ($10,000)
+await client.vault.deposit(10_000_000_000);
+
+// Регистрация
+await client.builder.register();
+```
+
+Активация funded-аккаунта:
+
+```typescript
+const fa = await client.builder.activateFunded({
+  trader: "0x...",
+  accountSize: 5_000_000_000,     // $5,000
+  drawdownBps: 1000,              // 10%
+  dailyDrawdownEnabled: true,
+});
+// activation fee рассчитывается автоматически и списывается с билдера
+```
+
+Top-up активного FA:
+
+```typescript
+await client.builder.topUpFunded(fa.address, 2_000_000_000); // +$2,000
+```
+
+## Чтение состояния
+
+Состояние FA:
+
+```typescript
+const account = await client.account.get(faAddress);
+console.log(account.equity, account.drawdown, account.hwm, account.state);
+```
+
+Лимиты билдера и волта:
+
+```typescript
+const available = await client.vault.builderAvailableFunded(builderAddress);
+const maxSize = await client.vault.getMaxAccountSize();
+const utilization = await client.vault.getUtilizationBps();
+```
+
+## Trader flow
+
+Запрос вывода профита:
+
+```typescript
+await client.account.requestWithdrawProfit(faAddress);
+// после арриваля USDC на EVM:
+await client.account.claimWithdrawal(faAddress);
+```
+
+Отмена подписки:
+
+```typescript
+await client.account.cancelSubscription(faAddress);
+```

@@ -1,8 +1,8 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "willow",
-  "name": "Product Guide",
-  "description": "Step-by-step guides for every product—platform setup, analytics, and integrations in one place.",
+  "name": "Proportion",
+  "description": "Prop firm для prop firms. Капитал, риск-движок и сеттлмент as-a-service на HyperEVM.",
   "colors": {
     "primary": "#166E3F",
     "light": "#26BD6C",
@@ -19,131 +19,35 @@
     "options": ["copy", "view", "assistant", "mcp", "add-mcp"]
   },
   "navigation": {
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Home",
-          "icon": "house",
-          "href": "/"
-        },
-        {
-          "anchor": "Changelog",
-          "icon": "scroll-text",
-          "href": "https://www.mintlify.com/docs/changelog"
-        },
-        {
-          "anchor": "Help",
-          "icon": "life-buoy",
-          "href": "https://www.mintlify.com/docs/contact-support"
-        }
-      ]
-    },
-    "directory": "card",
-    "products": [
+    "groups": [
       {
-        "product": "Platform",
-        "description": "Core platform setup, configuration, and administration.",
-        "icon": "layers",
-        "groups": [
-          {
-            "group": "Getting started",
-            "expanded": true,
-            "root": "platform/index",
-            "pages": [
-              "platform/quickstart",
-              "platform/key-concepts"
-            ]
-          },
-          {
-            "group": "Configuration",
-            "expanded": true,
-            "root": "platform/configuration/index",
-            "pages": [
-              "platform/configuration/settings",
-              "platform/configuration/user-management"
-            ]
-          },
-          {
-            "group": "Administration",
-            "expanded": true,
-            "root": "platform/administration/index",
-            "pages": [
-              "platform/administration/roles-permissions",
-              "platform/administration/audit-logs"
-            ]
-          }
+        "group": "Введение",
+        "pages": ["index"]
+      },
+      {
+        "group": "Для трейдеров",
+        "pages": [
+          "traders/index",
+          "traders/rules",
+          "traders/payouts"
         ]
       },
       {
-        "product": "Analytics",
-        "description": "Build dashboards, run reports, and analyze your data.",
-        "icon": "chart-bar",
-        "groups": [
-          {
-            "group": "Getting started",
-            "expanded": true,
-            "root": "analytics/index",
-            "pages": [
-              "analytics/quickstart",
-              "analytics/connect-data"
-            ]
-          },
-          {
-            "group": "Dashboards",
-            "expanded": true,
-            "root": "analytics/dashboards/index",
-            "pages": [
-              "analytics/dashboards/create-dashboard",
-              "analytics/dashboards/charts-visualizations",
-              "analytics/dashboards/sharing-exports"
-            ]
-          },
-          {
-            "group": "Reports",
-            "expanded": true,
-            "root": "analytics/reports/index",
-            "pages": [
-              "analytics/reports/build-report",
-              "analytics/reports/scheduled-reports"
-            ]
-          }
+        "group": "Для билдеров",
+        "pages": [
+          "builders/index",
+          "builders/onboarding",
+          "builders/rules",
+          "builders/fees"
         ]
       },
       {
-        "product": "Integrations",
-        "description": "Connect your tools with pre-built connectors and webhooks.",
-        "icon": "plug",
-        "groups": [
-          {
-            "group": "Getting started",
-            "expanded": true,
-            "root": "integrations/index",
-            "pages": [
-              "integrations/quickstart",
-              "integrations/authentication"
-            ]
-          },
-          {
-            "group": "Connectors",
-            "expanded": true,
-            "root": "integrations/connectors/index",
-            "pages": [
-              "integrations/connectors/crm",
-              "integrations/connectors/data-warehouse",
-              "integrations/connectors/messaging"
-            ]
-          },
-          {
-            "group": "Webhooks & events",
-            "expanded": true,
-            "root": "integrations/webhooks/index",
-            "pages": [
-              "integrations/webhooks/configure",
-              "integrations/webhooks/event-types",
-              "integrations/webhooks/retry-policies"
-            ]
-          }
-        ]
+        "group": "Vault",
+        "pages": ["vault"]
+      },
+      {
+        "group": "SDK",
+        "pages": ["sdk"]
       }
     ]
   },
@@ -155,14 +59,13 @@
     "links": [],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "App",
+      "href": "https://trade.proportion.fi"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/yourcompany",
-      "linkedin": "https://linkedin.com/company/yourcompany"
+      "x": "https://x.com/proportion_fi"
     }
   }
 }
