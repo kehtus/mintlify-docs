@@ -17,7 +17,8 @@
     "color": {
       "light": "#FFFFFF",
       "dark": "#06080F"
-    }
+    },
+    "decoration": "gradient"
   },
   "fonts": {
     "heading": {
