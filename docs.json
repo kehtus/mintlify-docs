@@ -68,14 +68,9 @@
         "pages": ["vault/index", "vault/yield"]
       },
       {
-        "group": "SDK",
+        "group": "SDK & API",
         "tag": "Soon",
-        "pages": ["sdk"]
-      },
-      {
-        "group": "API",
-        "tag": "Soon",
-        "pages": ["api"]
+        "pages": ["sdk", "api"]
       }
     ]
   },
