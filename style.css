@@ -138,8 +138,8 @@ h3 { font-size: 1.2rem; margin-top: 1.5rem; }
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 70% 100% at 50% 0%, rgba(0, 212, 255, 0.35), transparent 70%),
-    radial-gradient(ellipse 40% 70% at 50% 0%, rgba(0, 163, 204, 0.25), transparent 65%);
+    radial-gradient(ellipse 70% 100% at 50% 0%, rgba(0, 212, 255, 0.08), transparent 70%),
+    radial-gradient(ellipse 40% 70% at 50% 0%, rgba(0, 163, 204, 0.05), transparent 65%);
 }
 
 .dark #sidebar {
