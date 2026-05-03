@@ -5,12 +5,12 @@ description: "Problems Proportion solves and what each side gets"
 
 ## Problems Proportion Solves
 
-- **Opaque rules and payout blocks** in classic prop — Proportion encodes rules and splits in code, with automatic payouts
+- **Opaque rules and blocked payouts** in classic prop — Proportion encodes rules and splits in code, with payouts handled through the protocol's on-chain flow
 - **B-book conflict of interest** — builders and the protocol earn from trader profit, not trader losses
-- **Counterparty risk** — the funded account is non-custodial, and a prop firm physically cannot arbitrarily deny a payout outside protocol rules
+- **Counterparty risk** — the funded account is non-custodial, and protocol rules prevent the prop firm from arbitrarily denying payouts
 - **High barrier to launching a prop firm** — Proportion provides capital, risk engine, and settlement out of the box, without forcing builders to run their own stack
 - **Fragmented onchain capital** — one LP vault instead of separate pools for every firm
-- **No DeFi access to prop-industry economics** — Vault shares are a composable primitive for LPs
+- **Lack of DeFi access to prop-industry economics** — Vault shares are a composable primitive for LPs
 
 ## What Each Side Gets
 
@@ -19,7 +19,7 @@ description: "Problems Proportion solves and what each side gets"
     - Capital access without KYC or artificial rules
     - A-book execution on real Hyperliquid liquidity — real trades with real capital
     - 80% PnL hardcoded by the protocol
-    - The FA belongs to the trader within protocol rules — the prop firm cannot arbitrarily block a payout outside protocol rules
+    - The FA belongs to the trader within protocol rules — protocol rules prevent the prop firm from arbitrarily blocking payouts
   </Tab>
   <Tab title="Builder">
     - Ready-made infrastructure: capital from the LP vault, on-chain risk engine, settlement — without custom contracts
@@ -27,9 +27,8 @@ description: "Problems Proportion solves and what each side gets"
     - Revenue on three levels: challenge margin, 85% of subscription fees, LP yield from the pool
   </Tab>
   <Tab title="LP">
-    - Passive yield from the ecosystem: 90% of activation fees and 13% of trader profits
-    - No need to pick builders or traders — sharePrice grows automatically
+    - Yield from the ecosystem: 90% of activation fees and 13% of trader profits
+    - No need to pick builders or traders — sharePrice reflects Vault P&L and can increase or decrease
     - Composable shares (potentially for DeFi integrations)
   </Tab>
 </Tabs>
-

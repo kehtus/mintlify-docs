@@ -3,11 +3,11 @@ title: "For Builders"
 description: "Capital and infrastructure for launching a prop firm on Hyperliquid"
 ---
 
-> The builder owns the product. Proportion provides the funded layer — capital turnkey.
+> The builder owns the product. Proportion provides the funded layer — capital, ready to use.
 
-For a builder, the funded account is the most capital-intensive and infrastructure-heavy part of a prop firm. Proportion provides it as a service: capital, on-chain risk engine, settlement. Challenges, evaluation, brand, marketing, and trader selection remain the builder's product. Proportion is API-compatible with Hyperliquid Builder Codes, so it can be integrated into any existing trading frontend with minimal client-side changes.
+For a builder, the funded account is the most capital-intensive and infrastructure-heavy part of a prop firm. Proportion provides it as a service: capital, an on-chain risk engine, and settlement. Challenges, evaluation, brand, marketing, and trader selection remain the builder's product. Proportion is API-compatible with Hyperliquid Builder Codes, so it can be integrated into any existing trading frontend with minimal client-side changes.
 
-The builder buys capital from the protocol and pays for it with part of the revenue from selling challenges or other selection products. To become a builder, they need a deposit in the LP vault. The deposit works as LP capital and earns yield, so the real cost of activating an FA is lower than the nominal amount. The same deposit motivates builders to select strong traders: drawdown from weak traders is not a direct LP loss, but reduces yield — it is prepaid by the activation fee. LP yield grows from activation fees and the profits of traders who actually trade.
+The builder buys capital access from the protocol and pays for it with part of the revenue from selling challenges or other selection products. To become a builder, they need a deposit in the LP vault. The deposit works as LP capital and earns yield, so the real cost of activating an FA is lower than the nominal amount. The same deposit motivates builders to select strong traders: the activation fee is designed to compensate expected drawdown risk, but losses can still reduce pool yield and `sharePrice`. LP yield grows from activation fees and the profits of traders who actually trade.
 
 ## What Proportion Gives Builders
 
@@ -26,9 +26,9 @@ Boundary: everything before FA activation is on the builder side; everything aft
 To become a builder, you need to deposit at least $10,000 USDC into the LP vault. This deposit:
 
 - Gives a funding quota: 10x leverage ($10k → up to $100k of active trader capital)
-- Makes the builder part of the LP pool — shares earn and lose across all FAs in the protocol, not only their own
+- Makes the builder part of the LP pool — shares participate in gains and losses across all FAs in the protocol, not only their own
 
-The LP pool earns from activation fees and trader profits. Drawdown from traders who blow up reduces profit (prepaid by the activation fee). Skin in the game is double: for the builder's own product and for the health of the whole ecosystem.
+The LP pool earns from activation fees and trader profits. Drawdown from traders who hit their limits reduces profit (prepaid by the activation fee). The builder has skin in the game twice: in their own product and in the health of the whole ecosystem.
 
 ### Builder P&L Sources
 
@@ -62,4 +62,3 @@ For more on LP vault yield and risks, see [Vault](/en/vault/yield).
     What the builder chooses and how fees are calculated
   </Card>
 </CardGroup>
-

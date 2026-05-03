@@ -11,7 +11,7 @@ Hardcoded and shared by everyone:
 
 | Rule | Value |
 |------|-------|
-| Max leverage | 5x notional/equity. Breach → position close |
+| Max leverage | 5x notional/equity. Breach → positions close |
 | Profit split | 80% trader / 13% LP / 7% protocol |
 | Profitable days for withdrawal | 4 days with ≥ 1% growth each |
 | Checkpoint interval | 1 day |
@@ -49,4 +49,3 @@ Trading is allowed only on liquid perps from the protocol whitelist. The keeper 
 ## What This Means for Builders
 
 Builders implement their own additional rules (profit target, minimum trading days, stricter daily limit) off-chain as part of their challenge and evaluation. When the trader passes the builder's criteria, the builder opens a funded account through the SDK, and from that point the protocol protects capital by its own rules.
-

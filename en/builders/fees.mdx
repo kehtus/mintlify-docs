@@ -30,7 +30,7 @@ description: "FA parameters, fee formulas, and allocation limits"
 fee = accountSize × drawdownBps × feeMultiplier / 1_000_000
 ```
 
-`feeMultiplier = 120` (1.2x risk premium) is the default. The parameter is mutable: the protocol admin sets it through `setFeeMultiplier()` within 1.0x–2.0x (`feeMultiplier` ∈ [1; 200]). If `dailyDrawdownEnabled = true` — 20% discount.
+`feeMultiplier = 120` (1.2x risk premium) is the default. The parameter is mutable: the protocol admin sets it through `setFeeMultiplier()` within 1.0x–2.0x. If `dailyDrawdownEnabled = true` — 20% discount.
 
 | accountSize | drawdown | dailyDD | Fee |
 |-------------|----------|---------|-----|
@@ -77,4 +77,3 @@ Triggers (all lead to `initiateClose()`):
 - `initiateCloseAdmin()` from the relayer
 
 After closure, positions are unwound, USDC returns to the LP vault, and builder shares unlock.
-

@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Proportion",
-  "description": "Prop-trading infrastructure, построенная на Hyperliquid.",
+  "description": "Prop-trading infrastructure built on Hyperliquid.",
   "colors": {
     "primary": "#00D4FF",
     "light": "#00D4FF",
