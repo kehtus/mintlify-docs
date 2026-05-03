@@ -4,19 +4,19 @@
   "name": "Proportion",
   "description": "Prop firm для prop firms. Капитал, риск-движок и сеттлмент as-a-service на HyperEVM.",
   "colors": {
-    "primary": "#109D90",
+    "primary": "#4FD2C1",
     "light": "#4FD2C1",
-    "dark": "#109D90"
+    "dark": "#3dbdad"
   },
   "favicon": "/favicon.svg",
   "appearance": {
-    "default": "light",
+    "default": "dark",
     "strict": false
   },
   "background": {
     "color": {
       "light": "#FFFFFF",
-      "dark": "#0D0D13"
+      "dark": "#0F1A1F"
     }
   },
   "fonts": {
@@ -37,16 +37,16 @@
     "codeblocks": "system"
   },
   "contextual": {
-    "options": ["copy", "view", "assistant", "mcp", "add-mcp"]
+    "options": ["copy", "view", "mcp", "add-mcp"]
   },
   "navigation": {
     "groups": [
       {
-        "group": "Введение",
+        "group": "Intro",
         "pages": ["index"]
       },
       {
-        "group": "Для трейдеров",
+        "group": "Trade",
         "pages": [
           "traders/index",
           "traders/rules",
@@ -54,7 +54,7 @@
         ]
       },
       {
-        "group": "Для билдеров",
+        "group": "Build",
         "pages": [
           "builders/index",
           "builders/onboarding",
