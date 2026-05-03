@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "mint",
   "name": "Proportion",
   "description": "Prop firm для prop firms. Капитал, риск-движок и сеттлмент as-a-service на HyperEVM.",
   "colors": {
@@ -80,13 +80,14 @@
   "navbar": {
     "links": [
       {
-        "label": "App",
-        "href": "https://trade.proportion.fi"
+        "label": "GitHub",
+        "href": "https://github.com/kehtus/mintlify-docs"
       }
     ],
     "primary": {
-      "type": "github",
-      "href": "https://github.com/kehtus/mintlify-docs"
+      "type": "button",
+      "label": "Open App",
+      "href": "https://trade.proportion.fi"
     }
   },
   "footer": {
