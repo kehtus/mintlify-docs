@@ -1,0 +1,56 @@
+---
+title: "Как работает"
+description: "Центральный контракт ликвидности — потоки, shares, лимиты"
+mode: "wide"
+---
+
+Центральный элемент Proportion — контракт Vault. В нём сходятся все потоки ликвидности протокола: депозиты LP, финансирование funded-аккаунтов, хранение USDC, сборы и распределение профита. Всё, что движет капитал в системе, проходит через Vault.
+
+## Потоки
+
+<CardGroup cols={2}>
+  <Card title="Депозиты" icon="arrow-down-to-line">
+    LP вносят USDC, получают shares по текущему `sharePrice`
+  </Card>
+  <Card title="Фондирование FA" icon="banknote">
+    По запросу билдера Vault выделяет `accountSize` и переводит USDC через Hypercore Spot в FundedAccount
+  </Card>
+  <Card title="Сборы" icon="coins">
+    Activation fees и доля профита трейдеров оседают в Vault, повышая `sharePrice`
+  </Card>
+  <Card title="Возвраты" icon="rotate-ccw">
+    При закрытии FA принципал и residual возвращаются в Vault
+  </Card>
+  <Card title="Выводы" icon="arrow-up-from-line">
+    LP сжигают shares и забирают USDC по текущему `sharePrice`
+  </Card>
+</CardGroup>
+
+## Shares и sharePrice
+
+Доля LP в Vault отражена в shares. Накопленная прибыль автоматически повышает `sharePrice` — yield не нужно клеймить отдельно.
+
+```
+sharePrice = totalAssets / totalShares
+totalAssets = USDC на EVM + USDC, аллоцированный в активных FA
+```
+
+## Лимиты аллокации
+
+| Параметр | Значение | Что ограничивает |
+|----------|----------|------------------|
+| Max utilization | **80%** | Доля Vault в активных FA |
+| Max single account | **10%** / $20k | Размер одного FA от `totalAssets` |
+| Builder leverage | **10x** | Максимум фондирования билдера от его `sharesValue` |
+
+## Лок-ап
+
+LP без builder-роли — shares выводятся в любой момент. Билдер — shares залочены, пока есть активные FA под ним. `withdrawableShares()` показывает доступную для вывода часть.
+
+## Управление
+
+Параметры Vault (`feeMultiplier`, `MIN/MAX_ACCOUNT_SIZE`, `MIN/MAX_DRAWDOWN_BPS`, `BUILDER_LEVERAGE`, утилизация, лимиты per-FA) меняются админом через сеттеры.
+
+<Card title="Доходность и риски" icon="trending-up" href="/vault/yield">
+  Откуда LP получает yield и какие риски у Vault
+</Card>
