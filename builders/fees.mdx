@@ -31,7 +31,7 @@ mode: "wide"
 fee = accountSize × drawdownBps × feeMultiplier / 1_000_000
 ```
 
-`feeMultiplier = 120` (1.2x risk premium) — значение по умолчанию. Параметр изменяемый: задаётся админом протокола через `setFeeMultiplier()` (в дальнейшем — DAO) в пределах 1.0x–2.0x (`feeMultiplier` ∈ [1; 200]). При `dailyDrawdownEnabled = true` — скидка 20%.
+`feeMultiplier = 120` (1.2x risk premium) — значение по умолчанию. Параметр изменяемый: задаётся админом протокола через `setFeeMultiplier()` в пределах 1.0x–2.0x (`feeMultiplier` ∈ [1; 200]). При `dailyDrawdownEnabled = true` — скидка 20%.
 
 | accountSize | drawdown | dailyDD | Fee |
 |-------------|----------|---------|-----|

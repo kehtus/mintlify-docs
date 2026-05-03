@@ -8,10 +8,7 @@ mode: "wide"
 
 ## Потоки
 
-<CardGroup cols={2}>
-  <Card title="Депозиты" icon="arrow-down-to-line">
-    LP вносят USDC, получают shares по текущему `sharePrice`
-  </Card>
+<CardGroup cols={3}>
   <Card title="Фондирование FA" icon="banknote">
     По запросу билдера Vault выделяет `accountSize` и переводит USDC через Hypercore Spot в FundedAccount
   </Card>
@@ -20,9 +17,6 @@ mode: "wide"
   </Card>
   <Card title="Возвраты" icon="rotate-ccw">
     При закрытии FA принципал и residual возвращаются в Vault
-  </Card>
-  <Card title="Выводы" icon="arrow-up-from-line">
-    LP сжигают shares и забирают USDC по текущему `sharePrice`
   </Card>
 </CardGroup>
 
