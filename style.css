@@ -1,149 +1,215 @@
+/* Proportion brand — matches src/styles/theme.css (front) */
+
 :root {
-  --default-border-color: var(--gray-200);
+  --proportion-accent: #109D90;
+  --proportion-accent-light: #4FD2C1;
+  --proportion-accent-dark: #0d8479;
+  --proportion-danger: #f6465d;
+  --proportion-warning: #FF9800;
+
+  --proportion-radius-sm: 4px;
+  --proportion-radius-md: 8px;
+  --proportion-radius-lg: 12px;
+  --proportion-radius-xl: 16px;
 }
 
+/* Dark theme — primary brand experience */
 .dark {
-  --default-border-color: var(--gray-800);
+  --bg-primary: #0D0D13;
+  --bg-secondary: #121218;
+  --bg-tertiary: #1a1a24;
+  --ui-border: #1a1a24;
+  --text-primary: #ffffff;
+  --text-secondary: #D1D5DB;
+  --text-muted: #8a8a9e;
 }
 
-#sidebar .nav-dropdown-trigger {
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding-left: 0.375rem;
+/* === BACKGROUND === */
+.dark body,
+.dark #content-area {
+  background-color: #0D0D13;
 }
 
-#sidebar .nav-dropdown-trigger:hover {
-  background-color: rgb(0 0 0 / 0.04) !important;
+/* === SIDEBAR === */
+.dark #sidebar {
+  background-color: #0D0D13;
+  border-color: #1a1a24;
 }
 
-.dark #sidebar .nav-dropdown-trigger:hover {
-  background-color: rgb(255 255 255 / 0.06) !important;
+.dark #sidebar a:hover {
+  background-color: rgba(16, 157, 144, 0.06);
 }
 
-#sidebar .nav-dropdown-trigger .nav-dropdown-item-icon {
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  height: auto !important;
-  width: auto !important;
-  padding: 0 !important;
+.dark #sidebar a.active,
+.dark #sidebar a[aria-current="page"] {
+  background-color: rgba(16, 157, 144, 0.12);
+  color: var(--proportion-accent-light);
 }
 
-.nav-dropdown-content {
-  border-radius: 0 !important;
+/* === NAVBAR === */
+.dark #navbar,
+.dark header {
+  background-color: rgba(13, 13, 19, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #1a1a24;
 }
 
-.nav-dropdown-content .nav-dropdown-item {
-  border-radius: 0 !important;
+/* === CARDS === */
+.dark .card,
+.dark [class*="Card"] {
+  background-color: #121218 !important;
+  border: 1px solid #1a1a24 !important;
+  border-radius: var(--proportion-radius-lg) !important;
+  transition: all 0.15s ease;
 }
 
-.nav-dropdown-content .nav-dropdown-item-icon {
-  border: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  height: auto !important;
-  width: auto !important;
-  padding: 0 !important;
+.dark .card:hover,
+.dark [class*="Card"]:hover {
+  border-color: rgba(16, 157, 144, 0.4) !important;
+  background-color: #161620 !important;
 }
 
-.nav-dropdown-content .nav-dropdown-item-description {
-  display: none !important;
+/* === CODE BLOCKS === */
+.dark pre,
+.dark code {
+  background-color: #1a1a24 !important;
+  border: 1px solid #1a1a24;
+  border-radius: var(--proportion-radius-md);
 }
 
-#sidebar .nav-anchor span {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+.dark code:not(pre code) {
+  color: var(--proportion-accent-light) !important;
+  background-color: rgba(16, 157, 144, 0.08) !important;
+  padding: 2px 6px;
+  font-size: 0.875em;
+}
+
+/* === CALLOUTS (Info / Warning / Tip) === */
+.dark [class*="callout"],
+.dark [data-callout] {
+  border-radius: var(--proportion-radius-md) !important;
+  border-left-width: 3px !important;
+}
+
+/* === TABLES === */
+.dark table {
+  border: 1px solid #1a1a24;
+  border-radius: var(--proportion-radius-md);
+  overflow: hidden;
+}
+
+.dark table th {
+  background-color: #121218;
+  color: var(--text-muted);
   font-size: 12px;
-  font-weight: 500;
-  letter-spacing: -0.02em;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
 }
 
-body:has([data-product-guide-index]) #sidebar a.nav-anchor[href='/'] {
-  color: rgb(var(--primary)) !important;
-  font-weight: 600 !important;
+.dark table td {
+  border-color: #1a1a24;
 }
 
-body:has([data-product-guide-index]) #sidebar a.nav-anchor[href='/'] span {
-  color: inherit !important;
+.dark table tr:hover {
+  background-color: rgba(16, 157, 144, 0.03);
 }
 
-body:has([data-product-guide-index]) #sidebar a.nav-anchor[href='/'] svg {
-  background-color: rgb(var(--primary)) !important;
+/* === BUTTONS === */
+.dark button[type="button"]:not([class*="copy"]),
+.dark a[class*="button"] {
+  border-radius: var(--proportion-radius-md) !important;
 }
 
-.dark body:has([data-product-guide-index]) #sidebar a.nav-anchor[href='/'] {
-  color: rgb(var(--primary-light)/var(--tw-text-opacity,1)) !important;
+/* === LINKS === */
+.dark a {
+  color: var(--proportion-accent-light);
 }
 
-.dark body:has([data-product-guide-index]) #sidebar a.nav-anchor[href='/'] svg {
-  background-color: rgb(var(--primary-light)/var(--tw-text-opacity,1)) !important;
+.dark a:hover {
+  color: var(--proportion-accent);
 }
 
-:is(#content-area[data-current-path='/'], [data-current-path='/'] #content-area):has([data-product-guide-index]) {
-  background: transparent !important;
-  padding: 0 !important;
+/* === HEADINGS === */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
-:is(#content-area[data-current-path='/'], [data-current-path='/'] #content-area):has([data-product-guide-index]) > div:first-child {
-  background: transparent !important;
-  padding-right: 0 !important;
-  padding-bottom: 0 !important;
-  padding-left: 0 !important;
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+
+/* === BLOCKQUOTE === */
+.dark blockquote {
+  border-left: 3px solid var(--proportion-accent);
+  background-color: rgba(16, 157, 144, 0.04);
+  border-radius: 0 var(--proportion-radius-sm) var(--proportion-radius-sm) 0;
+  padding: 12px 16px;
+  color: var(--text-secondary);
+  font-style: normal;
 }
 
-[data-product-guide-index] a:not(.product-guide-feature-card) {
-  background-color: #fafafa !important;
+/* === SCROLLBAR === */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-.dark [data-product-guide-index] a:not(.product-guide-feature-card) {
-  background-color: #09090b !important;
+.dark ::-webkit-scrollbar-track {
+  background: #0D0D13;
 }
 
-.product-guide-feature-card {
-  grid-column: 1 / -1;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  min-height: 260px;
-  background: url('/images/sample-feature-light.png') center / cover no-repeat !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  color: white !important;
-  .dark & {
-    background-image: url('/images/sample-feature-dark.png') !important;
-  }
+.dark ::-webkit-scrollbar-thumb {
+  background: #252530;
+  border-radius: 4px;
 }
 
-.product-guide-feature-card > div {
-  display: flex !important;
-  flex: 1;
-  flex-direction: column !important;
-  justify-content: space-between !important;
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #2d2d3a;
 }
 
-.product-guide-feature-card :is(h2, h3, p, span, svg) {
-  color: white !important;
+/* === SELECTION === */
+::selection {
+  background-color: rgba(16, 157, 144, 0.35);
+  color: #ffffff;
 }
 
-.product-guide-feature-card :is(svg, [class*='icon']) {
-  background-color: white !important;
-  width: 2em !important;
-  height: 2em !important;
-  margin-top: 2px;
+/* === STEPS === */
+.dark [class*="step"] [class*="number"],
+.dark [class*="Step"] [class*="number"] {
+  background-color: rgba(16, 157, 144, 0.12) !important;
+  color: var(--proportion-accent-light) !important;
+  border: 1px solid rgba(16, 157, 144, 0.3) !important;
 }
 
-.product-guide-feature-card-title {
-  font-size: 1.2em;
-  font-weight: 500;
+/* === ACCORDION === */
+.dark [class*="accordion"],
+.dark [class*="Accordion"] {
+  background-color: #121218;
+  border: 1px solid #1a1a24;
+  border-radius: var(--proportion-radius-md);
 }
 
-.product-guide-feature-card :is(h2, h3, p, span, svg).product-guide-feature-card-description {
-  font-size: 1.05em;
-  font-weight: 400;
-  color: rgb(var(--gray-50) / 62.5%) !important;
-  .dark & {
-    color: rgb(var(--gray-50) / 50%) !important;
-  }
+/* === TABS === */
+.dark [role="tablist"] {
+  border-bottom: 1px solid #1a1a24;
+}
+
+.dark [role="tab"][aria-selected="true"] {
+  color: var(--proportion-accent-light);
+  border-bottom-color: var(--proportion-accent);
+}
+
+/* === GRID PATTERN BACKGROUND (subtle, like front) === */
+.dark body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(16, 157, 144, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 157, 144, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: -1;
 }

@@ -1,19 +1,41 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "willow",
+  "theme": "maple",
   "name": "Proportion",
   "description": "Prop firm для prop firms. Капитал, риск-движок и сеттлмент as-a-service на HyperEVM.",
   "colors": {
-    "primary": "#166E3F",
-    "light": "#26BD6C",
-    "dark": "#166E3F"
+    "primary": "#109D90",
+    "light": "#4FD2C1",
+    "dark": "#109D90"
   },
-  "favicon": "/favicon.ico",
+  "favicon": "/favicon.svg",
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "background": {
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#0D0D13"
+    },
+    "decoration": "grid"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter",
+      "weight": 600
+    },
+    "body": {
+      "family": "Inter",
+      "weight": 400
+    }
+  },
   "icons": {
     "library": "lucide"
   },
   "styling": {
-    "eyebrows": "breadcrumbs"
+    "eyebrows": "breadcrumbs",
+    "codeblocks": "dark"
   },
   "contextual": {
     "options": ["copy", "view", "assistant", "mcp", "add-mcp"]
@@ -53,19 +75,25 @@
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "dark": "/logo/dark.svg",
+    "href": "/"
   },
   "navbar": {
-    "links": [],
+    "links": [
+      {
+        "label": "App",
+        "href": "https://trade.proportion.fi"
+      }
+    ],
     "primary": {
-      "type": "button",
-      "label": "App",
-      "href": "https://trade.proportion.fi"
+      "type": "github",
+      "href": "https://github.com/kehtus/mintlify-docs"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/proportion_fi"
+      "x": "https://x.com/proportion_fi",
+      "github": "https://github.com/kehtus"
     }
   }
 }
