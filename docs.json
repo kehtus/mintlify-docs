@@ -78,22 +78,15 @@
     "href": "/"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "GitHub",
-        "href": "https://github.com/kehtus/mintlify-docs"
-      }
-    ],
     "primary": {
       "type": "button",
       "label": "Open App",
-      "href": "https://trade.proportion.fi"
+      "href": "https://proportion.fi"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/proportion_fi",
-      "github": "https://github.com/kehtus"
+      "x": "https://x.com/proportion_fi"
     }
   }
 }
