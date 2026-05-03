@@ -105,9 +105,14 @@ h3 { font-size: 1.2rem; margin-top: 1.5rem; }
 }
 
 /* === CONTENT IMAGES === */
-main img {
+main img,
+article img,
+.prose img,
+img[src*="/images/image.jpeg"],
+img[src*="image.jpeg"] {
   display: block;
-  border-radius: 8px;
+  border-radius: 12px !important;
+  overflow: hidden;
 }
 
 /* === SIDEBAR ACTIVE === */
