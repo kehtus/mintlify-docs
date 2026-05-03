@@ -38,7 +38,7 @@
     "codeblocks": "system"
   },
   "contextual": {
-    "options": ["view", "mcp", "add-mcp"]
+    "options": []
   },
   "navigation": {
     "groups": [
