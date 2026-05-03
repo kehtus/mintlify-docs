@@ -69,7 +69,13 @@
       },
       {
         "group": "SDK",
+        "tag": "Soon",
         "pages": ["sdk"]
+      },
+      {
+        "group": "API",
+        "tag": "Soon",
+        "pages": ["api"]
       }
     ]
   },
