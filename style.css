@@ -1,127 +1,22 @@
-/* Proportion brand — matches src/styles/theme.css (front) */
+/* Proportion — GitBook-style: clean, light, minimal */
 
 :root {
   --proportion-accent: #109D90;
   --proportion-accent-light: #4FD2C1;
   --proportion-accent-dark: #0d8479;
-  --proportion-danger: #f6465d;
-  --proportion-warning: #FF9800;
-
-  --proportion-radius-sm: 4px;
-  --proportion-radius-md: 8px;
-  --proportion-radius-lg: 12px;
-  --proportion-radius-xl: 16px;
-}
-
-/* Dark theme — primary brand experience */
-.dark {
-  --bg-primary: #0D0D13;
-  --bg-secondary: #121218;
-  --bg-tertiary: #1a1a24;
-  --ui-border: #1a1a24;
-  --text-primary: #ffffff;
-  --text-secondary: #D1D5DB;
-  --text-muted: #8a8a9e;
-}
-
-/* === BACKGROUND === */
-.dark body,
-.dark #content-area {
-  background-color: #0D0D13;
-}
-
-/* === SIDEBAR === */
-.dark #sidebar {
-  background-color: #0D0D13;
-  border-color: #1a1a24;
-}
-
-.dark #sidebar a:hover {
-  background-color: rgba(16, 157, 144, 0.06);
-}
-
-.dark #sidebar a.active,
-.dark #sidebar a[aria-current="page"] {
-  background-color: rgba(16, 157, 144, 0.12);
-  color: var(--proportion-accent-light);
-}
-
-/* === NAVBAR === */
-.dark #navbar,
-.dark header {
-  background-color: rgba(13, 13, 19, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid #1a1a24;
-}
-
-/* === CARDS === */
-.dark .card,
-.dark [class*="Card"] {
-  background-color: #121218 !important;
-  border: 1px solid #1a1a24 !important;
-  border-radius: var(--proportion-radius-lg) !important;
-  transition: all 0.15s ease;
-}
-
-.dark .card:hover,
-.dark [class*="Card"]:hover {
-  border-color: rgba(16, 157, 144, 0.4) !important;
-  background-color: #161620 !important;
-}
-
-/* === CODE BLOCKS === */
-.dark pre,
-.dark code {
-  background-color: #1a1a24 !important;
-  border: 1px solid #1a1a24;
-  border-radius: var(--proportion-radius-md);
-}
-
-.dark code:not(pre code) {
-  color: var(--proportion-accent-light) !important;
-  background-color: rgba(16, 157, 144, 0.08) !important;
-  padding: 2px 6px;
-  font-size: 0.875em;
-}
-
-/* === CALLOUTS (Info / Warning / Tip) === */
-.dark [class*="callout"],
-.dark [data-callout] {
-  border-radius: var(--proportion-radius-md) !important;
-  border-left-width: 3px !important;
-}
-
-/* === TABLES === */
-.dark table {
-  border: 1px solid #1a1a24;
-  border-radius: var(--proportion-radius-md);
-  overflow: hidden;
-}
-
-.dark table th {
-  background-color: #121218;
-  color: var(--text-muted);
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-weight: 600;
-}
-
-.dark table td {
-  border-color: #1a1a24;
-}
-
-.dark table tr:hover {
-  background-color: rgba(16, 157, 144, 0.03);
-}
-
-/* === BUTTONS === */
-.dark button[type="button"]:not([class*="copy"]),
-.dark a[class*="button"] {
-  border-radius: var(--proportion-radius-md) !important;
 }
 
 /* === LINKS === */
+a {
+  color: var(--proportion-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--proportion-accent-dark);
+  text-decoration: underline;
+}
+
 .dark a {
   color: var(--proportion-accent-light);
 }
@@ -130,86 +25,89 @@
   color: var(--proportion-accent);
 }
 
-/* === HEADINGS === */
-h1, h2, h3, h4 {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+/* === INLINE CODE === */
+code:not(pre code) {
+  background-color: rgba(16, 157, 144, 0.08);
+  color: var(--proportion-accent-dark);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.875em;
+  border: none;
 }
 
-h1 { font-size: 2.25rem; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.25rem; }
+.dark code:not(pre code) {
+  background-color: rgba(16, 157, 144, 0.12);
+  color: var(--proportion-accent-light);
+}
 
-/* === BLOCKQUOTE === */
-.dark blockquote {
+/* === BLOCKQUOTE — GitBook style === */
+blockquote {
   border-left: 3px solid var(--proportion-accent);
   background-color: rgba(16, 157, 144, 0.04);
-  border-radius: 0 var(--proportion-radius-sm) var(--proportion-radius-sm) 0;
   padding: 12px 16px;
-  color: var(--text-secondary);
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+  color: inherit;
   font-style: normal;
 }
 
-/* === SCROLLBAR === */
-.dark ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+.dark blockquote {
+  background-color: rgba(16, 157, 144, 0.06);
 }
 
-.dark ::-webkit-scrollbar-track {
-  background: #0D0D13;
+/* === TABLES — GitBook clean === */
+table {
+  border-collapse: collapse;
+  width: 100%;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: #252530;
-  border-radius: 4px;
+table th {
+  font-weight: 600;
+  text-align: left;
+  background-color: transparent;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
 }
 
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #2d2d3a;
+.dark table th {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
+
+table td,
+table th {
+  padding: 8px 12px;
+}
+
+table tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark table tr {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+/* === HEADINGS === */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.5rem; margin-top: 2.5rem; }
+h3 { font-size: 1.2rem; margin-top: 1.5rem; }
 
 /* === SELECTION === */
 ::selection {
-  background-color: rgba(16, 157, 144, 0.35);
-  color: #ffffff;
+  background-color: rgba(16, 157, 144, 0.25);
 }
 
-/* === STEPS === */
-.dark [class*="step"] [class*="number"],
-.dark [class*="Step"] [class*="number"] {
-  background-color: rgba(16, 157, 144, 0.12) !important;
-  color: var(--proportion-accent-light) !important;
-  border: 1px solid rgba(16, 157, 144, 0.3) !important;
+/* === SIDEBAR ACTIVE === */
+#sidebar a[aria-current="page"],
+#sidebar a.active {
+  color: var(--proportion-accent);
+  font-weight: 500;
 }
 
-/* === ACCORDION === */
-.dark [class*="accordion"],
-.dark [class*="Accordion"] {
-  background-color: #121218;
-  border: 1px solid #1a1a24;
-  border-radius: var(--proportion-radius-md);
-}
-
-/* === TABS === */
-.dark [role="tablist"] {
-  border-bottom: 1px solid #1a1a24;
-}
-
-.dark [role="tab"][aria-selected="true"] {
+.dark #sidebar a[aria-current="page"],
+.dark #sidebar a.active {
   color: var(--proportion-accent-light);
-  border-bottom-color: var(--proportion-accent);
-}
-
-/* === GRID PATTERN BACKGROUND (subtle, like front) === */
-.dark body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(16, 157, 144, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(16, 157, 144, 0.03) 1px, transparent 1px);
-  background-size: 32px 32px;
-  pointer-events: none;
-  z-index: -1;
 }

@@ -10,7 +10,7 @@
   },
   "favicon": "/favicon.svg",
   "appearance": {
-    "default": "dark",
+    "default": "light",
     "strict": false
   },
   "background": {
@@ -18,7 +18,7 @@
       "light": "#FFFFFF",
       "dark": "#0D0D13"
     },
-    "decoration": "grid"
+    "decoration": "none"
   },
   "fonts": {
     "heading": {
@@ -35,7 +35,7 @@
   },
   "styling": {
     "eyebrows": "breadcrumbs",
-    "codeblocks": "dark"
+    "codeblocks": "system"
   },
   "contextual": {
     "options": ["copy", "view", "assistant", "mcp", "add-mcp"]
