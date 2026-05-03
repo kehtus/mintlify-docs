@@ -62,7 +62,7 @@ fee = accountSize × subscriptionFeeMultiplier / 10000
   <Step title="Профит-дни">`profitableDaysCount ≥ 4` (4 дня роста ≥ 1%)</Step>
   <Step title="Подписка">Subscription активна</Step>
   <Step title="Профит над HWM">Есть профит над high-water mark</Step>
-  <Step title="Splits">80% трейдер, 13% LP-волт, 7% протокол</Step>
+  <Step title="Splits">80% трейдер, 13% Vault, 7% протокол</Step>
   <Step title="Reset">После вывода HWM сбрасывается на accountSize, profitable days обнуляются</Step>
 </Steps>
 
@@ -76,4 +76,4 @@ fee = accountSize × subscriptionFeeMultiplier / 10000
 - Subscription не оплачена в renewal-зоне
 - `initiateCloseAdmin()` от relayer'а
 
-После закрытия позиции сворачиваются, USDC возвращается в LP-волт, shares билдера разлочиваются.
+После закрытия позиции сворачиваются, USDC возвращается в Vault, shares билдера разлочиваются.

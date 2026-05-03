@@ -62,7 +62,7 @@ When the trader requests a withdrawal (`requestWithdrawProfit`):
   <Step title="Profitable days">`profitableDaysCount ≥ 4` (4 days of ≥ 1% growth)</Step>
   <Step title="Subscription">Subscription is active</Step>
   <Step title="Profit over HWM">Profit exists over the high-water mark</Step>
-  <Step title="Splits">80% trader, 13% LP vault, 7% protocol</Step>
+  <Step title="Splits">80% trader, 13% Vault, 7% protocol</Step>
   <Step title="Reset">After withdrawal, HWM resets to accountSize and profitable days reset</Step>
 </Steps>
 
@@ -76,4 +76,4 @@ Triggers (all lead to `initiateClose()`):
 - Subscription unpaid in the renewal zone
 - `initiateCloseAdmin()` from the relayer
 
-After closure, positions are unwound, USDC returns to the LP vault, and builder shares unlock.
+After closure, positions are unwound, USDC returns to the Vault, and builder shares unlock.

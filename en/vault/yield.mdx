@@ -13,7 +13,7 @@ description: "Sources of LP yield and risks of placing capital in Vault"
     **13%** of trader profit at the time of withdrawals
   </Card>
   <Card title="Unused activation-fee buffer" icon="shield-check">
-    Remains in Vault — already compensated by the previously collected activation fee
+    The unused portion of collected activation fees remains in Vault
   </Card>
 </CardGroup>
 
@@ -35,8 +35,8 @@ Placing capital in Vault involves several risks that affect share value and LP y
   <Accordion title="Smart-contract risk" icon="file-code">
     MainVault and FundedAccount contracts are exposed to critical vulnerability risk. The codebase has undergone an independent audit, but residual risk cannot be eliminated.
   </Accordion>
-  <Accordion title="Dependency on Hyperliquid and Hypercore" icon="link">
-    Vault operations rely on Hypercore data (balances, prices) and Hyperliquid spot/perp infrastructure. Failures or incorrect behavior in these components are reflected in Vault capital.
+  <Accordion title="Dependency on Hyperliquid and HyperCore" icon="link">
+    Vault operations rely on HyperCore data (balances, prices) and Hyperliquid spot/perp infrastructure. Failures or incorrect behavior in these components are reflected in Vault capital.
   </Accordion>
   <Accordion title="Price slippage during liquidation" icon="zap">
     In extreme volatility, a trader's position may realize a loss below the trailing floor before the protocol initiates FA closure. The premium included in the activation fee partially absorbs this difference, but does not guarantee full coverage.

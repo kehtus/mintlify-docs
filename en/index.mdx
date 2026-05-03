@@ -4,26 +4,32 @@ title: "Overview"
 
 ![Proportion overview](/images/image.jpeg)
 
-Proportion is prop-trading infrastructure built on Hyperliquid, bringing together three sides: traders get access to capital through funded accounts without KYC or arbitrary payout blocks; builders launch their own prop firms on top of ready-made infrastructure — capital, an on-chain risk engine, and automated settlement are available out of the box; LPs deposit USDC into a shared vault and earn from activation fees and a share of trader profits.
+Proportion is prop-trading infrastructure built on Hyperliquid.
 
-## Context
+It coordinates three sides of the market on a unified protocol layer. Traders access capital through funded accounts on Hyperliquid. Builders launch prop-trading products with capital, risk enforcement, and settlement already built in. LPs deposit USDC into a shared Vault and participate in activation fees and trader profit.
 
-Hyperliquid and the builder codes ecosystem created market demand for capital in onchain trading — the same dynamic that produced thousands of prop firms on forex markets. Now it is moving on-chain. This is the beginning of the onchain prop meta.
+## What is Proportion?
 
-Unlike a classic prop firm, an onchain prop firm must be non-custodial, secure, verifiable, and composable. Proportion covers these requirements — it is an infrastructure layer for an onchain prop firm without the need to write custom contracts or a risk engine.
+Proportion brings the prop-firm model on-chain. The same demand for trading capital that produced thousands of prop firms in forex markets is now appearing around Hyperliquid and builder codes.
+
+Unlike a classic prop firm, an onchain prop firm needs non-custodial accounts, transparent rules, verifiable settlement, and composable capital. Proportion provides these components without requiring each builder to write custom contracts or operate a risk engine.
+
+## Technical Overview
+
+Proportion is built around a shared Vault and isolated funded accounts. The Vault holds LP capital, allocates USDC to funded accounts, receives activation fees, and settles trader profit splits. Funded accounts trade on Hyperliquid while protocol rules enforce drawdown, leverage, market access, subscriptions, and withdrawals.
 
 ## Mission
 
-Become the liquidity hub for onchain prop firms — a composable DeFi layer on HyperEVM that covers the capital allocation needs between traders, builders, and LPs.
+Proportion aims to become the liquidity hub for onchain prop firms: a composable DeFi layer on HyperEVM for capital allocation between traders, builders, and LPs.
 
 ## Next
 
 <CardGroup cols={2}>
   <Card title="Trade" icon="user" href="/en/traders">
-    How to get a funded account and trade
+    Funded accounts and trader rules
   </Card>
   <Card title="Build" icon="hammer" href="/en/builders">
-    How to launch your prop firm on Proportion
+    Prop-firm infrastructure for builders
   </Card>
   <Card title="Vault" icon="vault" href="/en/vault">
     The protocol liquidity hub

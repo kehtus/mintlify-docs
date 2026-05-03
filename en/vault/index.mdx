@@ -3,13 +3,13 @@ title: "How It Works"
 description: "Central liquidity contract — flows, shares, limits"
 ---
 
-The central element of Proportion is the Vault contract. All protocol liquidity flows meet there: LP deposits, funded-account financing, USDC custody, fees, and profit distribution. Everything that moves capital in the system passes through Vault.
+The central element of Proportion is the Vault contract. It coordinates LP deposits, funded-account financing, USDC custody, fees, and profit distribution. Every capital flow in the protocol passes through Vault.
 
 ## Flows
 
 <CardGroup cols={3}>
   <Card title="FA Funding" icon="banknote">
-    At the builder's request, Vault allocates `accountSize` and transfers USDC through Hypercore Spot to the FundedAccount
+    At the builder's request, Vault allocates `accountSize` and transfers USDC through HyperCore Spot to the FundedAccount
   </Card>
   <Card title="Fees" icon="coins">
     Activation fees and the trader profit share accrue to Vault, increasing `sharePrice`
@@ -21,7 +21,7 @@ The central element of Proportion is the Vault contract. All protocol liquidity 
 
 ## Shares and sharePrice
 
-An LP's share in Vault is represented by shares. Accumulated profit automatically increases `sharePrice` — yield does not need to be claimed separately.
+An LP's position in Vault is represented by shares. Accumulated profit increases `sharePrice`; yield does not need to be claimed separately.
 
 ```
 sharePrice = totalAssets / totalShares
