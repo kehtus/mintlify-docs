@@ -126,11 +126,20 @@ h3 { font-size: 1.2rem; margin-top: 1.5rem; }
 
 .dark body {
   background-color: var(--bg-cosmic-primary);
-  background-image:
-    radial-gradient(ellipse 90% 55% at 50% -8%, rgba(0, 212, 255, 0.28), transparent 65%),
-    radial-gradient(ellipse 60% 35% at 50% 0%, rgba(0, 163, 204, 0.18), transparent 60%);
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+}
+
+.dark body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 100% at 50% 0%, rgba(0, 212, 255, 0.35), transparent 70%),
+    radial-gradient(ellipse 40% 70% at 50% 0%, rgba(0, 163, 204, 0.25), transparent 65%);
 }
 
 .dark #sidebar {
