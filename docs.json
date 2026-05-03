@@ -17,8 +17,7 @@
     "color": {
       "light": "#FFFFFF",
       "dark": "#0D0D13"
-    },
-    "decoration": "none"
+    }
   },
   "fonts": {
     "heading": {
