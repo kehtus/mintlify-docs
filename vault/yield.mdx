@@ -1,50 +1,50 @@
 ---
-title: "Доходность и риски"
-description: "Источники yield для LP и риски размещения капитала в Vault"
+title: "Yield and Risks"
+description: "Sources of LP yield and risks of placing capital in Vault"
 ---
 
-## Источники доходности
+## Yield Sources
 
 <CardGroup cols={3}>
   <Card title="Activation fees" icon="percent">
-    **90%** от каждой выдачи FA идёт в Vault
+    **90%** of every FA issuance goes to Vault
   </Card>
   <Card title="Profit split" icon="chart-line">
-    **13%** от прибыли трейдеров на момент их выводов
+    **13%** of trader profit at the time of withdrawals
   </Card>
-  <Card title="Неиспользованный activation-fee буфер" icon="shield-check">
-    Остаётся в Vault — уже скомпенсирован собранным ранее activation fee
+  <Card title="Unused activation-fee buffer" icon="shield-check">
+    The unused portion of collected activation fees remains in Vault
   </Card>
 </CardGroup>
 
 <Info>
-Subscription fees в Vault не идут — это revenue билдера (85%) и протокола (15%).
+Subscription fees do not go to Vault — they are builder revenue (85%) and protocol revenue (15%).
 </Info>
 
-## Риски
+## Risks
 
-Размещение капитала в Vault сопряжено с рядом рисков, влияющих на стоимость shares и доходность LP.
+Placing capital in Vault involves several risks that affect share value and LP yield.
 
 <AccordionGroup>
-  <Accordion title="Коррелированные просадки" icon="waves">
-    Activation fee рассчитана так, чтобы улучшать матожидание для LP в изолированных событиях. При одновременных breach-закрытиях по множеству funded-аккаунтов совокупные убытки могут превысить накопленный буфер пула, что приводит к снижению `sharePrice` — вплоть до значений ниже номинала депозита.
+  <Accordion title="Correlated drawdowns" icon="waves">
+    The activation fee is designed to improve LP expected value in isolated events. With simultaneous breach closures across many funded accounts, aggregate losses may exceed the pool's accumulated buffer, reducing `sharePrice` — potentially below the deposit's nominal value.
   </Accordion>
-  <Accordion title="Качество эмиссии" icon="users">
-    LP не участвует в отборе трейдеров и установлении параметров активаций — эти решения принимаются билдерами. Деградация underwriting-качества у любого из билдеров отражается на доходности Vault пропорционально их доле в активной эмиссии FA.
+  <Accordion title="Issuance quality" icon="users">
+    LPs do not participate in trader selection or activation parameter decisions — these decisions are made by builders. Deterioration in underwriting quality by any builder affects Vault yield proportionally to their share of active FA issuance.
   </Accordion>
-  <Accordion title="Риск смарт-контракта" icon="file-code">
-    Контракты MainVault и FundedAccount подвержены риску критических уязвимостей. Кодовая база проходит независимый аудит, однако остаточный риск исключить невозможно.
+  <Accordion title="Smart-contract risk" icon="file-code">
+    MainVault and FundedAccount contracts are exposed to critical vulnerability risk. The codebase has undergone an independent audit, but residual risk cannot be eliminated.
   </Accordion>
-  <Accordion title="Зависимость от Hyperliquid и Hypercore" icon="link">
-    Операции Vault опираются на данные Hypercore (балансы, цены) и spot/perp инфраструктуру Hyperliquid. Сбои или некорректное поведение указанных компонентов транслируются на капитал Vault.
+  <Accordion title="Dependency on Hyperliquid and HyperCore" icon="link">
+    Vault operations rely on HyperCore data (balances, prices) and Hyperliquid spot/perp infrastructure. Failures or incorrect behavior in these components are reflected in Vault capital.
   </Accordion>
-  <Accordion title="Ценовое проскальзывание при ликвидации" icon="zap">
-    При экстремальной волатильности позиция трейдера может реализовать убыток ниже trailing floor до момента инициации закрытия FA протоколом. Премия, заложенная в activation fee, частично абсорбирует эту разницу, но не гарантирует полного покрытия.
+  <Accordion title="Price slippage during liquidation" icon="zap">
+    In extreme volatility, a trader's position may realize a loss below the trailing floor before the protocol initiates FA closure. The premium included in the activation fee partially absorbs this difference, but does not guarantee full coverage.
   </Accordion>
-  <Accordion title="Ограниченная ликвидность для билдеров" icon="lock">
-    Shares участников с активной builder-ролью находятся под локапом, обусловленным наличием активных funded-аккаунтов под их аккаунтом. Полный вывод средств возможен только после закрытия всех FA.
+  <Accordion title="Limited liquidity for builders" icon="lock">
+    Shares of participants with an active builder role are locked while they have active funded accounts. Full withdrawal is possible only after all FAs are closed.
   </Accordion>
-  <Accordion title="Риск управления" icon="settings">
-    Конфигурация Vault (`feeMultiplier`, лимиты аллокации, параметры drawdown) подлежит изменению через административные функции.
+  <Accordion title="Governance risk" icon="settings">
+    Vault configuration (`feeMultiplier`, allocation limits, drawdown parameters) can be changed through administrative functions.
   </Accordion>
 </AccordionGroup>

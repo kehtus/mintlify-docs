@@ -1,31 +1,31 @@
 ---
-title: "Правила funded-аккаунта"
-description: "Что разрешено в funded-аккаунте, и что приводит к закрытию"
+title: "Funded Account Rules"
+description: "What is allowed in a funded account and what leads to closure"
 ---
 
-## Лимиты
+## Limits
 
-| Правило | Описание | Нарушение |
-|---------|----------|-----------|
-| **Trailing drawdown** | Лимит просадки от пика. Прибыль фиксируется в floor раз в сутки | Закрытие FA |
-| **Daily drawdown** | Дневной лимит, равен 50% от trailing. Включается проп-фирмой при активации | Закрытие FA |
-| **Max leverage** | 5x notional/equity | Закрытие FA |
-| **Whitelist рынков** | Торговать можно только ликвидные перпы из списка протокола | Закрытие FA |
-| **Подписка** | 1.5%/мес от размера аккаунта | Закрытие FA |
+| Rule | Description | Violation |
+|------|-------------|-----------|
+| **Trailing drawdown** | Drawdown limit from the peak. Profit is locked into the floor once per day | FA closure |
+| **Daily drawdown** | Daily limit, equal to 50% of trailing. Enabled by the prop firm at activation | FA closure |
+| **Max leverage** | 5x notional/equity | FA closure |
+| **Market whitelist** | Trading is allowed only on liquid perps from the protocol list | FA closure |
+| **Subscription** | 1.5%/month of account size | FA closure |
 
 <Info>
-Проп-фирма при активации задаёт: размер аккаунта, % drawdown, включён ли daily DD.
+At activation, the prop firm sets: account size, drawdown %, and whether daily DD is enabled.
 </Info>
 
-## Что разрешено
+## What Is Allowed
 
-| Активность       | Статус   |
-|------------------|----------|
-| Copy Trading     | Allowed  |
-| Bots & EAs       | Allowed  |
-| News Trading     | Allowed  |
+| Activity       | Status   |
+|----------------|----------|
+| Copy Trading   | Allowed  |
+| Bots & EAs     | Allowed  |
+| News Trading   | Allowed  |
 | Information-based Trading | Allowed |
 
 <Tip>
-Разрешено всё, что не запрещено на этой странице. Стиль торговли, частота сделок, размер позиций, удержание ночью или через выходные — без ограничений в пределах указанных лимитов.
+Everything not forbidden on this page is allowed. Trading style, trade frequency, position size, holding overnight or through weekends — no restrictions within the listed limits.
 </Tip>

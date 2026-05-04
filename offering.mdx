@@ -1,34 +1,34 @@
 ---
-title: "Что мы предлагаем"
-description: "Проблемы, которые решает Proportion, и что получает каждая сторона"
+title: "What We Offer"
+description: "Problems Proportion solves and what each side gets"
 ---
 
-## Проблемы, которые решает Proportion
+## Problems Proportion Solves
 
-- **Непрозрачные правила и блокировки выплат** в классическом prop — у Proportion правила и сплиты зашиты в коде, выплаты проходят по правилам протокола через on-chain flow
-- **B-book конфликт интересов** — builder и протокол зарабатывают на прибыли трейдера, а не на его убытках
-- **Контрагентский риск** — funded-аккаунт non-custodial, проп-фирма физически не может произвольно отказать в выплате вне правил протокола
-- **Высокий барьер для запуска проп-фирмы** — Proportion даёт капитал, риск-движок и сеттлмент готовыми, без необходимости поднимать свой стек
-- **Фрагментация капитала ончейн** — единый LP-волт вместо разрозненных пулов под каждую фирму
-- **Отсутствие DeFi-доступа к экономике prop-индустрии** — shares Vault это композабельный примитив для LP
+- **Opaque rules and blocked payouts** in classic prop — rules and splits are encoded in the protocol, with payouts handled through the on-chain flow
+- **B-book conflict of interest** — builders and the protocol are aligned with trader profit, not trader losses
+- **Counterparty risk** — funded accounts are non-custodial, and protocol rules prevent arbitrary payout denial by the prop firm
+- **High barrier to launching a prop firm** — Proportion provides capital, risk enforcement, and settlement without requiring builders to run their own contract stack
+- **Fragmented onchain capital** — one Vault coordinates liquidity instead of separate pools for every firm
+- **Lack of DeFi access to prop-industry economics** — Vault shares create a composable primitive for LPs
 
-## Что получает каждый
+## What Each Side Gets
 
 <Tabs>
   <Tab title="Trader">
-    - Доступ к капиталу без KYC и надуманных правил
-    - A-book на реальной ликвидности Hyperliquid — реальные сделки на реальный капитал
-    - 80% PnL зафиксирован хардкодом протокола
-    - FA принадлежит трейдеру в рамках правил протокола — проп-фирма не может произвольно заблокировать выплату вне правил протокола
+    - Capital access without KYC or artificial rules
+    - A-book execution on real Hyperliquid liquidity — real trades with real capital
+    - 80% PnL hardcoded by the protocol
+    - The FA belongs to the trader within protocol rules; the prop firm cannot arbitrarily block payouts
   </Tab>
   <Tab title="Builder">
-    - Готовая инфраструктура: капитал из LP-волта, on-chain risk engine, сеттлмент — без своих контрактов
-    - Builder leverage 10x: $10k депозита фондируют до $100k трейдерского капитала
-    - Доход на трёх уровнях: маржа на челлендже, 85% от subscription fees, LP yield пула
+    - Infrastructure for funded accounts: capital from the Vault, on-chain risk enforcement, and settlement
+    - Builder leverage 10x: a $10k deposit can fund up to $100k of trader capital
+    - Revenue on three levels: challenge margin, 85% of subscription fees, LP yield from the pool
   </Tab>
   <Tab title="LP">
-    - Yield от всей экосистемы: 90% activation fees, 13% от профита трейдеров
-    - Без необходимости выбирать билдеров или трейдеров — sharePrice отражает P&L Vault и может расти или снижаться
-    - Композабельные shares (потенциально для DeFi-интеграций)
+    - Yield from the ecosystem: 90% of activation fees and 13% of trader profits
+    - No need to pick builders or traders — sharePrice reflects Vault P&L and can increase or decrease
+    - Composable shares (potentially for DeFi integrations)
   </Tab>
 </Tabs>

@@ -1,49 +1,49 @@
 ---
-title: "Как работает"
-description: "Центральный контракт ликвидности — потоки, shares, лимиты"
+title: "How It Works"
+description: "Central liquidity contract — flows, shares, limits"
 ---
 
-Центральный элемент Proportion — контракт Vault. В нём сходятся все потоки ликвидности протокола: депозиты LP, финансирование funded-аккаунтов, хранение USDC, сборы и распределение профита. Всё, что движет капитал в системе, проходит через Vault.
+The central element of Proportion is the Vault contract. It coordinates LP deposits, funded-account financing, USDC custody, fees, and profit distribution. Every capital flow in the protocol passes through Vault.
 
-## Потоки
+## Flows
 
 <CardGroup cols={3}>
-  <Card title="Фондирование FA" icon="banknote">
-    По запросу билдера Vault выделяет `accountSize` и переводит USDC через Hypercore Spot в FundedAccount
+  <Card title="FA Funding" icon="banknote">
+    At the builder's request, Vault allocates `accountSize` and transfers USDC through HyperCore Spot to the FundedAccount
   </Card>
-  <Card title="Сборы" icon="coins">
-    Activation fees и доля профита трейдеров оседают в Vault, повышая `sharePrice`
+  <Card title="Fees" icon="coins">
+    Activation fees and the trader profit share accrue to Vault, increasing `sharePrice`
   </Card>
-  <Card title="Возвраты" icon="rotate-ccw">
-    При закрытии FA принципал и residual возвращаются в Vault
+  <Card title="Returns" icon="rotate-ccw">
+    When an FA closes, principal and residual return to Vault
   </Card>
 </CardGroup>
 
-## Shares и sharePrice
+## Shares and sharePrice
 
-Доля LP в Vault отражена в shares. Накопленная прибыль автоматически повышает `sharePrice` — yield не нужно клеймить отдельно.
+An LP's position in Vault is represented by shares. Accumulated profit increases `sharePrice`; yield does not need to be claimed separately.
 
 ```
 sharePrice = totalAssets / totalShares
-totalAssets = USDC на EVM + USDC, аллоцированный в активных FA
+totalAssets = USDC on EVM + USDC allocated to active FAs
 ```
 
-## Лимиты аллокации
+## Allocation Limits
 
-| Параметр | Значение | Что ограничивает |
-|----------|----------|------------------|
-| Max utilization | **80%** | Доля Vault в активных FA |
-| Max single account | **10%** / $20k | Размер одного FA от `totalAssets` |
-| Builder leverage | **10x** | Максимум фондирования билдера от его `sharesValue` |
+| Parameter | Value | What it limits |
+|-----------|-------|----------------|
+| Max utilization | **80%** | Share of Vault allocated to active FAs |
+| Max single account | **10%** / $20k | Size of one FA relative to `totalAssets` |
+| Builder leverage | **10x** | Max builder funding relative to `sharesValue` |
 
-## Лок-ап
+## Lock-Up
 
-LP без builder-роли — shares выводятся в любой момент. Билдер — shares залочены, пока есть активные FA под ним. `withdrawableShares()` показывает доступную для вывода часть.
+LPs without a builder role can withdraw shares at any time. Builder shares are locked while they have active FAs. `withdrawableShares()` shows how many shares are available to withdraw.
 
-## Управление
+## Governance
 
-Параметры Vault (`feeMultiplier`, `MIN/MAX_ACCOUNT_SIZE`, `MIN/MAX_DRAWDOWN_BPS`, `BUILDER_LEVERAGE`, утилизация, лимиты per-FA) меняются админом через сеттеры.
+Vault parameters (`feeMultiplier`, `MIN/MAX_ACCOUNT_SIZE`, `MIN/MAX_DRAWDOWN_BPS`, `BUILDER_LEVERAGE`, utilization, per-FA limits) are changed by the admin through setters.
 
-<Card title="Доходность и риски" icon="trending-up" href="/vault/yield">
-  Откуда LP получает yield и какие риски у Vault
+<Card title="Yield and Risks" icon="trending-up" href="/vault/yield">
+  Where LP yield comes from and what risks Vault has
 </Card>

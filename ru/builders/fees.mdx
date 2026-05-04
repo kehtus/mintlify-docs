@@ -1,0 +1,79 @@
+---
+title: "Параметры FA и сборы"
+description: "Параметры FA, формулы fees, лимиты аллокации"
+---
+
+## Что выбирает билдер при активации
+
+| Параметр | Диапазон | Что делает |
+|----------|----------|------------|
+| `trader` | любой адрес | Кому открывается FA |
+| `accountSize` | $10–$20,000 | Размер капитала (USDC, 6 dec) |
+| `drawdownBps` | 5%–25% | Trailing drawdown лимит |
+| `dailyDrawdownEnabled` | bool | Включить дневной лимит (=50% от drawdownBps) |
+
+`MIN/MAX_ACCOUNT_SIZE` и `MIN/MAX_DRAWDOWN_BPS` настраиваются админом протокола.
+
+## Лимиты аллокации
+
+| Параметр | Значение | Что ограничивает |
+|----------|----------|------------------|
+| Max utilization | **80%** | Доля LP-волта в активных FA |
+| Max single account | **10%** / $20k | Размер одного FA от `totalAssets` |
+| Builder leverage | **10x** | Суммарный accountSize FA билдера ≤ `sharesValue × 10` |
+
+`getMaxAccountSize()` и `builderAvailableFunded(builder)` показывают актуальные лимиты.
+
+## Activation fee (one-time)
+
+```
+fee = accountSize × drawdownBps × feeMultiplier / 1_000_000
+```
+
+`feeMultiplier = 120` (1.2x risk premium) — значение по умолчанию. Параметр изменяемый: задаётся админом протокола через `setFeeMultiplier()` в пределах 1.0x–2.0x. При `dailyDrawdownEnabled = true` — скидка 20%.
+
+| accountSize | drawdown | dailyDD | Fee |
+|-------------|----------|---------|-----|
+| $5,000 | 5% | OFF | $300 |
+| $5,000 | 10% | OFF | $600 |
+| $5,000 | 10% | ON | $480 |
+| $10,000 | 25% | OFF | $3,000 |
+| $20,000 | 10% | OFF | $2,400 |
+
+Распределение activation fee: 90% → LP-волт, 10% → протокол. Subscription fee считается отдельно и распределяется ниже.
+
+Билдер закладывает эту сумму + свою маржу в цену челленджа для трейдера.
+
+## Subscription fee
+
+```
+fee = accountSize × subscriptionFeeMultiplier / 10000
+```
+
+`subscriptionFeeMultiplier = 150` → 1.5% от accountSize в месяц. Списывается каждые 30 дней. Трейдер может отменить (`cancelSubscription`) — на следующем checkpoint в renewal-зоне FA закроется.
+
+Распределение: 85% билдер, 15% протокол.
+
+## Profit withdrawal
+
+Когда трейдер запрашивает вывод (`requestWithdrawProfit`):
+
+<Steps>
+  <Step title="Профит-дни">`profitableDaysCount ≥ 4` (4 дня роста ≥ 1%)</Step>
+  <Step title="Подписка">Subscription активна</Step>
+  <Step title="Профит над HWM">Есть профит над high-water mark</Step>
+  <Step title="Splits">80% трейдер, 13% Vault, 7% протокол</Step>
+  <Step title="Reset">После вывода HWM сбрасывается на accountSize, profitable days обнуляются</Step>
+</Steps>
+
+## Закрытие FA
+
+Триггеры (все ведут к `initiateClose()`):
+
+- Пробой trailing/daily drawdown
+- Превышение max leverage
+- Торговля unauthorized перпом
+- Subscription не оплачена в renewal-зоне
+- `initiateCloseAdmin()` от relayer'а
+
+После закрытия позиции сворачиваются, USDC возвращается в Vault, shares билдера разлочиваются.

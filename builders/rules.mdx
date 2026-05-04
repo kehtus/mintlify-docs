@@ -1,38 +1,38 @@
 ---
-title: "Правила протокола"
-description: "Правила funded-аккаунта, которые enforce'ит протокол on-chain"
+title: "Protocol Rules"
+description: "Funded-account rules enforced on-chain by the protocol"
 ---
 
-Протокол сам следит за всеми правилами funded-аккаунта. Билдер не может смягчить или обойти их — только выбирает параметры в разрешённом диапазоне.
+The protocol enforces all funded-account rules itself. The builder cannot soften or bypass them — only choose parameters within the allowed range.
 
-## Жёсткие правила
+## Hard Rules
 
-Хардкод, общие для всех:
+Hardcoded and shared by everyone:
 
-| Правило | Значение |
-|---------|----------|
-| Max leverage | 5x notional/equity. Пробой → закрытие позиций |
-| Profit split | 80% трейдер / 13% LP / 7% протокол |
-| Profitable days для вывода | 4 дня с ростом ≥ 1% каждый |
-| Checkpoint interval | 1 день |
-| Subscription period | 30 дней |
+| Rule | Value |
+|------|-------|
+| Max leverage | 5x notional/equity. Breach → positions close |
+| Profit split | 80% trader / 13% LP / 7% protocol |
+| Profitable days for withdrawal | 4 days with ≥ 1% growth each |
+| Checkpoint interval | 1 day |
+| Subscription period | 30 days |
 
-## Trailing drawdown (HWM-based)
+## Trailing Drawdown (HWM-Based)
 
-FA использует trailing floor: HWM обновляется на checkpoint раз в сутки, и прибыль трейдера фиксируется в floor по итогам дня. Внутри дня floor не подскакивает за PnL — но на следующем checkpoint поднимается, если день закрылся в плюс.
+FA uses a trailing floor: HWM updates at the daily checkpoint, and the trader's profit is locked in via the floor at end-of-day. Intraday, the floor does not jump with PnL — but at the next checkpoint it ratchets up if the day closed in profit.
 
 ```
 accountSize = $10k, drawdown = 10%
-Старт:    HWM=$10k, floor=$9k
+Start:    HWM=$10k, floor=$9k
 +$5k (checkpoint): HWM=$15k, floor=$13.5k
-−$2k →    balance $13k < $13.5k → close
+-$2k ->    balance $13k < $13.5k -> close
 ```
 
-После вывода профита HWM сбрасывается на accountSize.
+After a profit withdrawal, HWM resets to accountSize.
 
-## Daily drawdown (опциональный)
+## Daily Drawdown (Optional)
 
-Включается билдером при активации. Дневной лимит = 50% от trailing drawdown.
+Enabled by the builder at activation. Daily limit = 50% of trailing drawdown.
 
 | Trailing | Daily |
 |----------|-------|
@@ -40,12 +40,12 @@ accountSize = $10k, drawdown = 10%
 | 10% | 5% |
 | 25% | 12.5% |
 
-Проверяется в каждом checkpoint и permissionless через `initiateClose()`. Скидка 20% на activation fee при включении.
+Checked at every checkpoint and permissionlessly through `initiateClose()`. Enabling it gives a 20% discount on the activation fee.
 
-## Whitelist перпов
+## Perp Whitelist
 
-Торговать можно только ликвидные перпы из whitelist протокола. Keeper мониторит позиции off-chain и при детекте unauthorized asset вызывает `initiateClose()`. Контракт сам верифицирует нарушение и закрывает аккаунт, если оно действительно было.
+Trading is allowed only on liquid perps from the protocol whitelist. The keeper monitors positions off-chain and, when it detects an unauthorized asset, calls `initiateClose()`. The contract verifies the violation itself and closes the account if it actually happened.
 
-## Что это значит для билдера
+## What This Means for Builders
 
-Свои дополнительные правила (профит-таргет, минимум торговых дней, более жёсткий daily limit) билдер делает off-chain — это часть его челленджа и evaluation. Когда трейдер прошёл по критериям билдера, билдер открывает funded-аккаунт через SDK, и дальше протокол защищает капитал по своим правилам.
+Builders implement their own additional rules (profit target, minimum trading days, stricter daily limit) off-chain as part of their challenge and evaluation. When the trader passes the builder's criteria, the builder opens a funded account through the SDK, and from that point the protocol protects capital by its own rules.

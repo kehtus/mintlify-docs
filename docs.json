@@ -43,7 +43,8 @@
   "navigation": {
     "languages": [
       {
-        "language": "ru",
+        "language": "en",
+        "default": true,
         "groups": [
           {
             "group": "Intro",
@@ -73,33 +74,32 @@
         ]
       },
       {
-        "language": "en",
-        "default": true,
+        "language": "ru",
         "groups": [
           {
             "group": "Intro",
-            "pages": ["en/index", "en/offering"]
+            "pages": ["ru/index", "ru/offering"]
           },
           {
             "group": "Trade",
             "pages": [
-              "en/traders/index",
-              "en/traders/rules",
-              "en/traders/payouts"
+              "ru/traders/index",
+              "ru/traders/rules",
+              "ru/traders/payouts"
             ]
           },
           {
             "group": "Build",
             "pages": [
-              "en/builders/index",
-              "en/builders/onboarding",
-              "en/builders/rules",
-              "en/builders/fees"
+              "ru/builders/index",
+              "ru/builders/onboarding",
+              "ru/builders/rules",
+              "ru/builders/fees"
             ]
           },
           {
             "group": "Vault",
-            "pages": ["en/vault/index", "en/vault/yield"]
+            "pages": ["ru/vault/index", "ru/vault/yield"]
           }
         ]
       }

@@ -1,61 +1,61 @@
 ---
-title: "Прибыль и выплаты"
-description: "Как трейдер выводит профит и когда закрывается FA"
+title: "Profit and Payouts"
+description: "How a trader withdraws profit and when an FA closes"
 ---
 
-Прибыль делится между тремя сторонами. Это хардкод протокола, проп-фирмой не меняется.
+Profit is split between three sides. This is hardcoded by the protocol and cannot be changed by the prop firm.
 
 <CardGroup cols={3}>
-  <Card title="Трейдер" icon="user">
+  <Card title="Trader" icon="user">
     **80%**
   </Card>
   <Card title="Vault" icon="vault">
     **13%**
   </Card>
-  <Card title="Протокол" icon="building">
+  <Card title="Protocol" icon="building">
     **7%**
   </Card>
 </CardGroup>
 
-## Вывод профита
+## Profit Withdrawal
 
-Условия для вывода:
+Withdrawal conditions:
 
 <Steps>
-  <Step title="4 прибыльных дня">
-    Накопить 4 прибыльных дня (каждый ≥ 1% роста)
+  <Step title="4 profitable days">
+    Accumulate 4 profitable days (each with ≥ 1% growth)
   </Step>
-  <Step title="Активная подписка">
-    Subscription активна
+  <Step title="Active subscription">
+    Subscription is active
   </Step>
-  <Step title="Профит над HWM">
-    Есть нереализованный профит над high-water mark
+  <Step title="Profit over HWM">
+    Profit exists above the high-water mark
   </Step>
 </Steps>
 
-Вывод приходит на EVM-адрес трейдера на HyperEVM. Газ за транзакцию вывода покрывает Proportion — трейдеру платить не нужно.
+The withdrawal arrives at the trader's EVM address on HyperEVM. Proportion covers gas for the withdrawal transaction — the trader does not need to pay.
 
-После вывода floor сбрасывается на размер аккаунта, торговля продолжается.
+After withdrawal, the floor resets to account size and trading continues.
 
 <Info>
-Подписку трейдер может отменить — на следующей дате продления FA закроется.
+The trader can cancel the subscription — on the next renewal date, the FA closes.
 </Info>
 
-## Закрытие FA
+## FA Closure
 
-Аккаунт закрывается при:
+The account closes on:
 
-- Пробое trailing / daily drawdown
-- Превышении max leverage
-- Торговле неразрешённым рынком
-- Неоплаченной подписке
+- Trailing / daily drawdown breach
+- Max leverage breach
+- Trading an unauthorized market
+- Unpaid subscription
 
 <Warning>
-При закрытии капитал и весь профит возвращаются в Vault. Чтобы получить свою долю прибыли, трейдер должен оформить вывод до срабатывания триггера закрытия.
+On closure, capital and all profit return to the Vault. To receive their profit share, the trader must request a withdrawal before a closure trigger fires.
 </Warning>
 
-## Дальше
+## Next
 
 <Card title="Vault" icon="vault" href="/vault">
-  Куда идёт капитал и как он работает
+  Where capital goes and how it works
 </Card>
