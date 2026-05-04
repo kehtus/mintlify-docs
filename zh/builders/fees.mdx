@@ -1,0 +1,79 @@
+---
+title: "FA Parameters and Fees"
+description: "FA 参数、fee 公式和 allocation limits"
+---
+
+## Builder 在 Activation 时选择什么
+
+| Parameter | Range | What it does |
+|-----------|-------|--------------|
+| `trader` | any address | 接收 FA 的地址 |
+| `accountSize` | $10–$20,000 | 资本规模（USDC，6 dec） |
+| `drawdownBps` | 5%–25% | Trailing drawdown limit |
+| `dailyDrawdownEnabled` | bool | 是否开启 daily limit（= drawdownBps 的 50%） |
+
+`MIN/MAX_ACCOUNT_SIZE` 和 `MIN/MAX_DRAWDOWN_BPS` 可由 protocol admin 配置。
+
+## Allocation Limits
+
+| Parameter | Value | What it limits |
+|-----------|-------|----------------|
+| Max utilization | **80%** | 分配给 active FAs 的 LP vault 份额 |
+| Max single account | **10%** / $20k | 单个 FA 相对 `totalAssets` 的规模 |
+| Builder leverage | **10x** | Builder FAs 的总 accountSize ≤ `sharesValue × 10` |
+
+`getMaxAccountSize()` 和 `builderAvailableFunded(builder)` 显示当前 limits。
+
+## Activation Fee（一次性）
+
+```
+fee = accountSize × drawdownBps × feeMultiplier / 1_000_000
+```
+
+`feeMultiplier = 120`（1.2x risk premium）是默认值。该参数可变：protocol admin 通过 `setFeeMultiplier()` 在 1.0x–2.0x 范围内设置。如果 `dailyDrawdownEnabled = true`，则有 20% discount。
+
+| accountSize | drawdown | dailyDD | Fee |
+|-------------|----------|---------|-----|
+| $5,000 | 5% | OFF | $300 |
+| $5,000 | 10% | OFF | $600 |
+| $5,000 | 10% | ON | $480 |
+| $10,000 | 25% | OFF | $3,000 |
+| $20,000 | 10% | OFF | $2,400 |
+
+Activation fee distribution：90% → LP vault，10% → protocol。Subscription fee 单独计算，并在下方分配。
+
+Builder 会将这笔金额加上自己的 margin，计入 trader 的 challenge price。
+
+## Subscription Fee
+
+```
+fee = accountSize × subscriptionFeeMultiplier / 10000
+```
+
+`subscriptionFeeMultiplier = 150` → 每月为 accountSize 的 1.5%。每 30 天收取一次。Trader 可以取消（`cancelSubscription`）— 在下一个 renewal zone 的 checkpoint，FA 会关闭。
+
+Distribution：85% builder，15% protocol。
+
+## Profit Withdrawal
+
+当 trader 请求 withdrawal（`requestWithdrawProfit`）时：
+
+<Steps>
+  <Step title="Profitable days">`profitableDaysCount ≥ 4`（4 天，每天增长 ≥ 1%）</Step>
+  <Step title="Subscription">Subscription active</Step>
+  <Step title="Profit over HWM">存在高于 high-water mark 的 profit</Step>
+  <Step title="Splits">80% trader，13% Vault，7% protocol</Step>
+  <Step title="Reset">Withdrawal 后，HWM 重置为 accountSize，profitable days 清零</Step>
+</Steps>
+
+## FA Closure
+
+触发条件（都会进入 `initiateClose()`）：
+
+- Trailing/daily drawdown breach
+- Max leverage breach
+- Trading an unauthorized perp
+- Renewal zone 中 subscription 未支付
+- Relayer 调用 `initiateCloseAdmin()`
+
+Closure 后，positions 会被 unwound，USDC 返回 Vault，Builder shares 解锁。

@@ -102,6 +102,36 @@
             "pages": ["ru/vault/index", "ru/vault/yield"]
           }
         ]
+      },
+      {
+        "language": "zh-Hans",
+        "groups": [
+          {
+            "group": "入门",
+            "pages": ["zh/index", "zh/offering"]
+          },
+          {
+            "group": "交易",
+            "pages": [
+              "zh/traders/index",
+              "zh/traders/rules",
+              "zh/traders/payouts"
+            ]
+          },
+          {
+            "group": "构建",
+            "pages": [
+              "zh/builders/index",
+              "zh/builders/onboarding",
+              "zh/builders/rules",
+              "zh/builders/fees"
+            ]
+          },
+          {
+            "group": "Vault",
+            "pages": ["zh/vault/index", "zh/vault/yield"]
+          }
+        ]
       }
     ]
   },

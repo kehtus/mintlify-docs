@@ -1,0 +1,33 @@
+---
+title: "面向 Trader"
+description: "无需 KYC 和人为规则，在 Hyperliquid 上获得资本"
+---
+
+> 在 Hyperliquid 上获得资本和强执行能力，无需 KYC 或人为规则。
+
+Proportion 让 trader 通过 Hyperliquid 上的 onchain funded account 获得资本。账户使用真实 Hyperliquid liquidity 交易，协议规则在链上执行。
+
+Funded account 是 full A-book structure：trader 用真实资本进行真实交易，每个阶段都可在链上验证。不同于市场上多数 prop firm，运行在 Proportion 上的 prop firm 以及协议本身都与 trader profit 对齐 — 它们的收入随着 trader 一起增长，而不是取代 trader 增长。
+
+<Tip>
+Trader 在协议规则内拥有自己的 profit share — 协议规则防止 prop firm 任意拒绝 payout。
+</Tip>
+
+## 如何获得 Funded Account
+
+Funded accounts 由运行在 Proportion 上的 prop firms 发放。每家公司可以有自己的方式：challenge、evaluation，或为已选中的 trader 直接 activation — 这是 prop firm 自己产品的一部分。
+
+FA 会激活到 trader 在 HyperEVM 上的 EVM address。在 profit withdrawal 之前，trader 不需要直接与合约交互；技术流程由协议操作处理。无需支付 gas。
+
+Activation 后，FA 属于 trader — 协议自身监控所有规则。
+
+## 章节
+
+<CardGroup cols={2}>
+  <Card title="Funded Account Rules" icon="shield-check" href="/zh/traders/rules">
+    协议执行哪些规则
+  </Card>
+  <Card title="Profit and Payouts" icon="wallet" href="/zh/traders/payouts">
+    如何提取 profit，以及 FA 何时关闭
+  </Card>
+</CardGroup>

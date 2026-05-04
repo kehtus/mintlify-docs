@@ -1,0 +1,61 @@
+---
+title: "Profit and Payouts"
+description: "Trader 如何提取 profit，以及 FA 何时关闭"
+---
+
+Profit 在三方之间分配。这是协议硬编码的规则，prop firm 不能修改。
+
+<CardGroup cols={3}>
+  <Card title="Trader" icon="user">
+    **80%**
+  </Card>
+  <Card title="Vault" icon="vault">
+    **13%**
+  </Card>
+  <Card title="Protocol" icon="building">
+    **7%**
+  </Card>
+</CardGroup>
+
+## Profit Withdrawal
+
+Withdrawal 条件：
+
+<Steps>
+  <Step title="4 profitable days">
+    累计 4 个 profitable days（每天增长 ≥ 1%）
+  </Step>
+  <Step title="Active subscription">
+    Subscription active
+  </Step>
+  <Step title="Profit over HWM">
+    存在高于 high-water mark 的 profit
+  </Step>
+</Steps>
+
+Withdrawal 会到达 trader 在 HyperEVM 上的 EVM address。Proportion 覆盖 withdrawal transaction 的 gas — trader 不需要支付。
+
+Withdrawal 后，floor 重置为 account size，交易继续。
+
+<Info>
+Trader 可以取消 subscription — 在下一个 renewal date，FA 会关闭。
+</Info>
+
+## FA Closure
+
+账户会在以下情况关闭：
+
+- Trailing / daily drawdown breach
+- Max leverage breach
+- Trading an unauthorized market
+- Unpaid subscription
+
+<Warning>
+Closure 时，capital 和所有 profit 返回 Vault。要获得自己的 profit share，trader 必须在 closure trigger 触发前提交 withdrawal request。
+</Warning>
+
+## 下一步
+
+<Card title="Vault" icon="vault" href="/zh/vault">
+  资本流向哪里，以及如何运作
+</Card>

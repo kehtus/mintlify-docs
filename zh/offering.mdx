@@ -1,0 +1,34 @@
+---
+title: "Proportion 提供什么"
+description: "Proportion 解决的问题，以及各方获得什么"
+---
+
+## Proportion 解决的问题
+
+- **传统 prop 中不透明的规则和 payout block** — 规则和 split 写入协议，payout 通过链上流程执行
+- **B-book 利益冲突** — Builder 和协议与 trader profit 对齐，而不是从 trader loss 中获利
+- **Counterparty risk** — funded account 是 non-custodial 的，协议规则防止 prop firm 任意拒绝 payout
+- **启动 prop firm 的高门槛** — Proportion 提供资本、风控执行和结算，Builder 不需要运行自己的合约栈
+- **链上资本碎片化** — 一个 Vault 统一协调流动性，而不是每家公司各自维护独立资金池
+- **DeFi 无法进入 prop-industry economics** — Vault shares 为 LP 提供可组合的基础资产
+
+## 各方获得什么
+
+<Tabs>
+  <Tab title="Trader">
+    - 无 KYC、无人为规则的资本访问
+    - 基于真实 Hyperliquid 流动性的 A-book execution — 真实资本上的真实交易
+    - 80% PnL 由协议硬编码
+    - FA 在协议规则内属于 trader；prop firm 不能任意阻止 payout
+  </Tab>
+  <Tab title="Builder">
+    - Funded account infrastructure：来自 Vault 的资本、链上风控执行和结算
+    - Builder leverage 10x：$10k deposit 可支持最高 $100k trader capital
+    - 三层收入：challenge margin、85% subscription fees、来自 pool 的 LP yield
+  </Tab>
+  <Tab title="LP">
+    - 来自生态的 yield：90% activation fees 和 13% trader profits
+    - 不需要选择 Builder 或 Trader — `sharePrice` 反映 Vault P&L，可上涨也可下跌
+    - 可组合 shares（未来可用于 DeFi integrations）
+  </Tab>
+</Tabs>

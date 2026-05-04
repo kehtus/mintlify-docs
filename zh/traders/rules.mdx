@@ -1,0 +1,31 @@
+---
+title: "Funded Account Rules"
+description: "Funded account 中允许什么，什么会导致 closure"
+---
+
+## Limits
+
+| Rule | Description | Violation |
+|------|-------------|-----------|
+| **Trailing drawdown** | 从峰值计算的 drawdown limit。Profit 每天一次锁入 floor | FA closure |
+| **Daily drawdown** | Daily limit，等于 trailing 的 50%。由 prop firm 在 activation 时开启 | FA closure |
+| **Max leverage** | 5x notional/equity | FA closure |
+| **Market whitelist** | 只能交易协议列表中的 liquid perps | FA closure |
+| **Subscription** | account size 的 1.5%/月 | FA closure |
+
+<Info>
+Activation 时，prop firm 设置：account size、drawdown %，以及是否启用 daily DD。
+</Info>
+
+## 允许什么
+
+| Activity | Status |
+|----------|--------|
+| Copy Trading | Allowed |
+| Bots & EAs | Allowed |
+| News Trading | Allowed |
+| Information-based Trading | Allowed |
+
+<Tip>
+本页没有禁止的内容都允许。Trading style、trade frequency、position size、overnight 或 weekend holding — 只要在列出的 limits 内，都不受限制。
+</Tip>

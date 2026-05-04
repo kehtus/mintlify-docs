@@ -1,0 +1,49 @@
+---
+title: "如何运作"
+description: "核心流动性合约 — flows、shares、limits"
+---
+
+Proportion 的核心是 Vault contract。它协调 LP deposits、funded-account financing、USDC custody、fees 和 profit distribution。协议中的每一笔 capital flow 都经过 Vault。
+
+## Flows
+
+<CardGroup cols={3}>
+  <Card title="FA Funding" icon="banknote">
+    根据 Builder 请求，Vault 分配 `accountSize`，并通过 HyperCore Spot 将 USDC 转入 FundedAccount
+  </Card>
+  <Card title="Fees" icon="coins">
+    Activation fees 和 trader profit share 进入 Vault，提高 `sharePrice`
+  </Card>
+  <Card title="Returns" icon="rotate-ccw">
+    FA 关闭时，principal 和 residual 返回 Vault
+  </Card>
+</CardGroup>
+
+## Shares and sharePrice
+
+LP 在 Vault 中的 position 由 shares 表示。累计 profit 会提高 `sharePrice`；yield 不需要单独 claim。
+
+```
+sharePrice = totalAssets / totalShares
+totalAssets = USDC on EVM + USDC allocated to active FAs
+```
+
+## Allocation Limits
+
+| Parameter | Value | What it limits |
+|-----------|-------|----------------|
+| Max utilization | **80%** | 分配给 active FAs 的 Vault 份额 |
+| Max single account | **10%** / $20k | 单个 FA 相对 `totalAssets` 的规模 |
+| Builder leverage | **10x** | Builder funding 相对 `sharesValue` 的最大倍数 |
+
+## Lock-Up
+
+没有 Builder role 的 LP 可以随时 withdraw shares。Builder shares 在其拥有 active FAs 时会被锁定。`withdrawableShares()` 显示可 withdrawal 的 shares 数量。
+
+## Governance
+
+Vault parameters（`feeMultiplier`、`MIN/MAX_ACCOUNT_SIZE`、`MIN/MAX_DRAWDOWN_BPS`、`BUILDER_LEVERAGE`、utilization、per-FA limits）由 admin 通过 setters 修改。
+
+<Card title="Yield and Risks" icon="trending-up" href="/zh/vault/yield">
+  LP yield 来自哪里，以及 Vault 有哪些风险
+</Card>

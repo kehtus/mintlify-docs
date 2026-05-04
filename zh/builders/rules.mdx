@@ -1,0 +1,51 @@
+---
+title: "Protocol Rules"
+description: "协议在链上执行的 funded-account rules"
+---
+
+协议自身执行所有 funded-account rules。Builder 不能放宽或绕过这些规则，只能在允许范围内选择参数。
+
+## 硬性规则
+
+所有账户共享的 hardcoded rules：
+
+| Rule | Value |
+|------|-------|
+| Max leverage | 5x notional/equity。触发 breach → positions close |
+| Profit split | 80% trader / 13% LP / 7% protocol |
+| Profitable days for withdrawal | 4 天，每天增长 ≥ 1% |
+| Checkpoint interval | 1 天 |
+| Subscription period | 30 天 |
+
+## Trailing Drawdown（基于 HWM）
+
+FA 使用 trailing floor：HWM 在每日 checkpoint 更新，trader profit 会在日末通过 floor 锁定。日内 floor 不会随着 PnL 跳动；如果当天收盘盈利，下一次 checkpoint 会将 floor 向上调整。
+
+```
+accountSize = $10k, drawdown = 10%
+Start:    HWM=$10k, floor=$9k
++$5k (checkpoint): HWM=$15k, floor=$13.5k
+-$2k ->    balance $13k < $13.5k -> close
+```
+
+Profit withdrawal 后，HWM 会重置为 accountSize。
+
+## Daily Drawdown（可选）
+
+由 Builder 在 activation 时开启。Daily limit = trailing drawdown 的 50%。
+
+| Trailing | Daily |
+|----------|-------|
+| 5% | 2.5% |
+| 10% | 5% |
+| 25% | 12.5% |
+
+在每个 checkpoint 检查，也可通过 `initiateClose()` permissionlessly 触发。开启 daily drawdown 可获得 20% activation fee discount。
+
+## Perp Whitelist
+
+只能交易协议 whitelist 中的 liquid perps。Keeper 在链下监控 positions；发现 unauthorized asset 时调用 `initiateClose()`。合约会自行验证违规是否真实发生，并在确认后关闭账户。
+
+## 这对 Builder 意味着什么
+
+Builder 可以在链下实现自己的附加规则（profit target、minimum trading days、更严格的 daily limit），作为 challenge 和 evaluation 的一部分。当 trader 通过 Builder 的标准后，Builder 通过 SDK 打开 funded account；从那一刻起，协议按自己的规则保护资本。

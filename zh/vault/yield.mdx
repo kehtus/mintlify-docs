@@ -1,0 +1,50 @@
+---
+title: "Yield and Risks"
+description: "LP yield 的来源，以及将资本放入 Vault 的风险"
+---
+
+## Yield Sources
+
+<CardGroup cols={3}>
+  <Card title="Activation fees" icon="percent">
+    每次 FA issuance 的 **90%** 进入 Vault
+  </Card>
+  <Card title="Profit split" icon="chart-line">
+    Trader withdrawal 时 profit 的 **13%**
+  </Card>
+  <Card title="Unused activation-fee buffer" icon="shield-check">
+    已收取 activation fees 中未被使用的部分留在 Vault
+  </Card>
+</CardGroup>
+
+<Info>
+Subscription fees 不进入 Vault — 它们是 Builder revenue（85%）和 protocol revenue（15%）。
+</Info>
+
+## Risks
+
+将资本放入 Vault 会带来多类风险，这些风险会影响 share value 和 LP yield。
+
+<AccordionGroup>
+  <Accordion title="Correlated drawdowns" icon="waves">
+    Activation fee 旨在改善 LP 在 isolated events 中的 expected value。当大量 funded accounts 同时发生 breach closures 时，aggregate losses 可能超过 pool 已累积的 buffer，从而降低 `sharePrice`，甚至低于 deposit 的 nominal value。
+  </Accordion>
+  <Accordion title="Issuance quality" icon="users">
+    LP 不参与 trader selection 或 activation parameter 决策；这些决策由 Builders 做出。任何 Builder 的 underwriting quality 下降，都会按其 active FA issuance 份额影响 Vault yield。
+  </Accordion>
+  <Accordion title="Smart-contract risk" icon="file-code">
+    MainVault 和 FundedAccount contracts 面临 critical vulnerability risk。Codebase 已经过 independent audit，但 residual risk 无法完全消除。
+  </Accordion>
+  <Accordion title="Dependency on Hyperliquid and HyperCore" icon="link">
+    Vault operations 依赖 HyperCore data（balances、prices）以及 Hyperliquid spot/perp infrastructure。这些组件的故障或异常行为会反映到 Vault capital 上。
+  </Accordion>
+  <Accordion title="Price slippage during liquidation" icon="zap">
+    在极端波动中，trader position 可能在协议发起 FA closure 前实现低于 trailing floor 的损失。Activation fee 中包含的 premium 可部分吸收该差额，但不保证完全覆盖。
+  </Accordion>
+  <Accordion title="Limited liquidity for builders" icon="lock">
+    拥有 active builder role 的参与者，其 shares 会在 active funded accounts 存在期间被锁定。只有所有 FAs 关闭后，才可以完全 withdrawal。
+  </Accordion>
+  <Accordion title="Governance risk" icon="settings">
+    Vault configuration（`feeMultiplier`、allocation limits、drawdown parameters）可通过 administrative functions 修改。
+  </Accordion>
+</AccordionGroup>

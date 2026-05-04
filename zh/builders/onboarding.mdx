@@ -1,0 +1,41 @@
+---
+title: "Onboarding"
+description: "如何成为 Builder 并激活第一个 funded account"
+---
+
+<Steps>
+  <Step title="连接钱包">
+    HyperEVM 上的任意 EVM wallet
+  </Step>
+  <Step title="向 LP vault 存入资金">
+    最低 $10,000 USDC。Builder 获得 shares，并成为协议 LP
+  </Step>
+  <Step title="注册">
+    `registerBuilder()` — 激活 funding quota（`sharesValue` 的 10x）
+  </Step>
+  <Step title="激活 funded accounts">
+    通过 SDK 为已选中的 traders 激活
+  </Step>
+</Steps>
+
+## 双重角色和 Skin in the Game
+
+- Builder 同时是 product operator（FA issuance、challenge monetization）和 LP（shares 作用于整个 pool）
+- Builder 拥有 active FAs 时，shares 会被锁定
+- Builder leverage 10x：所有 active FAs 的总 accountSize ≤ `sharesValue × 10`
+- 如果 withdrawal 后 shares value 低于最低值（$10k），Builder 会自动 deactivate（`BuilderDeactivated`），无法激活新的 FA
+- Builder 每次 activation 都支付 activation fee（对 LP vault 的风险补偿）
+
+<Warning>
+$10k+ deposit 不是会原样返还的抵押品。它是 working LP capital：从整个协议的 activations 和 trader profits 中获得收益；触及限制的 trader drawdown 会降低 pool yield。收益和损失都按 Builder 在 vault 中的份额成比例承担。
+</Warning>
+
+## Trader Onboarding
+
+Builder 激活 FA 时，该账户会绑定到 trader 在 HyperEVM 上的 EVM address。Trader 不需要在钱包中持有 HYPE：协议覆盖所有操作的 gas，包括 profit withdrawal。理论上，trader 在提取资金前可以完全不直接操作链上基础设施；技术流程由协议执行。
+
+这简化了 Builder 的产品：trader 通过 Builder storefront 支付 challenge，完成 evaluation，然后获得 FA — 不需要理解 gas、wallet 或 signing。
+
+<Info>
+Onboarding 目前处于 whitelist early-access。请通过 Telegram 联系团队：[@keysigner](https://t.me/keysigner)。
+</Info>
