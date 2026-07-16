@@ -51,6 +51,10 @@
             "pages": ["index", "offering"]
           },
           {
+            "group": "Security",
+            "pages": ["security"]
+          },
+          {
             "group": "Trade",
             "pages": [
               "traders/index",
@@ -145,7 +149,7 @@
       {
         "label": "Security Audit",
         "icon": "shield-check",
-        "href": "https://beosin.com/audits/Proportion_202603161420.pdf"
+        "href": "/security"
       }
     ],
     "primary": {

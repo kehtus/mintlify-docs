@@ -1,0 +1,38 @@
+---
+title: "Security"
+description: "Security audits, code review practices, and administrative safeguards"
+---
+
+Proportion Protocol has undergone a security audit conducted by Beosin. The review covered the protocol's smart contracts, role and permission system, administrative functions, and key flows involving user funds.
+
+Additional independent security audits are planned.
+
+**Audit report:** [View the Beosin audit report](https://beosin.com/audits/Proportion_202603161420.pdf)
+
+**Audit date:** March 16, 2026
+
+## Code Review
+
+Security does not end with a single audit. The Proportion Protocol codebase is continuously reviewed through manual analysis, static analysis, fuzz testing, invariant testing, and specialized AI-powered security tools.
+
+Modern AI models can identify vulnerability patterns, analyze cross-contract interactions, map potential attack paths, and generate targeted tests. As stronger models and security tools become available, the codebase is subjected to additional rounds of analysis.
+
+AI is used as an additional layer of defense, not as a replacement for independent audits or manual review of critical business logic.
+
+## Administrative Security
+
+Critical administrative actions are protected by a 3-of-5 multisig and timelock mechanisms.
+
+At least three signatures are required to execute a privileged operation. A single compromised key cannot unilaterally change protocol parameters or perform a critical administrative action.
+
+Timelocks introduce a delay between the scheduling and execution of critical administrative transactions, allowing potentially harmful changes to be detected before they take effect.
+
+Setter functions enforce predefined parameter bounds directly at the smart-contract level. Even an authorized administrative transaction cannot set values outside the permitted ranges.
+
+## Key Management
+
+Smart-contract vulnerabilities are only one source of risk. Key compromise, social engineering, signer error, and insecure administrative processes remain among the most serious attack vectors in DeFi.
+
+For this reason, Proportion Protocol's architecture includes separation of privileges, multisig authorization, timelocks, and on-chain restrictions on administrative actions.
+
+No audit, AI-based analysis, or individual security mechanism can guarantee the complete absence of vulnerabilities. Proportion Protocol's security model therefore relies on multiple layers of independent review, automated analysis, and strict limits on administrative authority.
