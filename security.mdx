@@ -19,11 +19,22 @@ AI is used as an additional layer of defense, not as a replacement for independe
 
 ## Administrative Security
 
-Critical administrative actions are protected by a 3-of-5 multisig and timelock mechanisms.
+Critical administrative actions are protected by a 3-of-5 multisig and timelocks.
 
 At least three signatures are required to execute a privileged operation. A single compromised key cannot unilaterally change protocol parameters or perform a critical administrative action.
 
 Timelocks introduce a delay between the scheduling and execution of critical administrative transactions, allowing potentially harmful changes to be detected before they take effect.
+
+### Production Timelock Schedule
+
+| Minimum delay | Changes covered |
+| --- | --- |
+| **72 hours** | `MainVault` and `ChallengeVault` implementation upgrades; `transferOwnership` and other governance-control changes; migrations that replace a core Vault implementation. |
+| **48 hours** | `queueFactoryChange` / `executeFactoryChange` for funded accounts; `proposeFactory` / `setFactory` for Challenge checkout; trusted integration changes such as `setRelayer`, `setForwarder`, `setMainVault`, and `setChallengeVault`; `setRiskConfig`, `setGlobalConfig`, market additions, leverage increases, and other changes that increase protocol risk. |
+
+<Note>
+  Defensive actions that reduce risk may be executed immediately. These include pausing new activations or purchases, canceling a queued change, disabling checkout, removing a market, and lowering leverage. Unpausing or increasing risk remains subject to the applicable timelock.
+</Note>
 
 Setter functions enforce predefined parameter bounds directly at the smart-contract level. Even an authorized administrative transaction cannot set values outside the permitted ranges.
 

@@ -85,6 +85,10 @@
             "pages": ["ru/index", "ru/offering"]
           },
           {
+            "group": "Безопасность",
+            "pages": ["ru/security"]
+          },
+          {
             "group": "Trade",
             "pages": [
               "ru/traders/index",
@@ -147,7 +151,7 @@
   "navbar": {
     "links": [
       {
-        "label": "Security Audit",
+        "label": "Security",
         "icon": "shield-check",
         "href": "/security"
       }
