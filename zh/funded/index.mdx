@@ -1,9 +1,23 @@
 ---
-title: "Funded 账户"
-description: "受合约规则约束的隔离 Hypercore 资本"
+title: "面向交易员"
+description: "合约规则下的 Hyperliquid 资本"
 ---
 
-`FundedAccount` 是 HyperEVM 上的隔离克隆。MainVault 把本金 `A` 存入 Hypercore。交易经由 API 钱包。Exchange Proxy 为 Hyperliquid 签名。交易员从不持有该密钥。
+> 真实的 Hyperliquid 成交。规则和派付写在合约里，不在公司后台。
+
+交易员获得 Hyperliquid 上的链上 funded 账户：深度流动性，没有公司托管登录，激活后没有隐藏条款。成交是真实资本，走真实的 Hyperliquid 订单簿。每一步都可以核验。
+
+与托管式 prop firm 不同，这里的普通利润由交易员和 Builder 按锁定的 `builderPoolBps` 分成。Vault 和协议不拿其中任何一部分。他们赚溢价、订阅和被没收盈余，而不是靠拒绝派付。
+
+<Tip>
+合约已经入账的利润不属于公司。公司不能在协议规则之外随意拒绝这笔派付。
+</Tip>
+
+## 如何获得账户
+
+由 Builder 开户，或交易员自己调用 `activateFunded`（自费）。Builder 在协议外如何筛选（评估、自己的店铺）是他们的产品，不是协议。
+
+账户绑定交易员的 HyperEVM 地址。交易走 API 钱包。Exchange Proxy 为 Hyperliquid 签名。交易员从不持有该密钥。
 
 | | 赞助 | 自费 |
 |---|---|---|
@@ -13,23 +27,25 @@ description: "受合约规则约束的隔离 Hypercore 资本"
 | 时间 | 30 天订阅，可续期 | 预付 1 / 7 / 30 天 |
 | 普通利润 | 按 `builderPoolBps` 分成 | 同一套公式，两个桶都给交易员 |
 
-自费就是调用方等于交易员时的 `activateFunded`。生命周期下限相同。没有日下限。
+生命周期下限相同。自费没有日下限，盘中路径更宽。
 
 当前 MainVault 名单是唯一市场名单。编辑不会关闭账户。名单外的新开仓会被拒绝。已撤市场上的剩余仓位会被平掉。
 
 ```
-activate → Active → trade
-                 → withdraw profit (optional)
-                 → close → settle → claim
+激活 → Active → 交易
+              → 提取利润（可选）
+              → 关闭 → 结算 → 领取
 ```
 
-关闭只有一条路径。克隆快照 Core 交易资本 `Q`。MainVault 套用冻结记录并记入领取账本。
+关闭只有一条路径。克隆快照实际 Core 交易资本 `Q`。MainVault 套用冻结记录，并记入领取账本。
+
+## 章节
 
 <CardGroup cols={2}>
-  <Card title="规则" icon="shield-check" href="/zh/funded/rules">
-    下限、TARGET、白名单、时间
+  <Card title="账户规则" icon="shield-check" href="/zh/funded/rules">
+    协议强制执行什么
   </Card>
-  <Card title="派付" icon="wallet" href="/zh/funded/payouts">
-    提取、关闭、领取
+  <Card title="利润与派付" icon="wallet" href="/zh/funded/payouts">
+    如何提取利润，账户何时关闭
   </Card>
 </CardGroup>

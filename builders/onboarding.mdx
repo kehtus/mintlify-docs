@@ -1,24 +1,29 @@
 ---
-title: "Activation"
+title: "Onboarding"
 description: "How to open the first funded account"
 ---
 
 <Steps>
-  <Step title="Activate">
-    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`. You pay `R + P`. The vault allocates `A`. The caller becomes `record.builder`. Sponsored `feeBps` must be 200.
+  <Step title="Wallet">
+    Any EVM wallet on HyperEVM.
+  </Step>
+  <Step title="Activation">
+    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`. You pay `R + P`. The vault places principal `A`. The caller becomes `record.builder`. Sponsored `feeBps` is 200 only.
   </Step>
 </Steps>
 
-If `trader` is you, that is self-funded: same call, tier 200 / 400 / 800. No vault deposit on either path.
+If `trader` is you, the path is self-funded: same call, tiers 200 / 400 / 800. Neither path needs a vault deposit.
 
-Gasless goes through the ERC-2771 Forwarder. The signer pays USDC and becomes the builder.
+There are no delegates. Gasless goes through the ERC-2771 Forwarder: the signer pays USDC and becomes the builder.
 
 `proposedReferrer` binds the caller, not the trader.
 
+Once the account is open, it belongs to the trader's EVM address. Until a withdrawal or a voluntary close, the trader does not have to send transactions: risk sync, checkpoint and flattening are done by the protocol. Withdrawal, claim, subscription cancel and voluntary close need the trader's signature.
+
 <Warning>
-An LP deposit is a separate role. Shares do not unlock activation. They take residual vault income and can fall.
+If you also deposit USDC as an LP, that is a separate role. Shares do not open or cap activation. They take residual vault income and can fall.
 </Warning>
 
 <Info>
-Early access. Telegram: [@keysigner](https://t.me/keysigner).
+Onboarding is early-access. Write the team on Telegram: [@keysigner](https://t.me/keysigner).
 </Info>

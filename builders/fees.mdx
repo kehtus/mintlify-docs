@@ -1,31 +1,33 @@
 ---
-title: "Parameters"
-description: "What you choose at activation, and what R + P costs"
+title: "Parameters and fees"
+description: "What you pick at activation, and how R + P is calculated"
 ---
 
-## What you choose
+## What the builder picks
 
-| Parameter | Band | Role |
+| Parameter | Corridor | What it does |
 |---|---|---|
-| `trader` | any address | Clone owner. If `trader` is the caller, the path is self-funded |
+| `trader` | any address | Who the account is opened for. If that is the caller, the path is self-funded |
 | `accountSize` | $10-$20,000 | Principal `A` |
 | `drawdownBps` | 5%-25% | Trailing `D`. Sets reserve `R` |
-| `builderPoolBps` | 10%-70% | Ordinary builder share |
+| `builderPoolBps` | 10%-70% | Builder share of ordinary profit |
 | `targetProfit` | ≥ 0 | Absolute TARGET. `0` disables |
-| `feeBps` | 200 / 400 / 800 | Sponsored must pass **200**. Self-funded picks the term |
+| `feeBps` | 200 / 400 / 800 | Sponsored: **200** only. Self-funded picks the term |
 | `proposedReferrer` | optional | Binds the caller |
 
-Daily drawdown follows the path: sponsored on, self-funded off.
+Daily drawdown is not a parameter. Sponsored has it. Self-funded does not.
+
+`MIN/MAX_ACCOUNT_SIZE` and `MIN/MAX_DRAWDOWN_BPS` can move through `setRiskConfig`.
 
 ## Activation charge
 
 ```
-R = floor(A × D / 10_000)     // builder-owned reserve
-P = ceil(A × F / 10_000)      // premium, a share of A, not of R
-activationCharge = R + P
+R = floor(A × D / 10_000)     // builder reserve
+P = ceil(A × F / 10_000)      // premium from A, not from R
+charge = R + P
 ```
 
-Raising `D` costs more refundable reserve. It does not raise the premium.
+Raising `D` means posting more refundable reserve. Premium does not grow with it.
 
 | Path | `F` | Term |
 |---|---|---|
@@ -35,22 +37,24 @@ Raising `D` costs more refundable reserve. It does not raise the premium.
 | Self-funded T3 | 8% | 30 days prepaid |
 
 ```
-protocolPremium = floor(P × 50%)
-vaultPremium    = P − protocolPremium
+protocol premium = floor(P × 50%)
+vault premium    = P − protocol premium
 ```
 
-The caller pays `R + P` in USDC. MainVault deposits exactly `A`.
+The caller pays `R + P` in USDC. MainVault places exactly `A` as principal.
 
 Example: `A = $1,000`, `D = 10%`, sponsored 2% → `R = $100`, `P = $20`, charge `$120`. Vault and protocol take `$10` of premium each. Reserve `$100`. Allocation `$1,000`.
 
 ## Allocation limits
 
-| Limit | Default | Meaning |
-|---|---|---|
-| Max utilization | 80% of NAV | Share of vault in active accounts |
-| Max single account | 10% of NAV, cap $20k | One `A` |
+A vault deposit is not required to activate. The vault itself caps volume:
 
-No activation until NAV reaches the bootstrap floor ($100 at defaults). Deposits still work below that.
+| Limit | Default | What it cuts |
+|---|---|---|
+| Max utilization | 80% of NAV | Vault share in active accounts |
+| Single account | 10% of NAV, cap $20k | One `A` |
+
+At defaults you cannot activate until NAV is at least $100. Deposits below that still work.
 
 ## Subscription
 
@@ -58,12 +62,14 @@ No activation until NAV reaches the bootstrap floor ($100 at defaults). Deposits
 subscriptionFee = ceil_to_1_USDC(A × 1.5%)
 ```
 
-50/50 vault / protocol. Builder gets 0.
+Split 50/50 vault / protocol. Builder gets 0.
 
-Sponsored accounts can renew from Core equity in the last 3 days if the fee does not breach floors. Self-funded uses `extendRental`: same tiers, no extra `R`, horizon now + 30 days.
+Sponsored accounts renew from Core equity in the last 3 days of the period, if the fee can be taken without breaching floors. Self-funded does not renew that way. Extra time is `extendRental` (same tiers, no new `R`, horizon now + 30 days).
 
 ## Profit and close
 
-Live withdrawal and non-forfeiting close use `builderPoolBps`. Forfeiting close (`Drawdown`, `TraderRequested`) zeros unwithdrawn `Q − A` and splits it 40 / 20 / LP residual. Unused `R` still returns to `reserveRecipient`.
+Live withdrawal and a non-forfeiting close use `builderPoolBps`. A forfeiting close (`Drawdown`, `TraderRequested`) zeros unwithdrawn `Q − A` and splits that surplus 40 / 20 / LP residual. Unused `R` returns to `reserveRecipient`.
 
-Admin close keeps the ordinary split.
+Admin close keeps the ordinary split. That is break-glass, not a forfeit.
+
+Hyperliquid builder-code fees from a funded account go to `protocolFeeReceiver`, not the builder.

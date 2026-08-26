@@ -1,28 +1,28 @@
 ---
-title: "Payouts"
-description: "Withdrawals, close and claims"
+title: "Profit and payouts"
+description: "How profit is withdrawn and when the account closes"
 ---
 
-Ordinary profit is a two-way split. Vault and protocol take none of it.
+Ordinary profit is a two-way split. Vault and protocol take none of it. The split is pinned at activation and the firm cannot change it later.
 
 ```
 builderShare = floor(profit × builderPoolBps / 10_000)
 traderShare  = profit − builderShare
 ```
 
-`builderPoolBps` is pinned at activation, 10%-70%. 20/80 is a common product term, not a protocol constant.
+`builderPoolBps` is 10%-70%. 20/80 is a common product term, not a protocol constant.
 
 On self-funded both buckets hit the same address. The trader gets 100%.
 
-Protocol and LPs earn from premium, subscription and forfeited surplus. Not from a keep-profit withdrawal.
+Protocol and LPs earn from activation premium, subscription and forfeited surplus. Not from a keep-profit withdrawal.
 
 ## Withdraw profit
 
-Profit is `currentEquity − A`. Not high-water mark.
+Profit is `currentEquity − A`. High-water mark is not the basis.
 
 All of this must hold:
 
-- Active, term still live
+- account Active, term still live
 - no pending trader-close intent
 - TARGET not reached
 - profit at least $1
@@ -31,20 +31,24 @@ All of this must hold:
 
 Then either:
 
-- **3** profitable checkpoint days (equity grew at least **0.70%** vs the previous checkpoint), or
-- profit **≥ 3% of `A`**
+- 3 profitable checkpoint days (equity grew at least 0.70% vs the previous checkpoint)
+- or immediately: profit ≥ 3% of `A`
 
-The request snapshots the whole profit and bridges Core → EVM. `claimWithdrawal` then pays the split: trader residual from the clone, builder share to the pull ledger.
+The request snapshots the whole profit and bridges Core → EVM. After arrival, `claimWithdrawal` pays the ordinary split: trader residual from the clone, builder share to the pull ledger.
 
-After a proven claim, peaks reset to `A`. A rejected Core send can be cancelled. Stored peaks do not weaken.
+After a proven claim, peaks reset to `A` and the profitable-day streak restarts. A rejected Core send can be cancelled. Stored peaks do not weaken.
 
 On a one-day self-funded term the first checkpoint is at expiry. In-term withdrawal is the 3% path only.
+
+<Info>
+On a sponsored account the owner can cancel the subscription. Close happens at the next qualifying checkpoint and keeps the ordinary split.
+</Info>
 
 ## Close
 
 One reason, written once. Floors decide when. They are not a fee. Settlement uses snapshotted `Q` only.
 
-| Reason | Unwithdrawn `max(Q − A, 0)` |
+| Reason | Unwithdrawn close profit `max(Q − A, 0)` |
 |---|---|
 | Drawdown | Forfeited |
 | TraderRequested | Forfeited |
@@ -53,7 +57,7 @@ One reason, written once. Floors decide when. They are not a fee. Settlement use
 | Subscription cancelled (sponsored) | Ordinary split |
 | Admin | Ordinary split |
 
-Profit already in a pending withdrawal stays vested. It is never mixed into `Q`. Even on a forfeiting close that piece still splits by `builderPoolBps`.
+Profit already in a pending withdrawal stays vested. It never mixes into `Q`. Even on a forfeiting close that piece still splits by ordinary `builderPoolBps`.
 
 ### Forfeited surplus
 
@@ -64,13 +68,13 @@ vault / LP = residual
 trader     = 0
 ```
 
-Unused `R` returns to `reserveRecipient`. Direct sponsor: the builder. Self-funded: the trader. Only actual principal loss consumes reserve.
+Unused reserve returns to `reserveRecipient`. Direct sponsor: the builder. Self-funded: the trader. Only actual principal loss consumes reserve.
 
 ### Voluntary close
 
-A flat owner can request close. That is intent, not the reason. After the proxy drains positions and orders, the relayer commits `TraderRequested`. Withdraw and claim first if you still can.
+A flat owner can request close. That is intent, not the reason. After the proxy drains positions and orders, the relayer commits `TraderRequested`. If profit can still be withdrawn, do that first.
 
-## Settlement
+## Settlement and claims
 
 ```
 principalLoss   = max(A − Q, 0)
@@ -83,7 +87,7 @@ Settlement credits fixed recipients. It does not push USDC.
 
 Anyone can call `claimPayout(recipient)`. Funds go only to that address. Several accounts can aggregate on one recipient.
 
-Vault share of premium, subscription and forfeited surplus stays in NAV. It does not enter the ledger.
+The vault share of premium, subscription and forfeited surplus stays in NAV. It does not enter the ledger.
 
 <Warning>
 A forfeiting close zeros unwithdrawn close profit. Withdraw and claim first if the account is still eligible.

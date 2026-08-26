@@ -1,60 +1,64 @@
 ---
-title: "MainVault"
-description: "Deposits, allocation, conservative NAV"
+title: "How it works"
+description: "The central liquidity contract: flows, shares, limits"
 ---
 
-MainVault takes LP deposits, allocates principal to funded accounts, books builder reserve and settles close.
+The center of Proportion is the MainVault contract. LP deposits, funded-account principal, builder reserve accounting and the single close path all meet here. Anything that moves capital in the system goes through the vault.
+
+## Flows
 
 <CardGroup cols={3}>
-  <Card title="Allocate" icon="banknote">
-    At activation the vault deposits `A` to Hypercore. The caller pays `R + P`
+  <Card title="Funding" icon="banknote">
+    On activation the vault places principal `A` on Hypercore. The caller pays `R + P`
   </Card>
-  <Card title="Book" icon="coins">
-    `R` is an active builder liability. Vault-side premium and subscription stay in NAV
+  <Card title="Fees" icon="coins">
+    Half of the premium and half of subscription stay in NAV and move `sharePrice`
   </Card>
-  <Card title="Settle" icon="rotate-ccw">
-    Close pulls snapshotted `Q`, unused reserve and attributed claims. Unattributed EVM remainder returns to the vault
+  <Card title="Returns" icon="rotate-ccw">
+    Close takes the snapshot `Q`, unused reserve and attributed claims. Unattributed EVM remainder returns to the vault
   </Card>
 </CardGroup>
 
 ## Conservative NAV
 
+An LP's share is represented by vault shares. Accrued vault income lifts `sharePrice`. You do not claim it separately.
+
 ```
-grossAssets = EVM USDC + totalAllocated
+grossAssets = USDC on EVM + totalAllocated
 
-totalAssets = grossAssets
-            − active builder reserve
-            − claimable reserve refunds
-            − claimable payouts
+NAV = grossAssets
+    − active builder reserve
+    − claimable reserve refunds
+    − claimable payouts
 
-sharePrice  = totalAssets / totalShares     // 1 USDC if no shares
+sharePrice = NAV / share count
 ```
 
-Reserve, unpaid refunds and unpaid claims do not lift share price. Deposits and exits use this on-chain state until close realizes `Q`.
+Reserve, unpaid refunds and unpaid payouts do not lift share price. Until close locks `Q`, deposits and exits use this on-chain NAV.
 
-## Limits
+## Allocation limits
 
-| Parameter | Default | What it limits |
+| Parameter | Default | What it caps |
 |---|---|---|
-| Max utilization | **80%** | `totalAllocated` vs NAV |
-| Max single account | **10%** / $20k | One `A` |
-| Account size | $10-$20,000 | Per-account `A` |
+| Max utilization | 80% | `totalAllocated` vs NAV |
+| Single account | 10% / $20k | One `A` |
+| Account size | $10-$20,000 | One `A` |
 | Drawdown | 5%-25% | Trailing `D` |
 
-Activation also needs NAV ≥ $100 at defaults (`minAccountSize / maxSingleAccountBps`). Deposits work below that.
+Activation also needs NAV ≥ $100 at defaults (`minAccountSize / maxSingleAccountBps`). Deposits below that still work.
 
 ## Exits
 
-`withdraw(shares)` is immediate. `requestWithdraw` / `executeWithdraw` is an optional 1-day cooldown on the same accounting.
+Ordinary `withdraw(shares)` is immediate. `requestWithdraw` / `executeWithdraw` is an optional 1-day pause on the same accounting.
 
-Exits spend only EVM cash above reserve, refund and payout liabilities. Utilization must stay intact. Open funded accounts do not lock shares.
+You can only spend EVM cash above reserve, refunds and payouts. Utilization after the exit must stay inside the cap. Open funded accounts do not lock shares.
 
-`deposit(amount, proposedReferrer)` can bind the LP referral on first touch. `depositFor` never binds.
+`deposit(amount, proposedReferrer)` can bind an LP referral on first touch. `depositFor` never binds.
 
 ## Governance
 
-Risk bands, utilization and caps move through `setRiskConfig`. Fee tiers and 50/50 splits are constants.
+Account-size, drawdown and utilization corridors move through `setRiskConfig`. Fee tiers and the 50/50 splits are constants.
 
-<Card title="Yield" icon="trending-up" href="/vault/yield">
-  Where vault income comes from, and what can cut share price
+<Card title="Yield and risks" icon="trending-up" href="/vault/yield">
+  Where LP yield comes from, and what can hit the vault
 </Card>

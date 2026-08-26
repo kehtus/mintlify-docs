@@ -1,28 +1,38 @@
 ---
-title: "Roles"
-description: "What each side gets from the contracts"
+title: "What we offer"
+description: "What the protocol solves, and what each side gets"
 ---
 
-A funding protocol that gives market exposure to the trader and to the prop firm, on clear rules.
+## What it solves
 
-Floors, splits and claims are contract state. Capital sits in an isolated clone, not a firm demo. One vault, one risk path, one settlement. Vault income is residual and can be zero.
+- **Opaque rules and blocked payouts.** Floors, splits and claims live in the contract. A firm cannot deny a payout the protocol already credited.
+- **Custodial "funded" logins.** Capital sits in an isolated clone, not a firm demo.
+- **Every firm writing its own engine.** One vault, one risk path, one settlement.
+- **Fragmented capital.** One MainVault instead of a pool per program.
+- **Yield sold as APY.** Vault income is residual and can be zero.
+
+Vault and protocol do not take ordinary trader profit. They earn from activation premium, subscription and forfeited surplus at close.
+
+## What each side gets
 
 <Tabs>
   <Tab title="Trader">
-    - Isolated FundedAccount on Hypercore. Whitelisted perps.
-    - A builder opens it, or you self-fund.
-    - Ordinary profit splits by `builderPoolBps` (10-70%). Self-funded: both buckets go to you.
-    - The firm cannot rewrite the floor or deny a credited payout.
+    - Isolated FundedAccount on Hypercore, live whitelist markets
+    - Real fills on real Hyperliquid capital
+    - A builder opens the account, or you self-fund
+    - Ordinary profit splits by `builderPoolBps` (10-70%). 20/80 is common. Self-funded: both buckets go to you
+    - The firm cannot rewrite the floor or deny a credited payout
   </Tab>
   <Tab title="Builder">
-    - Your traders, your terms, your brand.
-    - Pay reserve `R` plus premium `P`. Unused reserve returns at close.
-    - Ordinary share is `builderPoolBps`. Forfeiting close: 40% of `Q − A`.
-    - Anyone with USDC for `R + P` can open an account. No vault deposit. `builder` is whoever paid.
+    - Your traders, your terms, your brand. You stop building the capital and risk stack
+    - Pay reserve `R` plus premium `P`. Unused reserve returns at close
+    - Ordinary share is `builderPoolBps`. Forfeiting close: 40% of actual `Q − A`
+    - Anyone with USDC for `R + P` can open an account. No vault deposit
   </Tab>
   <Tab title="LP">
-    - Deposit USDC into MainVault. Shares track conservative NAV.
-    - Income: 50% of premium, 50% of subscription, residual forfeited surplus.
-    - Unused `R` is not yours. Yield is not fixed.
+    - Deposit USDC into MainVault. Shares track conservative NAV
+    - Income: 50% of activation premium, 50% of subscription, residual forfeited surplus
+    - LPs do not take ordinary trader / builder profit. Unused `R` is not theirs
+    - Yield is not fixed
   </Tab>
 </Tabs>

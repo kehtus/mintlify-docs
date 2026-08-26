@@ -1,29 +1,41 @@
 ---
-title: "Builder"
-description: "你写条款。合约执行条款。"
+title: "面向 Builder"
+description: "在 Hyperliquid 上运行 prop 产品所需的资本与基础设施"
 ---
 
-靠资助交易员赚钱，而不必自己搭整套栈。
+> 你做产品。Proportion 提供 funded 层：资本，开箱即用。
 
-你支付准备金 `R` 加溢价 `P`。MainVault 拨付本金 `A`，并走一条关闭路径。筛选、品牌与协议外定价仍归你。
+对 Builder 来说，funded 账户是 prop firm 里最吃资本、也最吃基础设施的部分。Proportion 把它做成服务：资本、链上风控引擎、结算。筛选、品牌、营销和协议外定价仍归你。
 
-`builder` 就是支付 `R + P` 的人。任何有 USDC 支付激活费用的人都可以为自己或他人开户。不需要 vault 存款。
+Builder 向协议购买资本：支付准备金 `R` 加溢价 `P`。未使用的准备金在关闭时退回。`builder` 就是付款人。没有登记册。激活不需要 vault 存款。任何有 USDC 支付 `R + P` 的钱包都可以为自己或他人开户。
+
+界限很简单。`activateFunded` 之前都是你的。激活之后，由协议保护资本。
 
 <Warning>
-来自 funded 账户的 Hyperliquid builder-code 费用进入 `protocolFeeReceiver`，不是 Builder。
+funded 账户产生的 Hyperliquid builder-code 费用进入 `protocolFeeReceiver`，不是 Builder。
 </Warning>
 
-## 收益
+## 协议提供什么
+
+| Builder 层 | 协议层 |
+|---|---|
+| 筛选与品牌 | 来自 MainVault 的本金 |
+| 协议外项目定价 | 下限、TARGET、当前白名单 |
+| 你如何找到交易员 | 准备金退还、普通分成、被没收盈余 |
+
+funded 账户是带本金 `A`、准备金 `R` 和自动风控的隔离克隆。在协议规则内，账户属于交易员。
+
+## Builder 损益
 
 <CardGroup cols={2}>
   <Card title="未使用的准备金" icon="shield">
-    `R` 是你的。本金亏损按 1:1 消耗。其余退回
+    `R` 是你的。实际本金亏损按 1:1 消耗。其余退回
   </Card>
   <Card title="普通利润" icon="split">
     保留利润提取与非没收性关闭中的 `builderPoolBps`（10-70%）
   </Card>
   <Card title="被没收的盈余" icon="percent">
-    Drawdown 或 TraderRequested 之后，`Q − A` 的 40%
+    Drawdown 或 TraderRequested 之后，实际 `Q − A` 的 40%
   </Card>
   <Card title="LP shares" icon="trending-up">
     可选。同样的残值 vault 收入，同样的亏损。激活不需要 shares
@@ -32,16 +44,20 @@ description: "你写条款。合约执行条款。"
 
 Builder 不拿订阅费。订阅按 50/50 分给 vault / 协议。
 
-规模由 vault 限制：利用率 80%，单账户最多 NAV 的 10%。第一损失是准备金 `R`。
+第一损失是准备金 `R`，不是第二笔 vault 存款。规模由 vault 限制：利用率 80%，单账户最多 NAV 的 10%。
+
+更多关于 vault 收益与风险：[Vault](/zh/vault/yield)。
+
+## 章节
 
 <CardGroup cols={2}>
-  <Card title="激活" icon="play" href="/zh/builders/onboarding">
-    打开第一个账户
+  <Card title="入驻" icon="play" href="/zh/builders/onboarding">
+    如何打开第一个 funded 账户
   </Card>
-  <Card title="硬性规则" icon="shield" href="/zh/builders/rules">
-    你不能放宽的部分
+  <Card title="协议规则" icon="shield" href="/zh/builders/rules">
+    协议在链上强制执行什么
   </Card>
-  <Card title="参数" icon="settings" href="/zh/builders/fees">
-    你选择什么，`R + P` 的成本
+  <Card title="参数与费用" icon="settings" href="/zh/builders/fees">
+    你选择什么，以及 `R + P` 的成本
   </Card>
 </CardGroup>

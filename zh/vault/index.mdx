@@ -1,9 +1,9 @@
 ---
-title: "MainVault"
-description: "存款、拨付、保守 NAV"
+title: "工作原理"
+description: "中心流动性合约：资金流、shares、上限"
 ---
 
-MainVault 接收 LP 存款，向 funded 账户拨付本金，记账 Builder 准备金，并走关闭结算。
+Proportion 的中心是 MainVault 合约。LP 存款、funded 账户本金、Builder 准备金记账和单一关闭路径都在这里汇合。系统里任何移动资本的动作都经过这个 vault。
 
 <CardGroup cols={3}>
   <Card title="拨付" icon="banknote">

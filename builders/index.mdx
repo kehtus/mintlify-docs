@@ -1,29 +1,41 @@
 ---
-title: "Builders"
-description: "You write the terms, the contracts enforce them."
+title: "For builders"
+description: "Capital and infrastructure to run a prop product on Hyperliquid"
 ---
 
-Earn from funding traders, without building the stack for it.
+> You build the product. Proportion supplies the funded layer: capital, ready to use.
 
-You pay reserve `R` plus premium `P`. MainVault allocates principal `A` and settles one close path. Selection, brand and off-protocol price stay yours.
+For a builder, the funded account is the most capital-heavy and infrastructure-heavy part of a prop firm. Proportion ships it as a service: capital, an on-chain risk engine, settlement. Selection, brand, marketing and off-protocol price stay yours.
 
-`builder` is whoever paid `R + P`. Anyone with USDC for the charge can open an account, for themselves or someone else. No vault deposit.
+The builder buys capital from the protocol: reserve `R` plus premium `P`. Unused reserve returns at close. `builder` is whoever paid. There is no registry. A vault deposit is not required. Any wallet with USDC for `R + P` can open an account for themselves or someone else.
+
+The line is simple. Everything before `activateFunded` is yours. After activation, the protocol protects the capital.
 
 <Warning>
 Hyperliquid builder-code fees from a funded account go to `protocolFeeReceiver`, not the builder.
 </Warning>
 
-## Earnings
+## What the protocol supplies
+
+| Builder layer | Protocol layer |
+|---|---|
+| Selection and brand | Principal from MainVault |
+| Off-protocol program price | Floors, TARGET, live whitelist |
+| How you find traders | Reserve refund, ordinary split, forfeited surplus |
+
+A funded account is an isolated clone with principal `A`, reserve `R` and automatic risk enforcement. The account belongs to the trader inside protocol rules.
+
+## Builder P&L
 
 <CardGroup cols={2}>
   <Card title="Unused reserve" icon="shield">
-    `R` is yours. Principal loss consumes it 1:1. The rest returns
+    `R` is yours. Actual principal loss consumes it 1:1. The rest returns
   </Card>
   <Card title="Ordinary profit" icon="split">
     `builderPoolBps` of keep-profit withdrawals and non-forfeiting closes (10-70%)
   </Card>
   <Card title="Forfeited surplus" icon="percent">
-    40% of `Q − A` after Drawdown or TraderRequested
+    40% of actual `Q − A` after Drawdown or TraderRequested
   </Card>
   <Card title="LP shares" icon="trending-up">
     Optional. Same residual vault income, same losses. Activation does not need shares
@@ -32,16 +44,20 @@ Hyperliquid builder-code fees from a funded account go to `protocolFeeReceiver`,
 
 Builders do not take subscription. That split is 50/50 vault / protocol.
 
-Volume is bounded by the vault: 80% utilization, one account at most 10% of NAV. First loss is reserve `R`.
+First loss is reserve `R`, not a second vault deposit. Volume is bounded by the vault: 80% utilization, one account at most 10% of NAV.
+
+More on vault yield and risk: [Vault](/vault/yield).
+
+## Sections
 
 <CardGroup cols={2}>
-  <Card title="Activation" icon="play" href="/builders/onboarding">
-    Open the first account
+  <Card title="Onboarding" icon="play" href="/builders/onboarding">
+    How to open the first funded account
   </Card>
-  <Card title="Hard rules" icon="shield" href="/builders/rules">
-    What you cannot soften
+  <Card title="Protocol rules" icon="shield" href="/builders/rules">
+    What the protocol enforces on-chain
   </Card>
-  <Card title="Parameters" icon="settings" href="/builders/fees">
-    What you choose, what `R + P` costs
+  <Card title="Parameters and fees" icon="settings" href="/builders/fees">
+    What you choose and what `R + P` costs
   </Card>
 </CardGroup>

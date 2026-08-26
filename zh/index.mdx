@@ -4,24 +4,28 @@ title: "概览"
 
 ![Proportion overview](/images/image.jpeg)
 
-HyperEVM 上的交易员融资协议。
+Proportion 是构建在 Hyperliquid 上的链上 prop-trading 基础设施。交易员获得真实资本上的 funded 账户，没有公司托管登录。Builder 在现成栈上运行自己的产品：资本、风控引擎和结算已经就绪。LP 把 USDC 存进共享 vault，从激活溢价、订阅和被没收盈余中获得收益。收益率不固定，也可以为零。
 
-交易员在 Hyperliquid 上操作 funded 账户。Builder 写条款。LP 把 USDC 存进 MainVault。收益不承诺，可以为零。
+## 背景
 
-`FundedAccount` 是受锁定规则约束的隔离资本。成交是真实的 Hypercore 执行。交易员操作该账户。他们不拥有 vault，也不能把本金带走。
+Hyperliquid 和 builder codes 生态创造了对链上交易资本的需求。外汇市场曾经因此长出数千家 prop firm。同一股动力正在上链。这是 onchain prop meta 的开始。
 
-MainVault 拨付本金，并走一条关闭路径。账户只交易当前白名单内的永续。回撤、TARGET、时间、提取与领取都是合约状态。
+与传统 prop firm 不同，链上版本必须是非托管、可核验、可组合的。Proportion 补上这一层。你不必自己写合约，也不必自己做风控引擎。
+
+## 使命
+
+成为 onchain prop firms 的流动性中心。HyperEVM 上的可组合层，在交易员、Builder 和 LP 之间分配资本。
 
 ## 下一步
 
 <CardGroup cols={2}>
   <Card title="Funded" icon="user" href="/zh/funded">
-    账户、规则、派付
+    funded 账户如何运作，利润如何发放
   </Card>
   <Card title="Builder" icon="hammer" href="/zh/builders">
-    开户
+    在现成栈上开户
   </Card>
   <Card title="Vault" icon="vault" href="/zh/vault">
-    LP 资本与 NAV
+    协议流动性中心
   </Card>
 </CardGroup>

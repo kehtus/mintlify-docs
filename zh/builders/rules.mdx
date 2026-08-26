@@ -1,6 +1,6 @@
 ---
-title: "硬性规则"
-description: "激活之后不能改的部分"
+title: "协议规则"
+description: "协议在链上强制执行什么，以及 Builder 不能放宽什么"
 ---
 
 你在允许区间内选择参数。账户上线后，下限、分成和关闭经济不能改。
@@ -42,4 +42,6 @@ trailing   = $960
 
 当前名单就是交易规则。未授权仓位会被平掉。其余仍在名单上的市场可继续交易。Admin 关闭保留普通关闭利润。
 
-筛选、品牌和你在协议外收取什么，都仍归你。
+筛选、品牌和你在协议外收取什么，都仍归你。激活前可以自己加更严的过滤器。`activateFunded` 之后，由协议保护资本。
+
+funded 账户产生的 Hyperliquid builder-code 费用进入 `protocolFeeReceiver`，不是 Builder。

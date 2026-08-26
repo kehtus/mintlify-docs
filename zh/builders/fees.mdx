@@ -1,6 +1,6 @@
 ---
-title: "参数"
-description: "激活时你选择什么，以及 R + P 的成本"
+title: "参数与费用"
+description: "激活时你选择什么，以及如何计算 R + P"
 ---
 
 ## 你选择什么
@@ -45,6 +45,8 @@ vaultPremium    = P − protocolPremium
 
 ## 拨付上限
 
+激活不需要 vault 存款。上限由 vault 自己切：
+
 | 上限 | 默认 | 含义 |
 |---|---|---|
 | 最大利用率 | NAV 的 80% | 拨付给在途账户的 vault 份额 |
@@ -66,4 +68,6 @@ subscriptionFee = ceil_to_1_USDC(A × 1.5%)
 
 在途提取与非没收性关闭使用 `builderPoolBps`。没收性关闭（`Drawdown`、`TraderRequested`）将未提取的 `Q − A` 清零，并按 40 / 20 / LP 残值分配。未使用的 `R` 仍退给 `reserveRecipient`。
 
-Admin 关闭保留普通分成。
+Admin 关闭保留普通分成。这是紧急出口，不是没收。
+
+funded 账户产生的 Hyperliquid builder-code 费用进入 `protocolFeeReceiver`，不是 Builder。

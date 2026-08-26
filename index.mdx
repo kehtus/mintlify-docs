@@ -4,24 +4,28 @@ title: "Overview"
 
 ![Proportion overview](/images/image.jpeg)
 
-A trader-financing protocol on HyperEVM.
+Proportion is on-chain prop-trading infrastructure on Hyperliquid. Traders get funded accounts on real capital, without a custodial firm login. Builders run their product on a stack that already has capital, a risk engine and settlement. LPs deposit USDC into a shared vault and earn from activation premium, subscription and forfeited surplus. Yield is not fixed and can be zero.
 
-Traders run funded accounts on Hyperliquid. Builders write the terms. LPs deposit USDC into MainVault. Yield is not promised and can be zero.
+## Context
 
-A `FundedAccount` is isolated capital under pinned rules. Fills are real Hypercore executions. The trader operates that account. They do not own the vault and cannot take principal home.
+Hyperliquid and builder codes created demand for trading capital on-chain. The same dynamic that produced thousands of forex prop firms is moving here. This is the start of the onchain prop meta.
 
-MainVault allocates principal and settles one close path. The account trades only perps on the live whitelist. Drawdown, TARGET, time, withdrawals and claims are contract state.
+Unlike a classic prop firm, an on-chain version has to be non-custodial, checkable and composable. Proportion is that layer. You do not write your own contracts or your own risk engine.
+
+## Mission
+
+Become the liquidity hub for on-chain prop firms. A composable layer on HyperEVM that allocates capital between traders, builders and LPs.
 
 ## Next
 
 <CardGroup cols={2}>
   <Card title="Funded" icon="user" href="/funded">
-    Accounts, rules, payouts
+    How a funded account works and how profit is paid
   </Card>
   <Card title="Builders" icon="hammer" href="/builders">
-    Open an account
+    Open an account on a ready stack
   </Card>
   <Card title="Vault" icon="vault" href="/vault">
-    LP capital and NAV
+    Protocol liquidity hub
   </Card>
 </CardGroup>

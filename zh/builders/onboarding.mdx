@@ -1,24 +1,29 @@
 ---
-title: "激活"
+title: "入驻"
 description: "如何打开第一个 funded 账户"
 ---
 
 <Steps>
+  <Step title="钱包">
+    HyperEVM 上的任意 EVM 钱包。
+  </Step>
   <Step title="激活">
-    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`。你支付 `R + P`。Vault 拨付 `A`。调用方成为 `record.builder`。赞助路径的 `feeBps` 必须是 200。
+    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`。你支付 `R + P`。Vault 存入本金 `A`。调用方成为 `record.builder`。赞助路径的 `feeBps` 只能是 200。
   </Step>
 </Steps>
 
-如果 `trader` 是你自己，这就是自费：同一个调用，档位 200 / 400 / 800。两条路径都不需要 vault 存款。
+如果 `trader` 是你自己，就是自费：同一个调用，档位 200 / 400 / 800。两条路径都不需要 vault 存款。
 
-免 gas 走 ERC-2771 Forwarder。签名人支付 USDC，并成为 Builder。
+没有委托。免 gas 走 ERC-2771 Forwarder：签名人支付 USDC，并成为 Builder。
 
 `proposedReferrer` 绑定的是调用方，不是交易员。
 
+账户打开后，属于交易员的 EVM 地址。在提取或自愿关闭之前，交易员不必自己发交易：风险同步、checkpoint 和平仓由协议完成。提取、领取、取消订阅和自愿关闭需要交易员签名。
+
 <Warning>
-把 USDC 存进 vault 当 LP 是另一件事。Shares 不解锁激活。它们拿残值 vault 收入，也可能下跌。
+如果还把 USDC 存进 vault 当 LP，那是另一个角色。Shares 不打开、也不限制激活。它们拿残值 vault 收入，也可能下跌。
 </Warning>
 
 <Info>
-早期访问。Telegram：[@keysigner](https://t.me/keysigner)。
+入驻目前是早期访问。在 Telegram 联系团队：[@keysigner](https://t.me/keysigner)。
 </Info>
