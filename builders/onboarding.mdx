@@ -4,24 +4,21 @@ description: "How to open the first funded account"
 ---
 
 <Steps>
-  <Step title="Wallet">
-    Any EVM wallet on HyperEVM.
-  </Step>
   <Step title="Activate">
-    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`. You pay `R + P`. The vault allocates principal `A`. The caller becomes `record.builder`. Sponsored `feeBps` must be 200.
+    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`. You pay `R + P`. The vault allocates `A`. The caller becomes `record.builder`. Sponsored `feeBps` must be 200.
   </Step>
 </Steps>
 
-If `trader` is you, that is self-funded: same call, tier 200 / 400 / 800. A vault deposit is not required on either path.
+If `trader` is you, that is self-funded: same call, tier 200 / 400 / 800. No vault deposit on either path.
 
-There are no delegates. Gasless submission is the ERC-2771 Forwarder: the signer pays USDC and becomes the builder.
+Gasless goes through the ERC-2771 Forwarder. The signer pays USDC and becomes the builder.
 
 `proposedReferrer` binds the caller, not the trader.
 
 <Warning>
-Depositing USDC as an LP is a separate role. Shares do not unlock or cap activation. They take residual vault income and can fall.
+An LP deposit is a separate role. Shares do not unlock activation. They take residual vault income and can fall.
 </Warning>
 
 <Info>
-Activation is early access. Contact the team on Telegram: [@keysigner](https://t.me/keysigner).
+Early access. Telegram: [@keysigner](https://t.me/keysigner).
 </Info>

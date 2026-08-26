@@ -5,8 +5,6 @@ description: "残值 vault 收入。不承诺固定收益率"
 
 Vault 收益是残值。它可以是零。
 
-## 收入
-
 <CardGroup cols={3}>
   <Card title="激活溢价" icon="percent">
     `P` 的 **50%**。`P` 是账户规模的一部分，不是准备金的一部分
@@ -19,36 +17,32 @@ Vault 收益是残值。它可以是零。
   </Card>
 </CardGroup>
 
-<Info>
-LP 不拿普通的交易员 / Builder 利润。未使用的准备金 `R` 退给 Builder，而不是 vault。
-</Info>
+LP 不拿普通的交易员 / Builder 利润。未使用的 `R` 退给 Builder，而不是 vault。
 
-超过准备金的亏损会在 NAV 中记为 `reserveDeficit`。结算仍然完成。
-
-没有 Builder 质押。第一损失是准备金 `R`。超过 `R` 的部分进入 NAV。
+超过准备金的亏损会在 NAV 中记为 `reserveDeficit`。结算仍然完成。第一损失是 `R`。
 
 ## 风险
 
 <AccordionGroup>
   <Accordion title="相关性回撤" icon="waves">
-    相对已拨付的 `A`，溢价 `P` 很小。同时违约可能消耗超过已累积的 vault 收入，并把 `sharePrice` 压到低于存款。
+    相对已拨付的 `A`，`P` 很小。同时违约可能消耗已累积的 vault 收入，并把 `sharePrice` 压到低于存款。
   </Accordion>
-  <Accordion title="超调 / 跳空风险" icon="zap">
+  <Accordion title="跳空 / 超调" icon="zap">
     下限启动关闭。它们不保证按下限成交。Core 清算或跳空可能使实现的 `Q` 低于下限。超过 `R` 的部分由 LP 承担。
   </Accordion>
   <Accordion title="发放质量" icon="users">
     LP 不挑选交易员。赞助质量差的 Builder 会按已拨付本金的比例影响资金池。
   </Accordion>
-  <Accordion title="智能合约风险" icon="file-code">
+  <Accordion title="智能合约" icon="file-code">
     MainVault 与 FundedAccount 已经过独立审查。实现层面的残余风险仍然存在。
   </Accordion>
-  <Accordion title="对 Hyperliquid / Hypercore 的依赖" icon="link">
-    权益、成交与桥接依赖 Hypercore 读取和 Hyperliquid 基础设施。那里的故障会体现为 vault 资本。
+  <Accordion title="Hyperliquid / Hypercore" icon="link">
+    权益、成交与桥接依赖 Hypercore 读取。那里的故障会体现为 vault 资本。
   </Accordion>
   <Accordion title="LP 退出" icon="lock">
     打开的账户不会锁定 shares。退出仍不能打破利用率：`totalAllocated` 必须留在新 NAV 的 80% 以内。
   </Accordion>
   <Accordion title="治理" icon="settings">
-    账户规模、回撤与利用率区间可通过 admin 的 `setRiskConfig` 在已公布边界内调整。
+    账户规模、回撤与利用率区间可通过 `setRiskConfig` 在已公布边界内调整。
   </Accordion>
 </AccordionGroup>

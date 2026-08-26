@@ -5,8 +5,6 @@ description: "Residual vault income. Not a promised APY"
 
 Vault yield is residual. It can be zero.
 
-## Income
-
 <CardGroup cols={3}>
   <Card title="Activation premium" icon="percent">
     **50%** of `P`. `P` is a share of account size, not of the reserve
@@ -19,36 +17,32 @@ Vault yield is residual. It can be zero.
   </Card>
 </CardGroup>
 
-<Info>
-LPs do not receive ordinary trader / builder profit. Unused reserve `R` returns to the builder, not to the vault.
-</Info>
+LPs do not take ordinary trader / builder profit. Unused `R` returns to the builder, not to the vault.
 
-A loss beyond reserve becomes `reserveDeficit` in NAV. Settlement still completes.
-
-There is no builder stake. First-loss is reserve `R`. Loss beyond `R` lands in NAV.
+A loss beyond reserve becomes `reserveDeficit` in NAV. Settlement still completes. First loss is `R`.
 
 ## Risks
 
 <AccordionGroup>
   <Accordion title="Correlated drawdowns" icon="waves">
-    Premium `P` is small relative to allocated `A`. Simultaneous breaches can consume more than accumulated vault income and push `sharePrice` below the deposit.
+    `P` is small relative to allocated `A`. Simultaneous breaches can eat accumulated vault income and push `sharePrice` below the deposit.
   </Accordion>
-  <Accordion title="Overshoot / gap risk" icon="zap">
+  <Accordion title="Gap / overshoot" icon="zap">
     Floors start a close. They do not guarantee a fill at the floor. A Core liquidation or gap can realize `Q` below the floor. Excess beyond `R` hits LPs.
   </Accordion>
   <Accordion title="Issuance quality" icon="users">
-    LPs do not pick traders. A builder who sponsors poorly affects the pool in proportion to allocated principal.
+    LPs do not pick traders. A weak sponsor hits the pool in proportion to allocated principal.
   </Accordion>
-  <Accordion title="Smart-contract risk" icon="file-code">
-    MainVault and FundedAccount have been independently reviewed. Residual implementation risk remains.
+  <Accordion title="Smart contract" icon="file-code">
+    MainVault and FundedAccount were independently reviewed. Residual implementation risk remains.
   </Accordion>
-  <Accordion title="Hyperliquid / Hypercore dependency" icon="link">
-    Equity, fills, and bridges depend on Hypercore reads and Hyperliquid infra. Faults there show up as vault capital.
+  <Accordion title="Hyperliquid / Hypercore" icon="link">
+    Equity, fills and bridges depend on Hypercore reads. Faults there show up as vault capital.
   </Accordion>
   <Accordion title="LP exit" icon="lock">
-    Shares are not locked by open accounts. Exits still cannot break utilization: `totalAllocated` must stay within 80% of post-withdraw NAV.
+    Open accounts do not lock shares. Exits still cannot break utilization: `totalAllocated` must stay within 80% of post-withdraw NAV.
   </Accordion>
   <Accordion title="Governance" icon="settings">
-    Account-size, drawdown, and utilization bands can move through admin `setRiskConfig` inside published bounds.
+    Account size, drawdown and utilization bands can move through `setRiskConfig` inside published bounds.
   </Accordion>
 </AccordionGroup>

@@ -1,6 +1,6 @@
 ---
 title: "Parameters"
-description: "What you choose at activation, and what R + P means"
+description: "What you choose at activation, and what R + P costs"
 ---
 
 ## What you choose
@@ -8,14 +8,14 @@ description: "What you choose at activation, and what R + P means"
 | Parameter | Band | Role |
 |---|---|---|
 | `trader` | any address | Clone owner. If `trader` is the caller, the path is self-funded |
-| `accountSize` | $10 – $20,000 | Principal `A` (defaults; admin-bounded) |
-| `drawdownBps` | 5% – 25% | Trailing `D`. Sets reserve `R` |
-| `builderPoolBps` | 10% – 70% | Ordinary builder share |
+| `accountSize` | $10-$20,000 | Principal `A` |
+| `drawdownBps` | 5%-25% | Trailing `D`. Sets reserve `R` |
+| `builderPoolBps` | 10%-70% | Ordinary builder share |
 | `targetProfit` | ≥ 0 | Absolute TARGET. `0` disables |
 | `feeBps` | 200 / 400 / 800 | Sponsored must pass **200**. Self-funded picks the term |
 | `proposedReferrer` | optional | Binds the caller |
 
-Daily drawdown is not a parameter. It follows the path: sponsored on, self-funded off.
+Daily drawdown follows the path: sponsored on, self-funded off.
 
 ## Activation charge
 
@@ -39,18 +39,18 @@ protocolPremium = floor(P × 50%)
 vaultPremium    = P − protocolPremium
 ```
 
-The caller pays `R + P` in USDC. MainVault deposits exactly `A` as principal.
+The caller pays `R + P` in USDC. MainVault deposits exactly `A`.
 
-Example: `A = $1,000`, `D = 10%`, sponsored 2% → `R = $100`, `P = $20`, charge `$120`. Vault and protocol each take `$10` of premium. Builder reserve liability is `$100`. LP allocation is `$1,000`.
+Example: `A = $1,000`, `D = 10%`, sponsored 2% → `R = $100`, `P = $20`, charge `$120`. Vault and protocol take `$10` of premium each. Reserve `$100`. Allocation `$1,000`.
 
 ## Allocation limits
 
 | Limit | Default | Meaning |
 |---|---|---|
-| Max utilization | 80% of NAV | Share of vault allocated to active accounts |
-| Max single account | 10% of NAV, capped at $20k | One `A` |
+| Max utilization | 80% of NAV | Share of vault in active accounts |
+| Max single account | 10% of NAV, cap $20k | One `A` |
 
-No account can activate until NAV reaches the bootstrap floor (`$100` at defaults). Deposits remain available below that.
+No activation until NAV reaches the bootstrap floor ($100 at defaults). Deposits still work below that.
 
 ## Subscription
 
@@ -58,12 +58,12 @@ No account can activate until NAV reaches the bootstrap floor (`$100` at default
 subscriptionFee = ceil_to_1_USDC(A × 1.5%)
 ```
 
-Split **50/50** vault / protocol. Builder receives **0**.
+50/50 vault / protocol. Builder gets 0.
 
-Sponsored accounts renew from Core equity in the last 3 days of the period if the fee can be paid without breaching floors. Self-funded accounts skip renewal; more time is `extendRental` (same tiers, no extra `R`, max 30 days ahead).
+Sponsored accounts can renew from Core equity in the last 3 days if the fee does not breach floors. Self-funded uses `extendRental`: same tiers, no extra `R`, horizon now + 30 days.
 
 ## Profit and close
 
-Live withdrawal and non-forfeiting close use `builderPoolBps`. Forfeiting close (`Drawdown`, `TraderRequested`) zeros the trader’s unwithdrawn `Q − A` and splits that surplus 40 / 20 / LP residual. Unused `R` still returns to the builder.
+Live withdrawal and non-forfeiting close use `builderPoolBps`. Forfeiting close (`Drawdown`, `TraderRequested`) zeros unwithdrawn `Q − A` and splits it 40 / 20 / LP residual. Unused `R` still returns to `reserveRecipient`.
 
-Admin close keeps the ordinary split. It is a break-glass, not a confiscation.
+Admin close keeps the ordinary split.

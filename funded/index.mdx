@@ -3,30 +3,19 @@ title: "Funded accounts"
 description: "Isolated Hypercore capital under contract rules"
 ---
 
-A `FundedAccount` is an isolated EIP-1167 clone on HyperEVM. MainVault deposits principal `A` onto Hypercore. Trading goes through an API wallet. The Exchange Proxy signs Hyperliquid. The trader never holds that key.
-
-A builder writes the terms. The contracts enforce them.
-
-<Tip>
-Rules, settlement, and claims live in published contracts. A prop firm cannot rewrite floors or deny a payout the contract already credited.
-</Tip>
-
-## Two paths
+A `FundedAccount` is an isolated clone on HyperEVM. MainVault deposits principal `A` onto Hypercore. Trading goes through an API wallet. The Exchange Proxy signs Hyperliquid. The trader never holds that key.
 
 | | Sponsored | Self-funded |
 |---|---|---|
-| Who pays `R + P` | The caller. They are `record.builder` | The trader (also the caller) |
-| Principal `A` | From MainVault | Also vault-allocated |
-| Vault deposit | Not required | Not required |
+| Who pays `R + P` | The caller. They are `record.builder` | The trader |
+| Principal `A` | From MainVault | From MainVault |
 | Daily drawdown | On | Off |
-| Time | 30-day subscription, can renew | Prepaid 1 / 7 / 30 days, no auto-renew |
-| Ordinary profit | Split by `builderPoolBps` | Same formulas, both buckets hit the trader |
+| Time | 30-day subscription, can renew | Prepaid 1 / 7 / 30 days |
+| Ordinary profit | Split by `builderPoolBps` | Same formulas, both buckets to the trader |
 
-Self-funded is `activateFunded` when the caller is the trader. The lifetime floor is the same. The session path is wider because there is no daily floor.
+Self-funded is `activateFunded` when the caller is the trader. Lifetime floor is the same. No daily floor.
 
-The live MainVault market list is the only list. A whitelist edit does not close the account. New entries off the list are refused. Leftover size on a withdrawn market is flattened. Remaining live markets stay tradeable.
-
-## Lifecycle
+The live MainVault list is the only market list. An edit does not close the account. Off-list entries are refused. Leftover size on a withdrawn market is flattened.
 
 ```
 activate → Active → trade
@@ -34,15 +23,13 @@ activate → Active → trade
                  → close → settle → claim
 ```
 
-Close is one path. The clone snapshots actual Core trading capital `Q`. MainVault applies the frozen record (size, reserve, builder, split) and credits a pull ledger. Nobody supplies commercial terms at close.
-
-## Next
+Close is one path. The clone snapshots Core trading capital `Q`. MainVault applies the frozen record and credits a pull ledger.
 
 <CardGroup cols={2}>
   <Card title="Rules" icon="shield-check" href="/funded/rules">
-    Floors, TARGET, whitelist, and time
+    Floors, TARGET, whitelist, time
   </Card>
   <Card title="Payouts" icon="wallet" href="/funded/payouts">
-    Withdrawals, close reasons, and claims
+    Withdrawals, close, claims
   </Card>
 </CardGroup>

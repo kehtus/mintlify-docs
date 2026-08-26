@@ -1,20 +1,20 @@
 ---
 title: "Hard rules"
-description: "What a builder cannot soften after activation"
+description: "What cannot change after activation"
 ---
 
-You choose parameters inside the allowed bands. You cannot rewrite floors, splits, or close economics after the account is live.
+You pick parameters inside the bands. After activation, floors, splits and close economics are locked.
 
 | Rule | Value |
 |---|---|
 | Ordinary profit | `builderPoolBps` to builder, residual to trader. Vault and protocol take 0 |
-| Forfeited close surplus | Builder 40% / protocol 20% / LP residual |
-| Profit lock | 30% of accepted peak profit, on both lifetime and daily floors |
-| Withdrawal bar | 3 profitable checkpoint days (≥ 0.70% growth) **or** profit ≥ 3% of `A` |
+| Forfeited surplus | Builder 40% / protocol 20% / LP residual |
+| Profit lock | 30% of accepted peak profit, lifetime and daily |
+| Withdrawal | 3 profitable checkpoint days (≥ 0.70%) or profit ≥ 3% of `A` |
 | Checkpoint | 1 day |
 | Sponsored term | 30-day subscription |
-| Daily drawdown | Mandatory on sponsored accounts, absent on self-funded |
-| Who can sponsor | Anyone with `R + P`. No registry, no stake |
+| Daily drawdown | On for sponsored, off for self-funded |
+| Who can sponsor | Anyone with `R + P` |
 | Markets | Live MainVault whitelist. Edit does not close the account |
 
 ## Trailing floor
@@ -26,22 +26,20 @@ profitLock = $60
 trailing   = $960
 ```
 
-Intraday peaks move only after a 1% acceptance gate. Checkpoint accepts any higher lifetime peak. After a proven profit claim, peaks reset to `A`.
+Intraday peaks move after a 1% gate. Checkpoint accepts any higher lifetime peak. After a proven profit claim, peaks reset to `A`.
 
 ## Daily drawdown
 
-Not a flag you pass at activation. If you sponsor another trader, Daily DD is on at half of `D`. If the trader self-funds, it is off.
+Not a flag at activation. Sponsored: on, at half of `D`. Self-funded: off.
 
 Same example, day start `$1,000`, daily peak `$1,200` → daily floor `$1,010`. Effective floor is the max of the two.
 
 ## TARGET
 
-`targetProfit` is on-chain. Zero disables it. The `A + targetProfit` threshold blocks ordinary withdrawal. The relayer writes `TargetReached` and keeps the ordinary split.
+`targetProfit` is on-chain. Zero disables it. `A + targetProfit` blocks ordinary withdrawal. The relayer writes `TargetReached` and keeps the ordinary split.
 
 ## Whitelist
 
-The live list is the trading rule for every Active account. Unauthorized size is flattened. Remaining live markets stay tradeable. Emergency whole-account close is Admin, and Admin **keeps** ordinary close profit.
+The live list is the trading rule. Unauthorized size is flattened. Remaining live markets stay open. Admin close keeps ordinary close profit.
 
-## What you still own
-
-How you select traders, what you charge them off-protocol, and how you brand the program stay yours. Once `activateFunded` lands, capital protection is the protocol’s.
+Selection, brand and what you charge off-protocol stay yours.

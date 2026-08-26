@@ -4,24 +4,21 @@ description: "Как открыть первый funded-счёт"
 ---
 
 <Steps>
-  <Step title="Кошелёк">
-    Любой EVM-кошелёк на HyperEVM.
-  </Step>
   <Step title="Активация">
-    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`. Платите `R + P`. Волт кладёт принципал `A`. Вызывающий становится `record.builder`. Спонсируемый `feeBps` только 200.
+    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`. Платите `R + P`. Волт кладёт `A`. Вызывающий становится `record.builder`. Спонсируемый `feeBps` только 200.
   </Step>
 </Steps>
 
-Если `trader` это вы сами, это self-funded: тот же вызов, тир 200 / 400 / 800. Депозит в волт не нужен ни на одном пути.
+Если `trader` это вы, это self-funded: тот же вызов, тир 200 / 400 / 800. Депозит в волт не нужен ни на одном пути.
 
-Делегатов нет. Если нужен gasless, это ERC-2771 Forwarder: подписант платит USDC и становится билдером.
+Gasless идёт через ERC-2771 Forwarder. Подписант платит USDC и становится билдером.
 
 `proposedReferrer` привязывает вызывающего, не трейдера.
 
 <Warning>
-Если ещё кладёте USDC в волт как LP, это отдельная роль. Shares не открывают и не ограничивают активацию. Они получают остаточный доход волта и могут упасть.
+Депозит в волт как LP это отдельная роль. Shares не открывают активацию. Они получают остаточный доход волта и могут упасть.
 </Warning>
 
 <Info>
-Активация сейчас early access. Написать команде в Telegram: [@keysigner](https://t.me/keysigner).
+Early access. Telegram: [@keysigner](https://t.me/keysigner).
 </Info>

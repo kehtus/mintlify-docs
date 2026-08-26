@@ -4,22 +4,22 @@ title: "概览"
 
 ![Proportion overview](/images/image.jpeg)
 
-Proportion 是部署在 HyperEVM 上的交易员融资协议。
+HyperEVM 上的交易员融资协议。
 
-三方。交易员在 Hyperliquid 上操作隔离的 funded 账户。Builder 写条款，合约执行条款。LP 将 USDC 存入 MainVault，按比例获得 vault 收入。收益不承诺，可以为零。
+交易员在 Hyperliquid 上操作 funded 账户。Builder 写条款。LP 把 USDC 存进 MainVault。收益不承诺，可以为零。
 
-核心对象是 `FundedAccount`。资本放在隔离克隆中，受锁定规则约束。成交是真实的 Hypercore 执行。交易员操作该账户。他们不拥有 vault，也不能把本金带走。
+`FundedAccount` 是受锁定规则约束的隔离资本。成交是真实的 Hypercore 执行。交易员操作该账户。他们不拥有 vault，也不能把本金带走。
 
-MainVault 持有 LP 资本，拨付本金，记账 Builder 准备金，并走一条关闭路径。账户只交易当前白名单内的永续。回撤、TARGET、时间、提取与领取都是合约状态。
+MainVault 拨付本金，并走一条关闭路径。账户只交易当前白名单内的永续。回撤、TARGET、时间、提取与领取都是合约状态。
 
 ## 下一步
 
 <CardGroup cols={2}>
   <Card title="Funded" icon="user" href="/zh/funded">
-    隔离账户、规则与派付
+    账户、规则、派付
   </Card>
   <Card title="Builder" icon="hammer" href="/zh/builders">
-    为交易员开户
+    开户
   </Card>
   <Card title="Vault" icon="vault" href="/zh/vault">
     LP 资本与 NAV

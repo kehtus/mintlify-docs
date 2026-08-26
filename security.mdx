@@ -1,31 +1,25 @@
 ---
 title: "Security"
-description: "Security audits, code review practices, and administrative safeguards"
+description: "Audits, review and admin controls"
 ---
 
-Proportion Protocol's smart contracts have undergone an independent security audit by Beosin. Additional independent audits are planned as the protocol evolves.
+Smart contracts were independently audited by Beosin.
 
-**Audit report:** [View the Beosin audit report](https://beosin.com/audits/Proportion_202603161420.pdf)
+**Audit report:** [Beosin](https://beosin.com/audits/Proportion_202603161420.pdf)
 
-## Continuous Review
+## Review
 
-The codebase is regularly reviewed manually and re-evaluated using modern AI-powered security analysis tools. AI serves as an additional layer of continuous review, not as a replacement for independent audits or expert analysis.
+The codebase is reviewed by hand on an ongoing basis. That does not replace an independent audit.
 
-## Administrative Security
+## Admin
 
-Critical administrative actions are protected by a 3-of-5 multisig and timelocks. Administrative authority is restricted, and protocol parameters can only be changed within predefined safe bounds. A single compromised key cannot execute privileged actions.
+Critical actions sit behind a 3-of-5 multisig and timelocks. Parameters move only inside published bounds. One compromised key is not enough.
 
-### Production Timelock Schedule
-
-| Minimum delay | Changes covered |
+| Minimum delay | Changes |
 | --- | --- |
-| **72 hours** | `MainVault` implementation upgrades; `transferOwnership` and other governance-control changes; migrations that replace a core Vault implementation. |
-| **48 hours** | `queueFactoryChange` / `executeFactoryChange` for funded accounts; trusted integration changes such as `setRelayer` and `setForwarder`; `setRiskConfig`, market additions, leverage increases, and other changes that increase protocol risk. |
+| **72 hours** | `MainVault` upgrades, `transferOwnership`, migrations that replace the vault implementation |
+| **48 hours** | `queueFactoryChange` / `executeFactoryChange`, `setRelayer`, `setForwarder`, `setRiskConfig`, adding a market, raising leverage |
 
 <Note>
-  Defensive actions that reduce risk may be executed immediately. These include pausing new activations, canceling a queued change, removing a market, and lowering leverage. Unpausing or increasing risk remains subject to the applicable timelock.
+  Risk-reducing actions can run immediately: pause activations, cancel a queued change, remove a market, lower leverage. Unpausing or raising risk waits for the timelock.
 </Note>
-
-## Key Management
-
-Particular attention is given to key management, signer security, protection against social engineering, and reducing the risk of human error.

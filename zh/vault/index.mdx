@@ -3,19 +3,17 @@ title: "MainVault"
 description: "存款、拨付、保守 NAV"
 ---
 
-MainVault 是资本层。它接收 LP 存款，向 funded 账户拨付本金，记账 Builder 准备金，并走一条关闭结算路径。
-
-## 资金流
+MainVault 接收 LP 存款，向 funded 账户拨付本金，记账 Builder 准备金，并走关闭结算。
 
 <CardGroup cols={3}>
   <Card title="拨付" icon="banknote">
-    激活时，vault 将本金 `A` 存入 Hypercore。调用方支付 `R + P`
+    激活时，vault 将 `A` 存入 Hypercore。调用方支付 `R + P`
   </Card>
   <Card title="记账" icon="coins">
     `R` 是在途 Builder 负债。Vault 侧溢价与订阅留在 NAV 中
   </Card>
   <Card title="结算" icon="rotate-ccw">
-    关闭拉取快照的 `Q`、未使用准备金，以及已归属的领取。未归属的 EVM 余额退回 vault
+    关闭拉取快照的 `Q`、未使用准备金和已归属的领取。未归属的 EVM 余额退回 vault
   </Card>
 </CardGroup>
 
@@ -32,7 +30,7 @@ totalAssets = grossAssets
 sharePrice  = totalAssets / totalShares     // 1 USDC if no shares
 ```
 
-在途准备金、已结算退款与未支付领取不会抬高 share price。待处理的 Core 结算不会锁定 vault。在关闭实现 `Q` 之前，存款与退出使用这一链上状态。
+准备金、未支付退款和未支付领取不会抬高 share price。在关闭实现 `Q` 之前，存款与退出使用这一链上状态。
 
 ## 上限
 
@@ -40,16 +38,16 @@ sharePrice  = totalAssets / totalShares     // 1 USDC if no shares
 |---|---|---|
 | 最大利用率 | **80%** | `totalAllocated` 相对 NAV |
 | 单账户上限 | **10%** / $20k | 单个 `A` |
-| 账户规模 | $10 – $20,000 | 每账户 `A` |
-| 回撤 | 5% – 25% | 追踪 `D` |
+| 账户规模 | $10-$20,000 | 每账户 `A` |
+| 回撤 | 5%-25% | 追踪 `D` |
 
-激活还需要 NAV ≥ `$100`（默认 `minAccountSize / maxSingleAccountBps`）。低于该值时仍可存款。
+激活还需要 NAV ≥ $100（默认 `minAccountSize / maxSingleAccountBps`）。低于该值时仍可存款。
 
 ## 退出
 
-即时 `withdraw(shares)` 始终可用。`requestWithdraw` / `executeWithdraw` 是同一套核算上的可选 1 天冷却。
+`withdraw(shares)` 即时可用。`requestWithdraw` / `executeWithdraw` 是同一套核算上的可选 1 天冷却。
 
-退出只能动用高于准备金、退款与派付负债的 EVM 现金，并且必须保持利用率完好。打开的 funded 账户不会锁定 LP shares。
+退出只能动用高于准备金、退款与派付负债的 EVM 现金。利用率必须保持完好。打开的 funded 账户不会锁定 shares。
 
 `deposit(amount, proposedReferrer)` 可在首次接触时绑定 LP 的推荐。`depositFor` 从不绑定。
 

@@ -4,22 +4,22 @@ title: "Overview"
 
 ![Proportion overview](/images/image.jpeg)
 
-Proportion is a trader-financing protocol on HyperEVM.
+A trader-financing protocol on HyperEVM.
 
-Three sides. Traders operate isolated funded accounts on Hyperliquid. Builders write the terms, the contracts enforce them. LPs deposit USDC into MainVault and take a share of vault income. Yield is not promised and can be zero.
+Traders run funded accounts on Hyperliquid. Builders write the terms. LPs deposit USDC into MainVault. Yield is not promised and can be zero.
 
-The hook is `FundedAccount`. Capital sits in an isolated clone under pinned rules. Fills are real Hypercore executions. The trader operates that account. They do not own the vault and cannot take principal home.
+A `FundedAccount` is isolated capital under pinned rules. Fills are real Hypercore executions. The trader operates that account. They do not own the vault and cannot take principal home.
 
-MainVault holds LP capital, allocates principal, books builder reserve, and runs one close path. The account trades only perps on the live whitelist. Drawdown, TARGET, time, withdrawals, and claims are contract state.
+MainVault allocates principal and settles one close path. The account trades only perps on the live whitelist. Drawdown, TARGET, time, withdrawals and claims are contract state.
 
 ## Next
 
 <CardGroup cols={2}>
   <Card title="Funded" icon="user" href="/funded">
-    Isolated accounts, rules, and payouts
+    Accounts, rules, payouts
   </Card>
   <Card title="Builders" icon="hammer" href="/builders">
-    Open an account for a trader
+    Open an account
   </Card>
   <Card title="Vault" icon="vault" href="/vault">
     LP capital and NAV

@@ -1,31 +1,25 @@
 ---
 title: "安全"
-description: "安全审计、代码审查实践与行政保障"
+description: "审计、审查与行政控制"
 ---
 
-Proportion Protocol 的智能合约已由 Beosin 完成独立安全审计。随着协议演进，计划进行更多独立审计。
+智能合约已由 Beosin 完成独立审计。
 
-**审计报告：** [查看 Beosin 审计报告](https://beosin.com/audits/Proportion_202603161420.pdf)
+**审计报告：** [Beosin](https://beosin.com/audits/Proportion_202603161420.pdf)
 
-## 持续审查
+## 审查
 
-代码库会定期人工复查，并用现代 AI 安全分析工具重新评估。AI 是持续审查的额外一层，不能替代独立审计或专家分析。
+代码会持续人工复查。这不能替代独立审计。
 
-## 行政安全
+## 行政
 
-关键行政行为由 3-of-5 多签和时间锁保护。行政权限受限，协议参数只能在预先设定的安全边界内更改。单个被攻破的密钥不能执行特权操作。
-
-### Production 时间锁日程
+关键操作由 3-of-5 多签和时间锁保护。参数只能在已公布边界内更改。单个被攻破的密钥不够。
 
 | 最短延迟 | 覆盖的变更 |
 | --- | --- |
-| **72 小时** | `MainVault` 实现升级；`transferOwnership` 及其他治理控制变更；替换核心 Vault 实现的迁移。 |
-| **48 小时** | funded 账户的 `queueFactoryChange` / `executeFactoryChange`；`setRelayer` 和 `setForwarder` 等受信任集成变更；`setRiskConfig`、增加市场、提高杠杆，以及其他提高协议风险的变更。 |
+| **72 小时** | `MainVault` 升级、`transferOwnership`、替换 vault 实现的迁移 |
+| **48 小时** | `queueFactoryChange` / `executeFactoryChange`、`setRelayer`、`setForwarder`、`setRiskConfig`、增加市场、提高杠杆 |
 
 <Note>
-  降低风险的防御性操作可以立即执行。包括暂停新激活、取消已排队变更、移除市场，以及降低杠杆。恢复运行或提高风险仍须遵守相应时间锁。
+  降低风险的操作可以立即执行：暂停新激活、取消已排队变更、移除市场、降低杠杆。恢复运行或提高风险仍须等待时间锁。
 </Note>
-
-## 密钥管理
-
-重点关注密钥管理、签名人安全、防范社会工程，以及降低人为错误风险。

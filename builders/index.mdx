@@ -1,17 +1,13 @@
 ---
 title: "Builders"
-description: "You write the terms. The contracts enforce them."
+description: "You write the terms, the contracts enforce them."
 ---
 
-A builder opens a `FundedAccount` for a trader. MainVault allocates principal, books your reserve, and settles one close path. Selection, brand, and off-protocol pricing stay yours.
+Earn from funding traders, without building the stack for it.
 
-The builder is whoever paid `R + P`. There is no registry, no `registerBuilder`, no $10 stake, and no 10× capacity. Any wallet with USDC for the activation charge can open an account for themselves or someone else.
+You pay reserve `R` plus premium `P`. MainVault allocates principal `A` and settles one close path. Selection, brand and off-protocol price stay yours.
 
-| Your layer | Protocol layer |
-|---|---|
-| Selection and brand | Principal from MainVault |
-| Off-protocol program price | Floors, TARGET, live whitelist |
-| How you find traders | Reserve refund, ordinary split, forfeited surplus |
+`builder` is whoever paid `R + P`. Anyone with USDC for the charge can open an account, for themselves or someone else. No vault deposit.
 
 <Warning>
 Hyperliquid builder-code fees from a funded account go to `protocolFeeReceiver`, not the builder.
@@ -21,33 +17,31 @@ Hyperliquid builder-code fees from a funded account go to `protocolFeeReceiver`,
 
 <CardGroup cols={2}>
   <Card title="Unused reserve" icon="shield">
-    `R` is yours. Actual principal loss consumes it 1:1. The rest returns
+    `R` is yours. Principal loss consumes it 1:1. The rest returns
   </Card>
   <Card title="Ordinary profit" icon="split">
-    `builderPoolBps` of keep-profit withdrawals and non-forfeiting closes (10–70%)
+    `builderPoolBps` of keep-profit withdrawals and non-forfeiting closes (10-70%)
   </Card>
   <Card title="Forfeited surplus" icon="percent">
-    40% of actual `Q − A` after Drawdown or TraderRequested
+    40% of `Q − A` after Drawdown or TraderRequested
   </Card>
   <Card title="LP shares" icon="trending-up">
-    If you are also an LP, your shares take the same residual vault income and the same losses. That is optional. Activation does not need shares
+    Optional. Same residual vault income, same losses. Activation does not need shares
   </Card>
 </CardGroup>
 
-Builders do not receive subscription. Subscription is 50/50 vault / protocol.
+Builders do not take subscription. That split is 50/50 vault / protocol.
 
-First-loss is reserve `R`, not a second vault deposit. Volume is bounded by the vault: 80% utilization, one account at most 10% of NAV.
-
-## Next
+Volume is bounded by the vault: 80% utilization, one account at most 10% of NAV. First loss is reserve `R`.
 
 <CardGroup cols={2}>
   <Card title="Activation" icon="play" href="/builders/onboarding">
-    How to open the first account
+    Open the first account
   </Card>
   <Card title="Hard rules" icon="shield" href="/builders/rules">
     What you cannot soften
   </Card>
   <Card title="Parameters" icon="settings" href="/builders/fees">
-    What you choose and what `R + P` costs
+    What you choose, what `R + P` costs
   </Card>
 </CardGroup>

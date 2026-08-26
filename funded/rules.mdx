@@ -1,78 +1,76 @@
 ---
 title: "Rules"
-description: "Floors, TARGET, whitelist, and time. Enforced on-chain"
+description: "Floors, TARGET, whitelist and time"
 ---
 
-Everything not forbidden here is allowed: copy trading, bots, news, overnight, weekends. Style and frequency are unrestricted inside the floors and the live market list.
+What is not forbidden here is allowed: copy trading, bots, news, overnight, weekends.
 
 ## Trailing drawdown
 
-The lifetime floor starts at `A − R` and locks **30% of accepted peak profit**.
+Lifetime floor starts at `A − R` and locks **30% of accepted peak profit**.
 
 ```
 trailingFloor = A − A × D / 10_000 + 30% × max(peak − A, 0)
 ```
 
-Example: `A = $1,000`, `D = 10%`, accepted peak `$1,200` → floor **`$960`**. The stored peak stays `$1,200`. Hitting the same mark again does not move the floor.
+`A = $1,000`, `D = 10%`, accepted peak `$1,200` → floor **`$960`**. The stored peak stays `$1,200`. Hitting the same mark again does not move the floor.
 
-Peaks store accepted equity. The 30% lock is applied only when the floor is computed. Breach is **strict less-than**; equality is allowed. Equity ≤ 0 is always a breach.
+Peaks store accepted equity. The 30% lock is applied only when the floor is computed. Breach is strict less-than. Equality is allowed. Equity ≤ 0 is always a breach.
 
-Intraday, the relayer can raise a peak through `syncRiskState` after a **1%** increase from the last accepted peak. Daily `checkpoint` accepts any higher lifetime peak without that 1% gate.
+Intraday, `syncRiskState` can raise a peak after a **1%** move from the last accepted peak. Daily `checkpoint` accepts any higher lifetime peak.
 
 ## Daily drawdown
 
-Sponsored accounts only. Self-funded accounts have no daily floor.
+Sponsored only. Self-funded has no daily floor.
 
-Daily loss limit is **half** the trailing percentage, with the same 30% lock on the daily peak:
+Daily limit is **half** of `D`, same 30% lock on the daily peak:
 
 ```
 dailyFloor = dayStart − dayStart × D / 20_000 + 30% × max(dailyPeak − dayStart, 0)
 effectiveFloor = max(trailingFloor, dailyFloor)
 ```
 
-Same example, day start `$1,000`, daily peak `$1,200` → daily floor **`$1,010`**. Floors are never added together.
+Same example, day start `$1,000`, daily peak `$1,200` → daily floor **`$1,010`**. Floors are not added together.
 
-After a proven profit claim, peaks reset to `A`. While profit has already left Core or arrived on EVM, floor views count from `A`, so a successful transfer does not look like Drawdown.
+After a proven profit claim, peaks reset to `A`. Floor views then count from `A`, so a successful transfer does not look like Drawdown.
 
 ## TARGET
 
-`targetProfit` is an optional absolute USDC amount, frozen at activation. Zero disables it.
+`targetProfit` is an absolute USDC amount, frozen at activation. Zero disables it.
 
 ```
 reached when currentEquity ≥ A + targetProfit
 ```
 
-Prior withdrawals do not accumulate toward it. Drawdown is always checked first. At the threshold an ordinary withdrawal is already blocked.
+Prior withdrawals do not count. Drawdown is checked first. At the threshold, ordinary withdrawal is blocked.
 
-The account does not close itself on TARGET. Only the relayer writes `TargetReached`. That is a keep-split close. If the owner presses close at the threshold, the first intent is `TraderRequested` (forfeit). The relayer should still prefer TARGET.
+The account does not close itself. Only the relayer writes `TargetReached`. That close keeps the ordinary split. If the owner presses close at the threshold, the first intent is `TraderRequested` (forfeit). The relayer should still prefer TARGET.
 
-## Markets and leverage
+## Markets
 
-Trading is allowed only on the **live** MainVault perp list, at that market's live leverage cap.
+Live MainVault perp list only, at that market's live leverage cap.
 
-A whitelist edit does not close the account and does not become a close reason. The proxy refuses new off-list entries. The keeper flattens leftover size on a withdrawn market. Other live markets stay open.
+A whitelist edit does not close the account. The proxy refuses new off-list entries. The keeper flattens leftover size on a withdrawn market.
 
-There is no global 5× identity and no “unauthorized market → account closed” rule on the clone.
+No global 5× cap. No "unauthorized market → account closed" rule. `UnauthorizedAsset` and `LeverageBreach` stay on the enum for ABI. The live clone does not set them.
 
 ## Time
 
-| Mode | How time is paid | What happens when it ends |
+| Mode | How time is paid | When it ends |
 |---|---|---|
-| Sponsored | 30-day subscription, 1.5% of `A` per period (rounded up to 1 USDC), 50/50 vault / protocol | `checkpoint` can renew in the last 3 days if the account can pay from profit without breaching floors. The owner can cancel; the next qualifying checkpoint closes and **keeps** the ordinary split |
-| Self-funded | Prepaid at activation: 2% / 1 day, 4% / 7 days, 8% / 30 days | No auto-renew. Expiry **keeps** the ordinary split. Anyone can pay `extendRental` for more time, same tiers, no extra reserve, max 30 days ahead |
+| Sponsored | 30-day subscription, 1.5% of `A` per period (ceil to 1 USDC), 50/50 vault / protocol | `checkpoint` can renew in the last 3 days if the fee can be taken from profit without breaching floors. Cancel: next qualifying checkpoint closes and keeps the ordinary split |
+| Self-funded | Prepaid: 2% / 1 day, 4% / 7 days, 8% / 30 days | No auto-renew. Expiry keeps the ordinary split. Anyone can pay `extendRental`, same tiers, no extra `R`, horizon now + 30 days |
 
-The first sponsored period is not hidden inside the activation charge. A self-funded term is prepaid in full.
+The first sponsored period is not inside the activation charge. Self-funded is prepaid in full.
 
-`cancelSubscription` does nothing on self-funded. There is no keep-profit early exit on that path: wait for expiry, or `TraderRequested` (forfeit).
+`cancelSubscription` does nothing on self-funded. Keep-profit early exit is not on that path: wait for expiry, or `TraderRequested`.
 
-## What the builder sets
+## At activation
 
-At activation the builder (or the self-funded trader) chooses:
-
-- `A`: default **$10 – $20,000**
-- `D`: default **5% – 25%**
-- `builderPoolBps`: **10% – 70%** of ordinary profit. Required. No on-chain default
+- `A`: default $10-$20,000
+- `D`: default 5%-25%
+- `builderPoolBps`: 10%-70% of ordinary profit. Required
 - `targetProfit`: absolute TARGET, or zero
-- `feeBps`: sponsored only 200. Self-funded 200 / 400 / 800 → 1 / 7 / 30 days
+- `feeBps`: sponsored 200 only. Self-funded 200 / 400 / 800 → 1 / 7 / 30 days
 
 Daily drawdown is not a parameter. Sponsored has it. Self-funded does not.
