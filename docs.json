@@ -2,7 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Proportion",
-  "description": "Prop-trading infrastructure built on Hyperliquid.",
+  "description": "Trader-financing protocol on HyperEVM.",
   "colors": {
     "primary": "#00D4FF",
     "light": "#00D4FF",
@@ -47,7 +47,7 @@
         "default": true,
         "groups": [
           {
-            "group": "Intro",
+            "group": "Introduction",
             "pages": ["index", "offering"]
           },
           {
@@ -55,15 +55,15 @@
             "pages": ["security"]
           },
           {
-            "group": "Trade",
+            "group": "Funded",
             "pages": [
-              "traders/index",
-              "traders/rules",
-              "traders/payouts"
+              "funded/index",
+              "funded/rules",
+              "funded/payouts"
             ]
           },
           {
-            "group": "Build",
+            "group": "Builders",
             "pages": [
               "builders/index",
               "builders/onboarding",
@@ -81,7 +81,7 @@
         "language": "ru",
         "groups": [
           {
-            "group": "Intro",
+            "group": "Введение",
             "pages": ["ru/index", "ru/offering"]
           },
           {
@@ -89,15 +89,15 @@
             "pages": ["ru/security"]
           },
           {
-            "group": "Trade",
+            "group": "Funded",
             "pages": [
-              "ru/traders/index",
-              "ru/traders/rules",
-              "ru/traders/payouts"
+              "ru/funded/index",
+              "ru/funded/rules",
+              "ru/funded/payouts"
             ]
           },
           {
-            "group": "Build",
+            "group": "Билдеры",
             "pages": [
               "ru/builders/index",
               "ru/builders/onboarding",
@@ -115,19 +115,23 @@
         "language": "zh-Hans",
         "groups": [
           {
-            "group": "入门",
+            "group": "介绍",
             "pages": ["zh/index", "zh/offering"]
           },
           {
-            "group": "交易",
+            "group": "安全",
+            "pages": ["zh/security"]
+          },
+          {
+            "group": "Funded",
             "pages": [
-              "zh/traders/index",
-              "zh/traders/rules",
-              "zh/traders/payouts"
+              "zh/funded/index",
+              "zh/funded/rules",
+              "zh/funded/payouts"
             ]
           },
           {
-            "group": "构建",
+            "group": "Builder",
             "pages": [
               "zh/builders/index",
               "zh/builders/onboarding",
@@ -167,5 +171,16 @@
       "x": "https://x.com/proportion_fi",
       "telegram": "https://t.me/keysigner"
     }
-  }
+  },
+  "redirects": [
+    { "source": "/traders", "destination": "/funded" },
+    { "source": "/traders/rules", "destination": "/funded/rules" },
+    { "source": "/traders/payouts", "destination": "/funded/payouts" },
+    { "source": "/ru/traders", "destination": "/ru/funded" },
+    { "source": "/ru/traders/rules", "destination": "/ru/funded/rules" },
+    { "source": "/ru/traders/payouts", "destination": "/ru/funded/payouts" },
+    { "source": "/zh/traders", "destination": "/zh/funded" },
+    { "source": "/zh/traders/rules", "destination": "/zh/funded/rules" },
+    { "source": "/zh/traders/payouts", "destination": "/zh/funded/payouts" }
+  ]
 }

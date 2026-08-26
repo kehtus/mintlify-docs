@@ -1,51 +1,47 @@
 ---
-title: "Protocol Rules"
-description: "协议在链上执行的 funded-account rules"
+title: "硬性规则"
+description: "激活之后 Builder 不能放宽的部分"
 ---
 
-协议自身执行所有 funded-account rules。Builder 不能放宽或绕过这些规则，只能在允许范围内选择参数。
+你在允许区间内选择参数。账户上线后，你不能改写下限、分成或关闭经济。
 
-## 硬性规则
+| 规则 | 取值 |
+|---|---|
+| 普通利润 | `builderPoolBps` 给 Builder，剩余给交易员。Vault 和协议拿 0 |
+| 被没收的关闭盈余 | Builder 40% / 协议 20% / LP 残值 |
+| 利润锁定 | 已接受峰值利润的 30%，同时作用于生命周期下限与日下限 |
+| 提取门槛 | 3 个盈利 checkpoint 日（增长 ≥ 0.70%）**或** 利润 ≥ `A` 的 3% |
+| Checkpoint | 1 天 |
+| 赞助期限 | 30 天订阅 |
+| 日回撤 | 赞助账户强制开启，自费账户关闭 |
+| 谁可以赞助 | 任何有 `R + P` 的人。没有登记表，没有质押 |
+| 市场 | 当前 MainVault 白名单。编辑不会关闭账户 |
 
-所有账户共享的 hardcoded rules：
-
-| Rule | Value |
-|------|-------|
-| Max leverage | 5x notional/equity。触发 breach → positions close |
-| Profit split | 80% trader / 13% LP / 7% protocol |
-| Profitable days for withdrawal | 4 天，每天增长 ≥ 1% |
-| Checkpoint interval | 1 天 |
-| Subscription period | 30 天 |
-
-## Trailing Drawdown（基于 HWM）
-
-FA 使用 trailing floor：HWM 在每日 checkpoint 更新，trader profit 会在日末通过 floor 锁定。日内 floor 不会随着 PnL 跳动；如果当天收盘盈利，下一次 checkpoint 会将 floor 向上调整。
+## 追踪下限
 
 ```
-accountSize = $10k, drawdown = 10%
-Start:    HWM=$10k, floor=$9k
-+$5k (checkpoint): HWM=$15k, floor=$13.5k
--$2k ->    balance $13k < $13.5k -> close
+A = $1,000, D = 10%, accepted peak = $1,200
+baseFloor  = $900
+profitLock = $60
+trailing   = $960
 ```
 
-Profit withdrawal 后，HWM 会重置为 accountSize。
+日内峰值只有在通过 1% 接受门槛后才会移动。Checkpoint 接受任何更高的生命周期峰值。已证实的利润领取之后，峰值重置为 `A`。
 
-## Daily Drawdown（可选）
+## 日回撤
 
-由 Builder 在 activation 时开启。Daily limit = trailing drawdown 的 50%。
+不是你在激活时传入的开关。若你赞助另一名交易员，日回撤按 `D` 的一半开启。若交易员自费，则关闭。
 
-| Trailing | Daily |
-|----------|-------|
-| 5% | 2.5% |
-| 10% | 5% |
-| 25% | 12.5% |
+同一示例，日初 `$1,000`，日峰值 `$1,200` → 日下限 `$1,010`。有效下限取二者较大值。
 
-在每个 checkpoint 检查，也可通过 `initiateClose()` permissionlessly 触发。开启 daily drawdown 可获得 20% activation fee discount。
+## TARGET
 
-## Perp Whitelist
+`targetProfit` 在链上。零表示关闭。`A + targetProfit` 这个阈值会挡住普通提取。Relayer 写入 `TargetReached`，并保留普通分成。
 
-只能交易协议 whitelist 中的 liquid perps。Keeper 在链下监控 positions；发现 unauthorized asset 时调用 `initiateClose()`。合约会自行验证违规是否真实发生，并在确认后关闭账户。
+## 白名单
 
-## 这对 Builder 意味着什么
+当前名单是每个 Active 账户的交易规则。未授权仓位会被平掉。其余仍在名单上的市场可继续交易。整户紧急关闭是 Admin，且 Admin **保留**普通关闭利润。
 
-Builder 可以在链下实现自己的附加规则（profit target、minimum trading days、更严格的 daily limit），作为 challenge 和 evaluation 的一部分。当 trader 通过 Builder 的标准后，Builder 通过 SDK 打开 funded account；从那一刻起，协议按自己的规则保护资本。
+## 你仍然拥有什么
+
+如何筛选交易员、你在协议外向他们收取什么，以及如何打造项目品牌，都仍归你。一旦 `activateFunded` 落地，资本保护归协议。

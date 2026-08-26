@@ -1,49 +1,62 @@
 ---
-title: "如何运作"
-description: "核心流动性合约 — flows、shares、limits"
+title: "MainVault"
+description: "存款、拨付、保守 NAV"
 ---
 
-Proportion 的核心是 Vault contract。它协调 LP deposits、funded-account financing、USDC custody、fees 和 profit distribution。协议中的每一笔 capital flow 都经过 Vault。
+MainVault 是资本层。它接收 LP 存款，向 funded 账户拨付本金，记账 Builder 准备金，并走一条关闭结算路径。
 
-## Flows
+## 资金流
 
 <CardGroup cols={3}>
-  <Card title="FA Funding" icon="banknote">
-    根据 Builder 请求，Vault 分配 `accountSize`，并通过 HyperCore Spot 将 USDC 转入 FundedAccount
+  <Card title="拨付" icon="banknote">
+    激活时，vault 将本金 `A` 存入 Hypercore。调用方支付 `R + P`
   </Card>
-  <Card title="Fees" icon="coins">
-    Activation fees 和 trader profit share 进入 Vault，提高 `sharePrice`
+  <Card title="记账" icon="coins">
+    `R` 是在途 Builder 负债。Vault 侧溢价与订阅留在 NAV 中
   </Card>
-  <Card title="Returns" icon="rotate-ccw">
-    FA 关闭时，principal 和 residual 返回 Vault
+  <Card title="结算" icon="rotate-ccw">
+    关闭拉取快照的 `Q`、未使用准备金，以及已归属的领取。未归属的 EVM 余额退回 vault
   </Card>
 </CardGroup>
 
-## Shares and sharePrice
-
-LP 在 Vault 中的 position 由 shares 表示。累计 profit 会提高 `sharePrice`；yield 不需要单独 claim。
+## 保守 NAV
 
 ```
-sharePrice = totalAssets / totalShares
-totalAssets = USDC on EVM + USDC allocated to active FAs
+grossAssets = EVM USDC + totalAllocated
+
+totalAssets = grossAssets
+            − active builder reserve
+            − claimable reserve refunds
+            − claimable payouts
+
+sharePrice  = totalAssets / totalShares     // 1 USDC if no shares
 ```
 
-## Allocation Limits
+在途准备金、已结算退款与未支付领取不会抬高 share price。待处理的 Core 结算不会锁定 vault。在关闭实现 `Q` 之前，存款与退出使用这一链上状态。
 
-| Parameter | Value | What it limits |
-|-----------|-------|----------------|
-| Max utilization | **80%** | 分配给 active FAs 的 Vault 份额 |
-| Max single account | **10%** / $20k | 单个 FA 相对 `totalAssets` 的规模 |
-| Builder leverage | **10x** | Builder funding 相对 `sharesValue` 的最大倍数 |
+## 上限
 
-## Lock-Up
+| 参数 | 默认 | 限制什么 |
+|---|---|---|
+| 最大利用率 | **80%** | `totalAllocated` 相对 NAV |
+| 单账户上限 | **10%** / $20k | 单个 `A` |
+| 账户规模 | $10 – $20,000 | 每账户 `A` |
+| 回撤 | 5% – 25% | 追踪 `D` |
 
-没有 Builder role 的 LP 可以随时 withdraw shares。Builder shares 在其拥有 active FAs 时会被锁定。`withdrawableShares()` 显示可 withdrawal 的 shares 数量。
+激活还需要 NAV ≥ `$100`（默认 `minAccountSize / maxSingleAccountBps`）。低于该值时仍可存款。
 
-## Governance
+## 退出
 
-Vault parameters（`feeMultiplier`、`MIN/MAX_ACCOUNT_SIZE`、`MIN/MAX_DRAWDOWN_BPS`、`BUILDER_LEVERAGE`、utilization、per-FA limits）由 admin 通过 setters 修改。
+即时 `withdraw(shares)` 始终可用。`requestWithdraw` / `executeWithdraw` 是同一套核算上的可选 1 天冷却。
 
-<Card title="Yield and Risks" icon="trending-up" href="/zh/vault/yield">
-  LP yield 来自哪里，以及 Vault 有哪些风险
+退出只能动用高于准备金、退款与派付负债的 EVM 现金，并且必须保持利用率完好。打开的 funded 账户不会锁定 LP shares。
+
+`deposit(amount, proposedReferrer)` 可在首次接触时绑定 LP 的推荐。`depositFor` 从不绑定。
+
+## 治理
+
+风险区间、利用率与上限通过 `setRiskConfig` 调整。费用档位和 50/50 分成是常量。
+
+<Card title="收益" icon="trending-up" href="/zh/vault/yield">
+  Vault 收入从哪里来，以及什么会降低 share price
 </Card>

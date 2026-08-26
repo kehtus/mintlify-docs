@@ -1,79 +1,69 @@
 ---
-title: "FA Parameters and Fees"
-description: "FA parameters, fee formulas, and allocation limits"
+title: "Parameters"
+description: "What you choose at activation, and what R + P means"
 ---
 
-## What the Builder Chooses at Activation
+## What you choose
 
-| Parameter | Range | What it does |
-|-----------|-------|--------------|
-| `trader` | any address | Who receives the FA |
-| `accountSize` | $10–$20,000 | Capital size (USDC, 6 dec) |
-| `drawdownBps` | 5%–25% | Trailing drawdown limit |
-| `dailyDrawdownEnabled` | bool | Enable daily limit (=50% of drawdownBps) |
+| Parameter | Band | Role |
+|---|---|---|
+| `trader` | any address | Clone owner. If `trader` is the caller, the path is self-funded |
+| `accountSize` | $10 – $20,000 | Principal `A` (defaults; admin-bounded) |
+| `drawdownBps` | 5% – 25% | Trailing `D`. Sets reserve `R` |
+| `builderPoolBps` | 10% – 70% | Ordinary builder share |
+| `targetProfit` | ≥ 0 | Absolute TARGET. `0` disables |
+| `feeBps` | 200 / 400 / 800 | Sponsored must pass **200**. Self-funded picks the term |
+| `proposedReferrer` | optional | Binds the caller |
 
-`MIN/MAX_ACCOUNT_SIZE` and `MIN/MAX_DRAWDOWN_BPS` are configurable by the protocol admin.
+Daily drawdown is not a parameter. It follows the path: sponsored on, self-funded off.
 
-## Allocation Limits
-
-| Parameter | Value | What it limits |
-|-----------|-------|----------------|
-| Max utilization | **80%** | Share of LP vault allocated to active FAs |
-| Max single account | **10%** / $20k | Size of one FA relative to `totalAssets` |
-| Builder leverage | **10x** | Total accountSize of builder FAs ≤ `sharesValue × 10` |
-
-`getMaxAccountSize()` and `builderAvailableFunded(builder)` show current limits.
-
-## Activation Fee (One-Time)
+## Activation charge
 
 ```
-fee = accountSize × drawdownBps × feeMultiplier / 1_000_000
+R = floor(A × D / 10_000)     // builder-owned reserve
+P = ceil(A × F / 10_000)      // premium, a share of A, not of R
+activationCharge = R + P
 ```
 
-`feeMultiplier = 120` (1.2x risk premium) is the default. The parameter is mutable: the protocol admin sets it through `setFeeMultiplier()` within 1.0x–2.0x. If `dailyDrawdownEnabled = true` — 20% discount.
+Raising `D` costs more refundable reserve. It does not raise the premium.
 
-| accountSize | drawdown | dailyDD | Fee |
-|-------------|----------|---------|-----|
-| $5,000 | 5% | OFF | $300 |
-| $5,000 | 10% | OFF | $600 |
-| $5,000 | 10% | ON | $480 |
-| $10,000 | 25% | OFF | $3,000 |
-| $20,000 | 10% | OFF | $2,400 |
-
-Activation fee distribution: 90% → LP vault, 10% → protocol. The subscription fee is calculated separately and distributed below.
-
-The builder includes this amount plus their own margin in the challenge price for the trader.
-
-## Subscription Fee
+| Path | `F` | Term |
+|---|---|---|
+| Sponsored | 2% | 30 days, renewing subscription |
+| Self-funded T1 | 2% | 1 day prepaid |
+| Self-funded T2 | 4% | 7 days prepaid |
+| Self-funded T3 | 8% | 30 days prepaid |
 
 ```
-fee = accountSize × subscriptionFeeMultiplier / 10000
+protocolPremium = floor(P × 50%)
+vaultPremium    = P − protocolPremium
 ```
 
-`subscriptionFeeMultiplier = 150` → 1.5% of accountSize per month. Charged every 30 days. The trader can cancel (`cancelSubscription`) — at the next checkpoint in the renewal zone, the FA closes.
+The caller pays `R + P` in USDC. MainVault deposits exactly `A` as principal.
 
-Distribution: 85% builder, 15% protocol.
+Example: `A = $1,000`, `D = 10%`, sponsored 2% → `R = $100`, `P = $20`, charge `$120`. Vault and protocol each take `$10` of premium. Builder reserve liability is `$100`. LP allocation is `$1,000`.
 
-## Profit Withdrawal
+## Allocation limits
 
-When the trader requests a withdrawal (`requestWithdrawProfit`):
+| Limit | Default | Meaning |
+|---|---|---|
+| Max utilization | 80% of NAV | Share of vault allocated to active accounts |
+| Max single account | 10% of NAV, capped at $20k | One `A` |
 
-<Steps>
-  <Step title="Profitable days">`profitableDaysCount ≥ 4` (4 days of ≥ 1% growth)</Step>
-  <Step title="Subscription">Subscription is active</Step>
-  <Step title="Profit over HWM">Profit exists over the high-water mark</Step>
-  <Step title="Splits">80% trader, 13% Vault, 7% protocol</Step>
-  <Step title="Reset">After withdrawal, HWM resets to accountSize and profitable days reset</Step>
-</Steps>
+No account can activate until NAV reaches the bootstrap floor (`$100` at defaults). Deposits remain available below that.
 
-## FA Closure
+## Subscription
 
-Triggers (all lead to `initiateClose()`):
+```
+subscriptionFee = ceil_to_1_USDC(A × 1.5%)
+```
 
-- Trailing/daily drawdown breach
-- Max leverage breach
-- Trading an unauthorized perp
-- Subscription unpaid in the renewal zone
-- `initiateCloseAdmin()` from the relayer
+Split **50/50** vault / protocol. Builder receives **0**.
 
-After closure, positions are unwound, USDC returns to the Vault, and builder shares unlock.
+Sponsored accounts renew from Core equity in the last 3 days of the period if the fee can be paid without breaching floors. Self-funded accounts skip renewal; more time is `extendRental` (same tiers, no extra `R`, max 30 days ahead).
+
+## Profit and close
+
+Live withdrawal and non-forfeiting close use `builderPoolBps`. Forfeiting close (`Drawdown`, `TraderRequested`) zeros the trader’s unwithdrawn `Q − A` and splits that surplus 40 / 20 / LP residual. Unused `R` still returns to the builder.
+
+Admin close keeps the ordinary split. It is a break-glass, not a confiscation.

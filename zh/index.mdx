@@ -4,40 +4,24 @@ title: "概览"
 
 ![Proportion overview](/images/image.jpeg)
 
-Proportion 是构建在 Hyperliquid 上的 prop-trading infrastructure。
+Proportion 是部署在 HyperEVM 上的交易员融资协议。
 
-它在统一的协议层协调市场中的三方。Trader 通过 Hyperliquid 上的 funded account 获取交易资本。Builder 基于已经内置的资本、风控执行和结算能力，启动自己的 prop-trading 产品。LP 将 USDC 存入共享 Vault，并参与 activation fee 和 trader profit 的分配。
+三方。交易员在 Hyperliquid 上操作隔离的 funded 账户。Builder 写条款，合约执行条款。LP 将 USDC 存入 MainVault，按比例获得 vault 收入。收益不承诺，可以为零。
 
-## 什么是 Proportion？
+核心对象是 `FundedAccount`。资本放在隔离克隆中，受锁定规则约束。成交是真实的 Hypercore 执行。交易员操作该账户。他们不拥有 vault，也不能把本金带走。
 
-Proportion 将 prop-firm 模型带到链上。曾经在外汇市场催生出数千家 prop firm 的交易资本需求，如今正在 Hyperliquid 和 builder codes 生态中出现。
-
-与传统 prop firm 不同，链上 prop firm 需要 non-custodial account、透明规则、可验证结算和可组合资本。Proportion 提供这些组件，使每个 Builder 不必从零编写合约或运行自己的风控引擎。
-
-## 技术概览
-
-Proportion 围绕共享 Vault 和隔离的 funded account 构建。Vault 持有 LP 资本，向 funded account 分配 USDC，接收 activation fee，并结算 trader profit split。Funded account 在 Hyperliquid 上交易，协议规则负责执行 drawdown、leverage、market access、subscription 和 withdrawal。
-
-## 使命
-
-Proportion 的目标是成为 onchain prop firms 的流动性中心：一个运行在 HyperEVM 上的可组合 DeFi 层，用于协调 trader、builder 和 LP 之间的资本分配。
+MainVault 持有 LP 资本，拨付本金，记账 Builder 准备金，并走一条关闭路径。账户只交易当前白名单内的永续。回撤、TARGET、时间、提取与领取都是合约状态。
 
 ## 下一步
 
 <CardGroup cols={2}>
-  <Card title="交易" icon="user" href="/zh/traders">
-    Funded account 和 trader rules
+  <Card title="Funded" icon="user" href="/zh/funded">
+    隔离账户、规则与派付
   </Card>
-  <Card title="构建" icon="hammer" href="/zh/builders">
-    面向 Builder 的 prop-firm infrastructure
+  <Card title="Builder" icon="hammer" href="/zh/builders">
+    为交易员开户
   </Card>
   <Card title="Vault" icon="vault" href="/zh/vault">
-    协议的流动性中心
-  </Card>
-  <Card title="SDK" icon="code">
-    TypeScript client — soon
-  </Card>
-  <Card title="API" icon="plug">
-    REST/GraphQL — soon
+    LP 资本与 NAV
   </Card>
 </CardGroup>

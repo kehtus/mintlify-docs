@@ -1,50 +1,54 @@
 ---
-title: "Yield and Risks"
-description: "Sources of LP yield and risks of placing capital in Vault"
+title: "Yield"
+description: "Residual vault income. Not a promised APY"
 ---
 
-## Yield Sources
+Vault yield is residual. It can be zero.
+
+## Income
 
 <CardGroup cols={3}>
-  <Card title="Activation fees" icon="percent">
-    **90%** of every FA issuance goes to Vault
+  <Card title="Activation premium" icon="percent">
+    **50%** of `P`. `P` is a share of account size, not of the reserve
   </Card>
-  <Card title="Profit split" icon="chart-line">
-    **13%** of trader profit at the time of withdrawals
+  <Card title="Subscription" icon="repeat">
+    **50%** of sponsored renewals (1.5% of `A` per period). Self-funded prepaid premium uses the same 50/50
   </Card>
-  <Card title="Unused activation-fee buffer" icon="shield-check">
-    The unused portion of collected activation fees remains in Vault
+  <Card title="Forfeited surplus" icon="chart-line">
+    Residual of `Q − A` after builder 40% and protocol 20%, on Drawdown or TraderRequested
   </Card>
 </CardGroup>
 
 <Info>
-Subscription fees do not go to Vault — they are builder revenue (85%) and protocol revenue (15%).
+LPs do not receive ordinary trader / builder profit. Unused reserve `R` returns to the builder, not to the vault.
 </Info>
+
+A loss beyond reserve becomes `reserveDeficit` in NAV. Settlement still completes.
+
+There is no builder stake. First-loss is reserve `R`. Loss beyond `R` lands in NAV.
 
 ## Risks
 
-Placing capital in Vault involves several risks that affect share value and LP yield.
-
 <AccordionGroup>
   <Accordion title="Correlated drawdowns" icon="waves">
-    The activation fee is designed to improve LP expected value in isolated events. With simultaneous breach closures across many funded accounts, aggregate losses may exceed the pool's accumulated buffer, reducing `sharePrice` — potentially below the deposit's nominal value.
+    Premium `P` is small relative to allocated `A`. Simultaneous breaches can consume more than accumulated vault income and push `sharePrice` below the deposit.
+  </Accordion>
+  <Accordion title="Overshoot / gap risk" icon="zap">
+    Floors start a close. They do not guarantee a fill at the floor. A Core liquidation or gap can realize `Q` below the floor. Excess beyond `R` hits LPs.
   </Accordion>
   <Accordion title="Issuance quality" icon="users">
-    LPs do not participate in trader selection or activation parameter decisions — these decisions are made by builders. Deterioration in underwriting quality by any builder affects Vault yield proportionally to their share of active FA issuance.
+    LPs do not pick traders. A builder who sponsors poorly affects the pool in proportion to allocated principal.
   </Accordion>
   <Accordion title="Smart-contract risk" icon="file-code">
-    MainVault and FundedAccount contracts are exposed to critical vulnerability risk. The codebase has undergone an independent audit, but residual risk cannot be eliminated.
+    MainVault and FundedAccount have been independently reviewed. Residual implementation risk remains.
   </Accordion>
-  <Accordion title="Dependency on Hyperliquid and HyperCore" icon="link">
-    Vault operations rely on HyperCore data (balances, prices) and Hyperliquid spot/perp infrastructure. Failures or incorrect behavior in these components are reflected in Vault capital.
+  <Accordion title="Hyperliquid / Hypercore dependency" icon="link">
+    Equity, fills, and bridges depend on Hypercore reads and Hyperliquid infra. Faults there show up as vault capital.
   </Accordion>
-  <Accordion title="Price slippage during liquidation" icon="zap">
-    In extreme volatility, a trader's position may realize a loss below the trailing floor before the protocol initiates FA closure. The premium included in the activation fee partially absorbs this difference, but does not guarantee full coverage.
+  <Accordion title="LP exit" icon="lock">
+    Shares are not locked by open accounts. Exits still cannot break utilization: `totalAllocated` must stay within 80% of post-withdraw NAV.
   </Accordion>
-  <Accordion title="Limited liquidity for builders" icon="lock">
-    Shares of participants with an active builder role are locked while they have active funded accounts. Full withdrawal is possible only after all FAs are closed.
-  </Accordion>
-  <Accordion title="Governance risk" icon="settings">
-    Vault configuration (`feeMultiplier`, allocation limits, drawdown parameters) can be changed through administrative functions.
+  <Accordion title="Governance" icon="settings">
+    Account-size, drawdown, and utilization bands can move through admin `setRiskConfig` inside published bounds.
   </Accordion>
 </AccordionGroup>

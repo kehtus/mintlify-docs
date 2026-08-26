@@ -1,66 +1,53 @@
 ---
-title: "面向 Builder"
-description: "在 Hyperliquid 上启动 prop firm 所需的资本和基础设施"
+title: "Builder"
+description: "你写条款。合约执行条款。"
 ---
 
-> Builder 负责产品。Proportion 提供 funded layer。
+Builder 为交易员打开一个 `FundedAccount`。MainVault 拨付本金，记账你的准备金，并走一条关闭结算路径。筛选、品牌与协议外定价仍归你。
 
-对 Builder 来说，funded account 是 prop firm 中最消耗资本、也最重基础设施的一部分。Proportion 将这一层作为基础设施提供：资本、链上风控执行和结算。Challenge、evaluation、品牌、营销和 trader selection 仍然是 Builder 自己的产品。
+Builder 就是支付 `R + P` 的人。没有登记表，没有 `registerBuilder`，没有 $10 质押，也没有 10× 容量。任何有 USDC 支付激活费用的钱包，都可以为自己或他人开户。
 
-Proportion 与 Hyperliquid Builder Codes API 兼容，因此 Builder 可以用较少的客户端改动，将其集成到现有 trading frontend 中。Builder 从协议购买资本访问权，并用 challenge revenue 或其他 selection product 的收入支付成本。
+| 你的层 | 协议层 |
+|---|---|
+| 筛选与品牌 | 来自 MainVault 的本金 |
+| 协议外项目定价 | 下限、TARGET、当前白名单 |
+| 你如何找到交易员 | 准备金退回、普通分成、被没收的盈余 |
 
-成为 Builder 需要向 LP vault 存入资金。该 deposit 作为 LP capital 参与收益，因此激活 FA 的有效成本低于名义金额。同一笔 deposit 也让 Builder 有 skin in the game：activation fee 旨在补偿预期 drawdown risk，但实际亏损仍可能降低 pool yield 和 `sharePrice`。
+<Warning>
+来自 funded 账户的 Hyperliquid builder-code 费用进入 `protocolFeeReceiver`，不是 Builder。
+</Warning>
 
-## Proportion 给 Builder 什么
-
-Funded account 是 Proportion 提供的基础 primitive：一次 SDK call 创建一个隔离的链上账户，带有资本、drawdown limits 和自动风控执行。FA smart contract 在协议规则内属于用户。
-
-| Builder layer — product | Protocol layer |
-|-------------------------|----------------|
-| Challenge 和 evaluation | 来自 LP vault 的资本 |
-| Trader selection 和 onboarding | 链上 risk engine（drawdown、leverage、allowed perps） |
-| 品牌、营销、定价 | Settlement：fees、subscriptions、profit split 80/13/7 |
-
-边界：FA activation 之前由 Builder 处理；activation 之后由协议执行规则。
-
-### Builder 同时也是 LP
-
-成为 Builder 需要向 LP vault 存入至少 $10,000 USDC。这笔 deposit：
-
-- 提供 funding quota：10x leverage（$10k → 最高 $100k active trader capital）
-- 让 Builder 成为 LP pool 的一部分 — shares 参与整个协议所有 FA 的收益和损失，而不仅是自己的 FA
-
-LP pool 从 activation fees 和 trader profits 中获得收益。触及限制的 trader drawdown 会降低 pool yield。Builder 同时在两个层面有 skin in the game：自己的产品，以及整个生态的健康。
-
-### Builder P&L 来源
+## 收益
 
 <CardGroup cols={2}>
-  <Card title="Challenge margin" icon="ticket">
-    Challenge price 减去协议 activation fee
+  <Card title="未使用的准备金" icon="shield">
+    `R` 是你的。实际本金亏损按 1:1 消耗。其余退回
   </Card>
-  <Card title="Subscription" icon="repeat">
-    每个 active FA 的 1.5% accountSize/月中，Builder 获得 85%
+  <Card title="普通利润" icon="split">
+    保留利润提取与非没收性关闭中的 `builderPoolBps`（10–70%）
   </Card>
-  <Card title="Builder codes" icon="code">
-    FA 产生的 Hyperliquid fees 直接进入 Builder address
+  <Card title="被没收的盈余" icon="percent">
+    Drawdown 或 TraderRequested 之后，实际 `Q − A` 的 40%
   </Card>
-  <Card title="LP yield" icon="trending-up">
-    按 Builder shares 比例参与总协议 P&L
+  <Card title="LP shares" icon="trending-up">
+    如果你也是 LP，shares 拿同样的残值 vault 收入，也承担同样的亏损。这是可选的。激活不需要 shares
   </Card>
 </CardGroup>
 
-更多 LP vault yield 和风险，请查看 [Vault](/zh/vault/yield)。
+Builder 不拿订阅费。订阅按 50/50 分给 vault / 协议。
 
-## 章节
+第一损失是准备金 `R`，不是第二次 vault 存款。规模由 vault 限制：利用率 80%，单账户最多 NAV 的 10%。
+
+## 下一步
 
 <CardGroup cols={2}>
-  <Card title="Onboarding" icon="play" href="/zh/builders/onboarding">
-    如何成为 Builder 并激活第一个 FA
+  <Card title="激活" icon="play" href="/zh/builders/onboarding">
+    如何打开第一个账户
   </Card>
-  <Card title="Protocol Rules" icon="shield" href="/zh/builders/rules">
-    协议在链上执行什么规则
+  <Card title="硬性规则" icon="shield" href="/zh/builders/rules">
+    你不能放宽的部分
   </Card>
-  <Card title="FA Parameters and Fees" icon="settings" href="/zh/builders/fees">
-    Builder 选择哪些参数，fees 如何计算
+  <Card title="参数" icon="settings" href="/zh/builders/fees">
+    你选择什么，以及 `R + P` 的成本
   </Card>
 </CardGroup>

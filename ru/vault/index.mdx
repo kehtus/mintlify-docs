@@ -1,49 +1,62 @@
 ---
-title: "Как работает"
-description: "Центральный контракт ликвидности — потоки, shares, лимиты"
+title: "MainVault"
+description: "Депозиты, аллокация, консервативный NAV"
 ---
 
-Центральный элемент Proportion — контракт Vault. В нём сходятся все потоки ликвидности протокола: депозиты LP, финансирование funded-аккаунтов, хранение USDC, сборы и распределение профита. Всё, что движет капитал в системе, проходит через Vault.
+MainVault это слой капитала. Он принимает депозиты LP, выдаёт принципал funded-счетам, учитывает резерв билдера и проводит один путь close.
 
 ## Потоки
 
 <CardGroup cols={3}>
-  <Card title="Фондирование FA" icon="banknote">
-    По запросу билдера Vault выделяет `accountSize` и переводит USDC через Hypercore Spot в FundedAccount
+  <Card title="Аллокация" icon="banknote">
+    На активации волт кладёт принципал `A` на Hypercore. Вызывающий платит `R + P`
   </Card>
-  <Card title="Сборы" icon="coins">
-    Activation fees и доля профита трейдеров оседают в Vault, повышая `sharePrice`
+  <Card title="Учёт" icon="coins">
+    `R` это активное обязательство билдера. Премия и подписка на стороне волта остаются в NAV
   </Card>
-  <Card title="Возвраты" icon="rotate-ccw">
-    При закрытии FA принципал и residual возвращаются в Vault
+  <Card title="Сеттлмент" icon="rotate-ccw">
+    Close забирает снапшот `Q`, неиспользованный резерв и атрибутированные клеймы. Неатрибутированный остаток на EVM возвращается в волт
   </Card>
 </CardGroup>
 
-## Shares и sharePrice
-
-Доля LP в Vault отражена в shares. Накопленная прибыль автоматически повышает `sharePrice` — yield не нужно клеймить отдельно.
+## Консервативный NAV
 
 ```
-sharePrice = totalAssets / totalShares
-totalAssets = USDC на EVM + USDC, аллоцированный в активных FA
+валовые активы = USDC на EVM + totalAllocated
+
+NAV = валовые
+    − активный резерв билдеров
+    − клейма возврата резерва
+    − клейма выплат
+
+цена share = NAV / число shares
 ```
 
-## Лимиты аллокации
+Резерв, невыплаченные возвраты и невыплаченные payouts цену share не поднимают. Пока close не зафиксировал `Q`, депозиты и выходы идут по этому ончейн-NAV.
 
-| Параметр | Значение | Что ограничивает |
-|----------|----------|------------------|
-| Max utilization | **80%** | Доля Vault в активных FA |
-| Max single account | **10%** / $20k | Размер одного FA от `totalAssets` |
-| Builder leverage | **10x** | Максимум фондирования билдера от его `sharesValue` |
+## Лимиты
 
-## Лок-ап
+| Параметр | Дефолт | Что режет |
+|---|---|---|
+| Макс. утилизация | 80% | `totalAllocated` к NAV |
+| Один счёт | 10% / $20k | Один `A` |
+| Размер счёта | $10 – $20,000 | Один `A` |
+| Drawdown | 5% – 25% | Trailing `D` |
 
-LP без builder-роли — shares выводятся в любой момент. Билдер — shares залочены, пока есть активные FA под ним. `withdrawableShares()` показывает доступную для вывода часть.
+Активация ещё требует NAV ≥ $100 при дефолтах (`minAccountSize / maxSingleAccountBps`). Депозиты ниже этого работают.
+
+## Выходы
+
+Обычный `withdraw(shares)` сразу. `requestWithdraw` / `executeWithdraw` это опциональная пауза 1 день на том же учёте.
+
+Тратить можно только кэш на EVM сверх резерва, возвратов и выплат. Утилизация после выхода должна остаться в лимите. Лока shares из-за открытых funded-счетов нет.
+
+`deposit(amount, proposedReferrer)` может привязать referral LP при первом касании. `depositFor` никогда не привязывает.
 
 ## Управление
 
-Параметры Vault (`feeMultiplier`, `MIN/MAX_ACCOUNT_SIZE`, `MIN/MAX_DRAWDOWN_BPS`, `BUILDER_LEVERAGE`, утилизация, лимиты per-FA) меняются админом через сеттеры.
+Коридоры размера счёта, drawdown и утилизации двигает `setRiskConfig`. Тиры комиссий и сплиты 50/50 это константы.
 
-<Card title="Доходность и риски" icon="trending-up" href="/ru/vault/yield">
-  Откуда LP получает yield и какие риски у Vault
+<Card title="Доход" icon="trending-up" href="/ru/vault/yield">
+  Откуда доход волта и что может опустить цену share
 </Card>

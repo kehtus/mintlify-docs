@@ -1,49 +1,62 @@
 ---
-title: "How It Works"
-description: "Central liquidity contract — flows, shares, limits"
+title: "MainVault"
+description: "Deposits, allocation, conservative NAV"
 ---
 
-The central element of Proportion is the Vault contract. It coordinates LP deposits, funded-account financing, USDC custody, fees, and profit distribution. Every capital flow in the protocol passes through Vault.
+MainVault is the capital layer. It takes LP deposits, allocates principal to funded accounts, books builder reserve, and settles one close path.
 
 ## Flows
 
 <CardGroup cols={3}>
-  <Card title="FA Funding" icon="banknote">
-    At the builder's request, Vault allocates `accountSize` and transfers USDC through HyperCore Spot to the FundedAccount
+  <Card title="Allocate" icon="banknote">
+    At activation the vault deposits principal `A` to Hypercore. The caller pays `R + P`
   </Card>
-  <Card title="Fees" icon="coins">
-    Activation fees and the trader profit share accrue to Vault, increasing `sharePrice`
+  <Card title="Book" icon="coins">
+    `R` is an active builder liability. Vault-side premium and subscription stay in NAV
   </Card>
-  <Card title="Returns" icon="rotate-ccw">
-    When an FA closes, principal and residual return to Vault
+  <Card title="Settle" icon="rotate-ccw">
+    Close pulls snapshotted `Q`, unused reserve, and attributed claims. Unattributed EVM remainder returns to the vault
   </Card>
 </CardGroup>
 
-## Shares and sharePrice
-
-An LP's position in Vault is represented by shares. Accumulated profit increases `sharePrice`; yield does not need to be claimed separately.
+## Conservative NAV
 
 ```
-sharePrice = totalAssets / totalShares
-totalAssets = USDC on EVM + USDC allocated to active FAs
+grossAssets = EVM USDC + totalAllocated
+
+totalAssets = grossAssets
+            − active builder reserve
+            − claimable reserve refunds
+            − claimable payouts
+
+sharePrice  = totalAssets / totalShares     // 1 USDC if no shares
 ```
 
-## Allocation Limits
+Active reserve, settled refunds, and unpaid claims do not lift share price. Pending Core settlements do not lock the vault. Deposits and exits use this on-chain state until close realizes `Q`.
 
-| Parameter | Value | What it limits |
-|-----------|-------|----------------|
-| Max utilization | **80%** | Share of Vault allocated to active FAs |
-| Max single account | **10%** / $20k | Size of one FA relative to `totalAssets` |
-| Builder leverage | **10x** | Max builder funding relative to `sharesValue` |
+## Limits
 
-## Lock-Up
+| Parameter | Default | What it limits |
+|---|---|---|
+| Max utilization | **80%** | `totalAllocated` vs NAV |
+| Max single account | **10%** / $20k | One `A` |
+| Account size | $10 – $20,000 | Per-account `A` |
+| Drawdown | 5% – 25% | Trailing `D` |
 
-LPs without a builder role can withdraw shares at any time. Builder shares are locked while they have active FAs. `withdrawableShares()` shows how many shares are available to withdraw.
+Activation also needs NAV ≥ `$100` at defaults (`minAccountSize / maxSingleAccountBps`). Deposits work below that.
+
+## Exits
+
+Immediate `withdraw(shares)` stays available. `requestWithdraw` / `executeWithdraw` is an optional 1-day cooldown over the same accounting.
+
+Exits may spend only EVM cash above reserve, refund, and payout liabilities, and must leave utilization intact. Open funded accounts do not lock LP shares.
+
+`deposit(amount, proposedReferrer)` can bind the LP’s referral on first touch. `depositFor` never binds.
 
 ## Governance
 
-Vault parameters (`feeMultiplier`, `MIN/MAX_ACCOUNT_SIZE`, `MIN/MAX_DRAWDOWN_BPS`, `BUILDER_LEVERAGE`, utilization, per-FA limits) are changed by the admin through setters.
+Risk bands, utilization, and caps move through `setRiskConfig`. Fee tiers and 50/50 splits are constants.
 
-<Card title="Yield and Risks" icon="trending-up" href="/vault/yield">
-  Where LP yield comes from and what risks Vault has
+<Card title="Yield" icon="trending-up" href="/vault/yield">
+  Where vault income comes from, and what can reduce share price
 </Card>

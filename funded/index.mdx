@@ -1,0 +1,48 @@
+---
+title: "Funded accounts"
+description: "Isolated Hypercore capital under contract rules"
+---
+
+A `FundedAccount` is an isolated EIP-1167 clone on HyperEVM. MainVault deposits principal `A` onto Hypercore. Trading goes through an API wallet. The Exchange Proxy signs Hyperliquid. The trader never holds that key.
+
+A builder writes the terms. The contracts enforce them.
+
+<Tip>
+Rules, settlement, and claims live in published contracts. A prop firm cannot rewrite floors or deny a payout the contract already credited.
+</Tip>
+
+## Two paths
+
+| | Sponsored | Self-funded |
+|---|---|---|
+| Who pays `R + P` | The caller. They are `record.builder` | The trader (also the caller) |
+| Principal `A` | From MainVault | Also vault-allocated |
+| Vault deposit | Not required | Not required |
+| Daily drawdown | On | Off |
+| Time | 30-day subscription, can renew | Prepaid 1 / 7 / 30 days, no auto-renew |
+| Ordinary profit | Split by `builderPoolBps` | Same formulas, both buckets hit the trader |
+
+Self-funded is `activateFunded` when the caller is the trader. The lifetime floor is the same. The session path is wider because there is no daily floor.
+
+The live MainVault market list is the only list. A whitelist edit does not close the account. New entries off the list are refused. Leftover size on a withdrawn market is flattened. Remaining live markets stay tradeable.
+
+## Lifecycle
+
+```
+activate → Active → trade
+                 → withdraw profit (optional)
+                 → close → settle → claim
+```
+
+Close is one path. The clone snapshots actual Core trading capital `Q`. MainVault applies the frozen record (size, reserve, builder, split) and credits a pull ledger. Nobody supplies commercial terms at close.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Rules" icon="shield-check" href="/funded/rules">
+    Floors, TARGET, whitelist, and time
+  </Card>
+  <Card title="Payouts" icon="wallet" href="/funded/payouts">
+    Withdrawals, close reasons, and claims
+  </Card>
+</CardGroup>

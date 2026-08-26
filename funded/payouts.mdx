@@ -1,0 +1,94 @@
+---
+title: "Payouts"
+description: "How profit is withdrawn, how close pays, and how claims are pulled"
+---
+
+Ordinary profit is a two-way split. Vault and protocol take **none** of it.
+
+```
+builderShare = floor(profit × builderPoolBps / 10_000)
+traderShare  = profit − builderShare
+```
+
+`builderPoolBps` is pinned at activation, in **10% – 70%**. Typical product terms use 20% builder / 80% trader. That is a chosen term, not a protocol constant.
+
+On a self-funded account both buckets hit the same address, so the trader receives 100% of ordinary profit.
+
+<Info>
+Protocol and LPs earn from activation premium, subscription, and forfeited close surplus. Not from a keep-profit withdrawal.
+</Info>
+
+## Withdraw profit
+
+Profit is `currentEquity − A`. High-water mark is not the basis.
+
+A request needs all of:
+
+- account Active, subscription / term still live
+- no pending trader-close intent
+- TARGET not reached
+- profit at least **$1**
+- account flat (no open margin or notional)
+- enough tradeable Core USDC
+
+Then **either**:
+
+- **3** profitable checkpoint days, where a day counts if equity grew at least **0.70%** versus the previous checkpoint, **or**
+- instant: profit **≥ 3% of `A`**
+
+The request snapshots the whole profit and bridges Core → EVM. After arrival, `claimWithdrawal` pays the ordinary split. The trader residual is sent from the clone; the builder share is credited to the pull ledger.
+
+After a proven claim, peaks reset to `A` and the profitable-day streak restarts. A rejected Core send can be cancelled without weakening stored peaks.
+
+On a one-day self-funded term the first checkpoint is due when the term lapses, so an in-term withdrawal is the **3% instant** path only.
+
+## Close
+
+One close reason is written once. Floors decide **when** closing starts. They are not a fee. Settlement uses snapshotted Core trading capital `Q` only.
+
+| Reason | Unwithdrawn close profit `max(Q − A, 0)` |
+|---|---|
+| Drawdown | Forfeited |
+| TraderRequested | Forfeited, voluntary surrender |
+| TARGET | Ordinary split |
+| Subscription expired | Ordinary split |
+| Subscription cancelled (sponsored) | Ordinary split |
+| Admin | Ordinary split |
+
+`UnauthorizedAsset` and `LeverageBreach` still exist on the enum for ABI stability. The live clone does not produce them. A whitelist mismatch is flattened, not closed.
+
+A profit already accepted into a pending withdrawal stays **vested** under every later close reason. It is never mixed into `Q`. Even on a forfeiting close that piece still splits by ordinary `builderPoolBps`.
+
+### Forfeited surplus
+
+```
+builder   = 40% of (Q − A)
+protocol  = 20%
+vault / LP = the residual, including dust
+trader    = 0
+```
+
+Unused reserve still returns to `reserveRecipient`. On a direct sponsor that is the builder. On self-funded that is the trader. Only actual principal loss consumes reserve.
+
+### Voluntary close
+
+A flat owner can request close. That records intent; it does not write the reason yet. After the proxy drains and the account is flat and order-free, the relayer commits `TraderRequested`. Eligible profit should be withdrawn and claimed **before** that request.
+
+## Settlement and claims
+
+```
+principalLoss   = max(A − Q, 0)
+reserveConsumed = min(R, principalLoss)
+reserveRefund   = R − reserveConsumed
+closeProfit     = max(Q − A, 0)
+```
+
+Settlement credits fixed recipients. It does not push USDC to the trader, builder, or protocol.
+
+Anyone may call `claimPayout(recipient)`. Funds can only arrive at that address. Several accounts can aggregate under one recipient.
+
+The vault share of premium, subscription, and forfeited surplus does not enter the ledger. It is already in NAV.
+
+<Warning>
+A forfeiting close zeros unwithdrawn close profit. Withdraw and claim first if the account is still eligible.
+</Warning>

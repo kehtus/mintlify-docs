@@ -19,11 +19,11 @@ Critical administrative actions are protected by a 3-of-5 multisig and timelocks
 
 | Minimum delay | Changes covered |
 | --- | --- |
-| **72 hours** | `MainVault` and `ChallengeVault` implementation upgrades; `transferOwnership` and other governance-control changes; migrations that replace a core Vault implementation. |
-| **48 hours** | `queueFactoryChange` / `executeFactoryChange` for funded accounts; `proposeFactory` / `setFactory` for Challenge checkout; trusted integration changes such as `setRelayer`, `setForwarder`, `setMainVault`, and `setChallengeVault`; `setRiskConfig`, `setGlobalConfig`, market additions, leverage increases, and other changes that increase protocol risk. |
+| **72 hours** | `MainVault` implementation upgrades; `transferOwnership` and other governance-control changes; migrations that replace a core Vault implementation. |
+| **48 hours** | `queueFactoryChange` / `executeFactoryChange` for funded accounts; trusted integration changes such as `setRelayer` and `setForwarder`; `setRiskConfig`, market additions, leverage increases, and other changes that increase protocol risk. |
 
 <Note>
-  Defensive actions that reduce risk may be executed immediately. These include pausing new activations or purchases, canceling a queued change, disabling checkout, removing a market, and lowering leverage. Unpausing or increasing risk remains subject to the applicable timelock.
+  Defensive actions that reduce risk may be executed immediately. These include pausing new activations, canceling a queued change, removing a market, and lowering leverage. Unpausing or increasing risk remains subject to the applicable timelock.
 </Note>
 
 ## Key Management

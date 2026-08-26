@@ -1,51 +1,47 @@
 ---
-title: "Protocol Rules"
-description: "Funded-account rules enforced on-chain by the protocol"
+title: "Hard rules"
+description: "What a builder cannot soften after activation"
 ---
 
-The protocol enforces all funded-account rules itself. The builder cannot soften or bypass them — only choose parameters within the allowed range.
-
-## Hard Rules
-
-Hardcoded and shared by everyone:
+You choose parameters inside the allowed bands. You cannot rewrite floors, splits, or close economics after the account is live.
 
 | Rule | Value |
-|------|-------|
-| Max leverage | 5x notional/equity. Breach → positions close |
-| Profit split | 80% trader / 13% LP / 7% protocol |
-| Profitable days for withdrawal | 4 days with ≥ 1% growth each |
-| Checkpoint interval | 1 day |
-| Subscription period | 30 days |
+|---|---|
+| Ordinary profit | `builderPoolBps` to builder, residual to trader. Vault and protocol take 0 |
+| Forfeited close surplus | Builder 40% / protocol 20% / LP residual |
+| Profit lock | 30% of accepted peak profit, on both lifetime and daily floors |
+| Withdrawal bar | 3 profitable checkpoint days (≥ 0.70% growth) **or** profit ≥ 3% of `A` |
+| Checkpoint | 1 day |
+| Sponsored term | 30-day subscription |
+| Daily drawdown | Mandatory on sponsored accounts, absent on self-funded |
+| Who can sponsor | Anyone with `R + P`. No registry, no stake |
+| Markets | Live MainVault whitelist. Edit does not close the account |
 
-## Trailing Drawdown (HWM-Based)
-
-FA uses a trailing floor: HWM updates at the daily checkpoint, and the trader's profit is locked in via the floor at end-of-day. Intraday, the floor does not jump with PnL — but at the next checkpoint it ratchets up if the day closed in profit.
+## Trailing floor
 
 ```
-accountSize = $10k, drawdown = 10%
-Start:    HWM=$10k, floor=$9k
-+$5k (checkpoint): HWM=$15k, floor=$13.5k
--$2k ->    balance $13k < $13.5k -> close
+A = $1,000, D = 10%, accepted peak = $1,200
+baseFloor  = $900
+profitLock = $60
+trailing   = $960
 ```
 
-After a profit withdrawal, HWM resets to accountSize.
+Intraday peaks move only after a 1% acceptance gate. Checkpoint accepts any higher lifetime peak. After a proven profit claim, peaks reset to `A`.
 
-## Daily Drawdown (Optional)
+## Daily drawdown
 
-Enabled by the builder at activation. Daily limit = 50% of trailing drawdown.
+Not a flag you pass at activation. If you sponsor another trader, Daily DD is on at half of `D`. If the trader self-funds, it is off.
 
-| Trailing | Daily |
-|----------|-------|
-| 5% | 2.5% |
-| 10% | 5% |
-| 25% | 12.5% |
+Same example, day start `$1,000`, daily peak `$1,200` → daily floor `$1,010`. Effective floor is the max of the two.
 
-Checked at every checkpoint and permissionlessly through `initiateClose()`. Enabling it gives a 20% discount on the activation fee.
+## TARGET
 
-## Perp Whitelist
+`targetProfit` is on-chain. Zero disables it. The `A + targetProfit` threshold blocks ordinary withdrawal. The relayer writes `TargetReached` and keeps the ordinary split.
 
-Trading is allowed only on liquid perps from the protocol whitelist. The keeper monitors positions off-chain and, when it detects an unauthorized asset, calls `initiateClose()`. The contract verifies the violation itself and closes the account if it actually happened.
+## Whitelist
 
-## What This Means for Builders
+The live list is the trading rule for every Active account. Unauthorized size is flattened. Remaining live markets stay tradeable. Emergency whole-account close is Admin, and Admin **keeps** ordinary close profit.
 
-Builders implement their own additional rules (profit target, minimum trading days, stricter daily limit) off-chain as part of their challenge and evaluation. When the trader passes the builder's criteria, the builder opens a funded account through the SDK, and from that point the protocol protects capital by its own rules.
+## What you still own
+
+How you select traders, what you charge them off-protocol, and how you brand the program stay yours. Once `activateFunded` lands, capital protection is the protocol’s.

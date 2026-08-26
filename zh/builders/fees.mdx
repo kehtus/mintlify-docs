@@ -1,79 +1,71 @@
 ---
-title: "FA Parameters and Fees"
-description: "FA 参数、fee 公式和 allocation limits"
+title: "参数"
+description: "激活时你选择什么，以及 R + P 的含义"
 ---
 
-## Builder 在 Activation 时选择什么
+## 你选择什么
 
-| Parameter | Range | What it does |
-|-----------|-------|--------------|
-| `trader` | any address | 接收 FA 的地址 |
-| `accountSize` | $10–$20,000 | 资本规模（USDC，6 dec） |
-| `drawdownBps` | 5%–25% | Trailing drawdown limit |
-| `dailyDrawdownEnabled` | bool | 是否开启 daily limit（= drawdownBps 的 50%） |
+| 参数 | 区间 | 作用 |
+|---|---|---|
+| `trader` | 任意地址 | 克隆所有者。若 `trader` 是调用方，则走自费路径 |
+| `accountSize` | $10 – $20,000 | 本金 `A`（默认值；受 admin 边界约束） |
+| `drawdownBps` | 5% – 25% | 追踪 `D`。决定准备金 `R` |
+| `builderPoolBps` | 10% – 70% | 普通 Builder 份额 |
+| `targetProfit` | ≥ 0 | 绝对 TARGET。`0` 表示关闭 |
+| `feeBps` | 200 / 400 / 800 | 赞助必须传入 **200**。自费选择期限 |
+| `proposedReferrer` | 可选 | 绑定调用方 |
 
-`MIN/MAX_ACCOUNT_SIZE` 和 `MIN/MAX_DRAWDOWN_BPS` 可由 protocol admin 配置。
+日回撤不是参数。它跟随路径：赞助开，自费关。
 
-## Allocation Limits
-
-| Parameter | Value | What it limits |
-|-----------|-------|----------------|
-| Max utilization | **80%** | 分配给 active FAs 的 LP vault 份额 |
-| Max single account | **10%** / $20k | 单个 FA 相对 `totalAssets` 的规模 |
-| Builder leverage | **10x** | Builder FAs 的总 accountSize ≤ `sharesValue × 10` |
-
-`getMaxAccountSize()` 和 `builderAvailableFunded(builder)` 显示当前 limits。
-
-## Activation Fee（一次性）
+## 激活费用
 
 ```
-fee = accountSize × drawdownBps × feeMultiplier / 1_000_000
+R = floor(A × D / 10_000)     // builder-owned reserve
+P = ceil(A × F / 10_000)      // premium, a share of A, not of R
+activationCharge = R + P
 ```
 
-`feeMultiplier = 120`（1.2x risk premium）是默认值。该参数可变：protocol admin 通过 `setFeeMultiplier()` 在 1.0x–2.0x 范围内设置。如果 `dailyDrawdownEnabled = true`，则有 20% discount。
+提高 `D` 会增加可退还的准备金。它不会提高溢价。
 
-| accountSize | drawdown | dailyDD | Fee |
-|-------------|----------|---------|-----|
-| $5,000 | 5% | OFF | $300 |
-| $5,000 | 10% | OFF | $600 |
-| $5,000 | 10% | ON | $480 |
-| $10,000 | 25% | OFF | $3,000 |
-| $20,000 | 10% | OFF | $2,400 |
-
-Activation fee distribution：90% → LP vault，10% → protocol。Subscription fee 单独计算，并在下方分配。
-
-Builder 会将这笔金额加上自己的 margin，计入 trader 的 challenge price。
-
-## Subscription Fee
+| 路径 | `F` | 期限 |
+|---|---|---|
+| 赞助 | 2% | 30 天，可续期订阅 |
+| 自费 T1 | 2% | 预付 1 天 |
+| 自费 T2 | 4% | 预付 7 天 |
+| 自费 T3 | 8% | 预付 30 天 |
 
 ```
-fee = accountSize × subscriptionFeeMultiplier / 10000
+protocolPremium = floor(P × 50%)
+vaultPremium    = P − protocolPremium
 ```
 
-`subscriptionFeeMultiplier = 150` → 每月为 accountSize 的 1.5%。每 30 天收取一次。Trader 可以取消（`cancelSubscription`）— 在下一个 renewal zone 的 checkpoint，FA 会关闭。
+调用方以 USDC 支付 `R + P`。MainVault 作为本金存入恰好 `A`。
 
-Distribution：85% builder，15% protocol。
+示例：`A = $1,000`，`D = 10%`，赞助 2% → `R = $100`，`P = $20`，费用 `$120`。Vault 与协议各拿溢价中的 `$10`。Builder 准备金负债为 `$100`。LP 拨付为 `$1,000`。
 
-## Profit Withdrawal
+## 拨付上限
 
-当 trader 请求 withdrawal（`requestWithdrawProfit`）时：
+没有质押，也没有 10× 容量。只有 vault 会限制规模：
 
-<Steps>
-  <Step title="Profitable days">`profitableDaysCount ≥ 4`（4 天，每天增长 ≥ 1%）</Step>
-  <Step title="Subscription">Subscription active</Step>
-  <Step title="Profit over HWM">存在高于 high-water mark 的 profit</Step>
-  <Step title="Splits">80% trader，13% Vault，7% protocol</Step>
-  <Step title="Reset">Withdrawal 后，HWM 重置为 accountSize，profitable days 清零</Step>
-</Steps>
+| 上限 | 默认 | 含义 |
+|---|---|---|
+| 最大利用率 | NAV 的 80% | 拨付给在途账户的 vault 份额 |
+| 单账户上限 | NAV 的 10%，封顶 $20k | 单个 `A` |
 
-## FA Closure
+在 NAV 达到启动下限（默认 `$100`）之前，任何账户都不能激活。低于该值时仍可存款。
 
-触发条件（都会进入 `initiateClose()`）：
+## 订阅
 
-- Trailing/daily drawdown breach
-- Max leverage breach
-- Trading an unauthorized perp
-- Renewal zone 中 subscription 未支付
-- Relayer 调用 `initiateCloseAdmin()`
+```
+subscriptionFee = ceil_to_1_USDC(A × 1.5%)
+```
 
-Closure 后，positions 会被 unwound，USDC 返回 Vault，Builder shares 解锁。
+按 **50/50** 分给 vault / 协议。Builder 获得 **0**。
+
+赞助账户可在周期最后 3 天用 Core 权益续期，前提是支付费用不会突破下限。自费账户不续期；加时走 `extendRental`（同一档位，不加额外 `R`，最多提前 30 天）。
+
+## 利润与关闭
+
+在途提取与非没收性关闭使用 `builderPoolBps`。没收性关闭（`Drawdown`、`TraderRequested`）将交易员未提取的 `Q − A` 清零，并把该盈余按 40 / 20 / LP 残值分配。未使用的 `R` 仍退给 Builder。
+
+Admin 关闭保留普通分成。这是熔断，不是没收。

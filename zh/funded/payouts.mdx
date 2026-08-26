@@ -1,0 +1,94 @@
+---
+title: "派付"
+description: "利润如何提取、关闭如何结算、领取如何拉取"
+---
+
+普通利润是双向分成。Vault 和协议 **不拿** 其中任何一部分。
+
+```
+builderShare = floor(profit × builderPoolBps / 10_000)
+traderShare  = profit − builderShare
+```
+
+`builderPoolBps` 在激活时锁定，范围为 **10% – 70%**。常见产品条款为 20% Builder / 80% 交易员。这是选定条款，不是协议常量。
+
+自费账户上两个桶打到同一地址，因此交易员获得 100% 普通利润。
+
+<Info>
+协议与 LP 的收入来自激活溢价、订阅，以及关闭时被没收的盈余。不是来自保留利润的提取。
+</Info>
+
+## 提取利润
+
+利润是 `currentEquity − A`。不以高水位为基准。
+
+请求必须同时满足：
+
+- 账户为 Active，订阅 / 期限仍有效
+- 没有待处理的交易员关闭意向
+- 尚未达到 TARGET
+- 利润至少 **$1**
+- 账户已平仓（无未平保证金或名义仓位）
+- 有足够的可交易 Core USDC
+
+然后满足 **以下任一**：
+
+- **3** 个盈利 checkpoint 日，某日计入的条件是权益相对上一次 checkpoint 至少增长 **0.70%**，**或**
+- 即时：利润 **≥ `A` 的 3%**
+
+请求会快照全部利润，并将 Core → EVM 桥接。到账后，`claimWithdrawal` 按普通分成支付。交易员剩余从克隆汇出；Builder 份额记入领取账本。
+
+已证实的领取之后，峰值重置为 `A`，盈利日连续计数重新开始。被拒绝的 Core 发送可以取消，且不会削弱已存储的峰值。
+
+在一日自费期限上，第一次 checkpoint 要等到期限结束，因此期内提取只能走 **3% 即时** 路径。
+
+## 关闭
+
+关闭原因只写入一次。下限决定关闭 **何时** 开始。它们不是费用。结算只用快照的 Core 交易资本 `Q`。
+
+| 原因 | 未提取的关闭利润 `max(Q − A, 0)` |
+|---|---|
+| Drawdown | 没收 |
+| TraderRequested | 没收，自愿放弃 |
+| TARGET | 普通分成 |
+| 订阅到期 | 普通分成 |
+| 订阅取消（赞助） | 普通分成 |
+| Admin | 普通分成 |
+
+`UnauthorizedAsset` 和 `LeverageBreach` 仍留在枚举中，以保持 ABI 稳定。当前克隆不会产生它们。白名单不匹配会被平仓，而不是关闭账户。
+
+已经进入待处理提取的利润，在之后的任何关闭原因下都保持 **既得**。它从不混入 `Q`。即使是没收性关闭，这一块仍按普通 `builderPoolBps` 分成。
+
+### 被没收的盈余
+
+```
+builder   = 40% of (Q − A)
+protocol  = 20%
+vault / LP = the residual, including dust
+trader    = 0
+```
+
+未使用的准备金仍退给 `reserveRecipient`。直接赞助时是 Builder，自费时是交易员。只有实际本金亏损才会消耗准备金。
+
+### 自愿关闭
+
+已平仓的所有者可以请求关闭。这只记录意向，尚未写入原因。Proxy 清空仓位、账户已平且无挂单后，relayer 提交 `TraderRequested`。符合条件的利润应在该请求 **之前** 提取并领取。
+
+## 结算与领取
+
+```
+principalLoss   = max(A − Q, 0)
+reserveConsumed = min(R, principalLoss)
+reserveRefund   = R − reserveConsumed
+closeProfit     = max(Q − A, 0)
+```
+
+结算记入固定收款方。它不会把 USDC 推给交易员、Builder 或协议。
+
+任何人都可以调用 `claimPayout(recipient)`。资金只能到达该地址。多个账户可以汇总到同一收款方。
+
+Vault 从溢价、订阅和被没收盈余拿到的部分不进领取账本。它已经在 NAV 里。
+
+<Warning>
+没收性关闭会把未提取的关闭利润清零。若账户仍符合条件，请先提取并领取。
+</Warning>
