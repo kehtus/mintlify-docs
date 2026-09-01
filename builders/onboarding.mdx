@@ -1,29 +1,54 @@
 ---
 title: "Onboarding"
-description: "How to open the first funded account"
+description: "How to open your first funded account"
 ---
 
 <Steps>
-  <Step title="Wallet">
+  <Step title="Connect a wallet">
     Any EVM wallet on HyperEVM.
   </Step>
-  <Step title="Activation">
-    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`. You pay `R + P`. The vault places principal `A`. The caller becomes `record.builder`. Sponsored `feeBps` is 200 only.
+  <Step title="Hold USDC for R + P">
+    The activation charge is the reserve `R` plus the premium `P`. There is no separate deposit and nothing to register.
+  </Step>
+  <Step title="Activate the account">
+    One call opens the account for your trader, and whoever paid is recorded as its builder. Funding yourself is the same call with your own address as the trader.
   </Step>
 </Steps>
 
-If `trader` is you, the path is self-funded: same call, tiers 200 / 400 / 800. Neither path needs a vault deposit.
+<Note>
+Nobody approves you first. Any wallet holding USDC for `R + P` can open a funded account — no minimum stake, no quota, no registration.
+</Note>
 
-There are no delegates. Gasless goes through the ERC-2771 Forwarder: the signer pays USDC and becomes the builder.
+## Skin in the game
 
-`proposedReferrer` binds the caller, not the trader.
+The first loss is the reserve `R`. It is not a second deposit and not an LP cushion.
 
-Once the account is open, it belongs to the trader's EVM address. Until a withdrawal or a voluntary close, the trader does not have to send transactions: risk sync, checkpoint and flattening are done by the protocol. Withdrawal, claim, subscription cancel and voluntary close need the trader's signature.
+- You pay a reserve to fund the account. Unused reserve is returned when it closes.
+- A loss larger than `R` lands on the LP vault as `reserveDeficit`, not on you.
+- Depositing into the LP vault is optional. Shares earn and lose across the whole pool, and they neither grant nor withdraw your ability to fund traders.
+- The premium `P` is charged on every activation and is not returned.
 
 <Warning>
-If you also deposit USDC as an LP, that is a separate role. Shares do not open or cap activation. They take residual vault income and can fall.
+`R` is your capital at risk. If your trader gives back the account's designed drawdown, you lose the reserve — that is the point of it, and it is why the protocol does not need to approve you.
 </Warning>
 
+## Onboarding a trader
+
+The account is issued to the trader's EVM address on HyperEVM. They do not need to hold HYPE: the protocol covers gas for every operation, including the profit withdrawal. In practice a trader need not touch the chain at all until they take money out.
+
+That keeps your product simple. The trader pays for whatever selection you run, passes it, and receives an account — without having to understand gas, wallets or signing.
+
 <Info>
-Onboarding is early-access. Write the team on Telegram: [@keysigner](https://t.me/keysigner).
+The contracts gate nothing, but the product is not open yet: access today is early-access by whitelist. Contact the team on Telegram: [@keysigner](https://t.me/keysigner).
 </Info>
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/builders/fees">
+    What you choose at activation, and how `R` and `P` are priced
+  </Card>
+  <Card title="Protocol Rules" icon="shield" href="/builders/rules">
+    What the protocol enforces on your trader
+  </Card>
+</CardGroup>

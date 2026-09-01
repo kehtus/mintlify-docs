@@ -48,11 +48,16 @@
         "groups": [
           {
             "group": "Introduction",
-            "pages": ["index", "offering"]
+            "pages": [
+              "index",
+              "offering"
+            ]
           },
           {
             "group": "Security",
-            "pages": ["security"]
+            "pages": [
+              "security"
+            ]
           },
           {
             "group": "Funded",
@@ -73,7 +78,17 @@
           },
           {
             "group": "Vault",
-            "pages": ["vault/index", "vault/yield"]
+            "pages": [
+              "vault/index",
+              "vault/yield"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "api",
+              "sdk"
+            ]
           }
         ]
       },
@@ -82,11 +97,16 @@
         "groups": [
           {
             "group": "Введение",
-            "pages": ["ru/index", "ru/offering"]
+            "pages": [
+              "ru/index",
+              "ru/offering"
+            ]
           },
           {
             "group": "Безопасность",
-            "pages": ["ru/security"]
+            "pages": [
+              "ru/security"
+            ]
           },
           {
             "group": "Funded",
@@ -107,7 +127,10 @@
           },
           {
             "group": "Vault",
-            "pages": ["ru/vault/index", "ru/vault/yield"]
+            "pages": [
+              "ru/vault/index",
+              "ru/vault/yield"
+            ]
           }
         ]
       },
@@ -116,11 +139,16 @@
         "groups": [
           {
             "group": "介绍",
-            "pages": ["zh/index", "zh/offering"]
+            "pages": [
+              "zh/index",
+              "zh/offering"
+            ]
           },
           {
             "group": "安全",
-            "pages": ["zh/security"]
+            "pages": [
+              "zh/security"
+            ]
           },
           {
             "group": "Funded",
@@ -141,7 +169,10 @@
           },
           {
             "group": "Vault",
-            "pages": ["zh/vault/index", "zh/vault/yield"]
+            "pages": [
+              "zh/vault/index",
+              "zh/vault/yield"
+            ]
           }
         ]
       }
@@ -173,14 +204,41 @@
     }
   },
   "redirects": [
-    { "source": "/traders", "destination": "/funded" },
-    { "source": "/traders/rules", "destination": "/funded/rules" },
-    { "source": "/traders/payouts", "destination": "/funded/payouts" },
-    { "source": "/ru/traders", "destination": "/ru/funded" },
-    { "source": "/ru/traders/rules", "destination": "/ru/funded/rules" },
-    { "source": "/ru/traders/payouts", "destination": "/ru/funded/payouts" },
-    { "source": "/zh/traders", "destination": "/zh/funded" },
-    { "source": "/zh/traders/rules", "destination": "/zh/funded/rules" },
-    { "source": "/zh/traders/payouts", "destination": "/zh/funded/payouts" }
+    {
+      "source": "/traders",
+      "destination": "/funded"
+    },
+    {
+      "source": "/traders/rules",
+      "destination": "/funded/rules"
+    },
+    {
+      "source": "/traders/payouts",
+      "destination": "/funded/payouts"
+    },
+    {
+      "source": "/ru/traders",
+      "destination": "/ru/funded"
+    },
+    {
+      "source": "/ru/traders/rules",
+      "destination": "/ru/funded/rules"
+    },
+    {
+      "source": "/ru/traders/payouts",
+      "destination": "/ru/funded/payouts"
+    },
+    {
+      "source": "/zh/traders",
+      "destination": "/zh/funded"
+    },
+    {
+      "source": "/zh/traders/rules",
+      "destination": "/zh/funded/rules"
+    },
+    {
+      "source": "/zh/traders/payouts",
+      "destination": "/zh/funded/payouts"
+    }
   ]
 }

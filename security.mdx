@@ -1,25 +1,35 @@
 ---
 title: "Security"
-description: "Audits, review and admin controls"
+description: "Security audits, code review practices, and administrative safeguards"
 ---
 
-Smart contracts were independently audited by Beosin.
+Proportion Protocol's smart contracts have undergone an independent security audit by Beosin. Additional independent audits are planned as the protocol evolves.
 
-**Audit report:** [Beosin](https://beosin.com/audits/Proportion_202603161420.pdf)
+**Audit report:** [View the Beosin audit report](https://beosin.com/audits/Proportion_202603161420.pdf)
 
-## Review
+## Continuous Review
 
-The codebase is reviewed by hand on an ongoing basis. That does not replace an independent audit.
+The codebase is regularly reviewed manually and re-evaluated using modern AI-powered security analysis tools. AI serves as an additional layer of continuous review, not as a replacement for independent audits or expert analysis.
 
-## Admin
+## Key Management
 
-Critical actions sit behind a 3-of-5 multisig and timelocks. Parameters move only inside published bounds. One compromised key is not enough.
+Particular attention is given to key management, signer security, protection against social engineering, and reducing the risk of human error.
 
-| Minimum delay | Changes |
+## Administrative Security
+
+<Info>
+This section describes the administrative configuration the protocol is moving to. **It is not in force yet.** Today ownership sits with a single address, and every action below — upgrades, factory changes, integration and risk-parameter changes — takes effect in the transaction that makes it. Pausing can also be triggered by the relayer, while only the owner can unpause. The product is not open to the public.
+</Info>
+
+Critical administrative actions are protected by a 3-of-5 multisig and timelocks. Administrative authority is restricted, and protocol parameters can only be changed within predefined safe bounds. A single compromised key cannot execute privileged actions.
+
+### Production Timelock Schedule
+
+| Minimum delay | Changes covered |
 | --- | --- |
-| **72 hours** | `MainVault` upgrades, `transferOwnership`, migrations that replace the vault implementation |
-| **48 hours** | `queueFactoryChange` / `executeFactoryChange`, `setRelayer`, `setForwarder`, `setRiskConfig`, adding a market, raising leverage |
+| **72 hours** | `MainVault` and `ChallengeVault` implementation upgrades; `transferOwnership` and other governance-control changes; migrations that replace a core Vault implementation. |
+| **48 hours** | `queueFactoryChange` / `executeFactoryChange` for funded accounts; `proposeFactory` / `setFactory` for Challenge checkout; trusted integration changes such as `setRelayer`, `setForwarder`, `setMainVault`, and `setChallengeVault`; `setRiskConfig`, market additions, leverage increases, and other changes that increase protocol risk. |
 
 <Note>
-  Risk-reducing actions can run immediately: pause activations, cancel a queued change, remove a market, lower leverage. Unpausing or raising risk waits for the timelock.
+  Defensive actions that reduce risk may be executed immediately. These include pausing new activations or purchases, canceling a queued change, disabling checkout, removing a market, and lowering leverage. Unpausing or increasing risk remains subject to the applicable timelock.
 </Note>

@@ -2,3 +2,5 @@
 .env
 .env.local
 .env.*.local
+# Internal working files. The repo is public — never publish these.
+drafts/

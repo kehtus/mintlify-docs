@@ -1,38 +1,45 @@
 ---
-title: "What we offer"
-description: "What the protocol solves, and what each side gets"
+title: "What We Offer"
+description: "Problems Proportion solves and what each side gets"
 ---
 
-## What it solves
+<Info>
+The product is not open to the public yet. The contracts and the SDK are open to read.
+</Info>
 
-- **Opaque rules and blocked payouts.** Floors, splits and claims live in the contract. A firm cannot deny a payout the protocol already credited.
-- **Custodial "funded" logins.** Capital sits in an isolated clone, not a firm demo.
-- **Every firm writing its own engine.** One vault, one risk path, one settlement.
-- **Fragmented capital.** One MainVault instead of a pool per program.
-- **Yield sold as APY.** Vault income is residual and can be zero.
+## Problems Proportion Solves
 
-Vault and protocol do not take ordinary trader profit. They earn from activation premium, subscription and forfeited surplus at close.
+- **Opaque rules and blocked payouts** in classic prop — rules and splits are encoded in the protocol, with payouts handled through the on-chain flow
+- **B-book conflict of interest** — builders and the protocol are aligned with trader profit, not trader losses
+- **Counterparty risk** — funded accounts are non-custodial, and protocol rules prevent arbitrary payout denial by the prop firm
+- **High barrier to launching a prop firm** — Proportion provides capital, risk enforcement, and settlement without requiring builders to run their own contract stack
+- **Fragmented onchain capital** — one Vault coordinates liquidity instead of separate pools for every firm
+- **Lack of DeFi access to prop-industry economics** — Vault shares create a composable primitive for LPs
 
-## What each side gets
+## What Each Side Gets
 
 <Tabs>
   <Tab title="Trader">
-    - Isolated FundedAccount on Hypercore, live whitelist markets
-    - Real fills on real Hyperliquid capital
-    - A builder opens the account, or you self-fund
-    - Ordinary profit splits by `builderPoolBps` (10-70%). 20/80 is common. Self-funded: both buckets go to you
-    - The firm cannot rewrite the floor or deny a credited payout
+    - Capital access without KYC or artificial rules
+    - A-book execution on real Hyperliquid liquidity — real trades with real capital
+    - A profit split fixed in the contract at activation, between 30 % and 90 % to you, and unchangeable afterwards
+    - Nobody can refuse the payout: settlement credits your address, and the release call pays that address and no other
+    - The account is yours to trade within the protocol's rules, and the firm that issued it cannot block a withdrawal
   </Tab>
   <Tab title="Builder">
-    - Your traders, your terms, your brand. You stop building the capital and risk stack
-    - Pay reserve `R` plus premium `P`. Unused reserve returns at close
-    - Ordinary share is `builderPoolBps`. Forfeiting close: 40% of actual `Q − A`
-    - Anyone with USDC for `R + P` can open an account. No vault deposit
+    - Infrastructure for funded accounts: capital from the Vault, on-chain risk enforcement, and settlement
+    - No registration, no minimum stake, no quota — any wallet holding USDC for the activation charge can fund a trader
+    - You post a reserve as first-loss capital, and whatever the trader does not lose comes back to you
+    - Revenue on three levels: your share of trader profit, 40 % of profit forfeited on a breach, and whatever margin you price into your own evaluation
   </Tab>
   <Tab title="LP">
-    - Deposit USDC into MainVault. Shares track conservative NAV
-    - Income: 50% of activation premium, 50% of subscription, residual forfeited surplus
-    - LPs do not take ordinary trader / builder profit. Unused `R` is not theirs
-    - Yield is not fixed
+    - Yield from the ecosystem: half of every activation premium, half of every subscription, and the Vault's residual when an account forfeits
+    - Your capital is not first in line for a loss — each account carries a builder's reserve that is spent before LP principal, though a loss larger than that reserve still reaches you
+    - No need to pick builders or traders — sharePrice reflects Vault P&L and can increase or decrease
+    - Composable shares (potentially for DeFi integrations)
   </Tab>
 </Tabs>
+
+<Note>
+Losses larger than a builder's reserve do reach LPs. What each flow pays, and what it costs when an account overshoots its floor, is on [Yield and Risks](/vault/yield).
+</Note>

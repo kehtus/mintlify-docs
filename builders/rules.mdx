@@ -1,51 +1,65 @@
 ---
-title: "Protocol rules"
-description: "What the protocol enforces on-chain, and what a builder cannot soften"
+title: "Protocol Rules"
+description: "What the protocol enforces on a funded account, and which rules stay yours"
 ---
 
-The protocol watches funded-account rules itself. A builder cannot soften or bypass them. They only pick parameters inside the allowed corridor.
+The risk engine is the part of a prop firm you stop building. You set the account size and the drawdown percentage at activation; from that point the floor, the allowed markets and the leverage caps are enforced by the protocol against the account's live equity. You cannot soften them afterwards, and neither can the trader.
 
-## Hard rules
+## What the protocol enforces
 
-| Rule | Value |
-|---|---|
-| Ordinary profit | `builderPoolBps` to the builder, residual to the trader. Vault and protocol take 0 |
-| Forfeited surplus | Builder 40% / protocol 20% / LP residual |
-| Profit lock | 30% of accepted peak profit, on lifetime and daily floors |
-| Withdrawal | 3 profitable checkpoint days (≥ 0.70%) or profit ≥ 3% of `A` |
-| Checkpoint | 1 day |
-| Sponsored term | 30-day subscription |
-| Daily drawdown | Required on sponsored, absent on self-funded |
-| Who can sponsor | Anyone with `R + P` |
-| Markets | Live MainVault whitelist. An edit does not close the account |
+| Rule | Enforced | On breach |
+|---|---|---|
+| Trailing floor | on-chain, against live equity | The account closes. The trader forfeits unwithdrawn profit and your reserve absorbs the loss |
+| Daily floor, sponsored accounts only | same | Same |
+| Allowed markets | at order entry | The order is refused. The account keeps trading |
+| Leverage cap, per market | at order entry | The order is refused. The account keeps trading |
+| Subscription | at the daily checkpoint | The account closes on the ordinary split |
 
-## Trailing floor
+## The floor you priced
 
+The floor starts at exactly the account size minus your reserve, so `R` is sized to cover the whole of the designed fall. It then rises as the trader banks gains: 30 % of every gain above account size locks into it, and it never comes back down while the account is open.
+
+```text
+A = $10,000, D = 10 %, reserve R = $1,000
+
+floor at activation                         $9,000
+peak $15,000, 30 % of the $5,000 gain       $10,500
+equity strictly below $10,500               the account closes
 ```
-A = $1,000, D = 10%, accepted peak = $1,200
-baseFloor  = $900
-profitLock = $60
-trailing   = $960
-```
 
-Intraday peaks move only after the 1% gate. Checkpoint accepts any higher lifetime peak. After a proven withdrawal, peaks reset to `A`.
+From that peak the trader may still fall $4,500 before the account closes. Most of a winning run is not protected, which is what makes `D` a product decision rather than a formality: it is the only number standing between the trader's worst session and your money.
+
+The floor also moves during the session rather than once a day. See [Funded Account Rules](/funded/rules) for how a new peak is accepted.
 
 ## Daily drawdown
 
-This is not a flag at activation. If you sponsor another trader, daily DD is on at half of `D`. If the trader pays, it is off.
+Not a switch you set, and not a discount you buy. An account you sponsor carries a second floor at half the trailing percentage, measured from the day's opening equity; an account a trader funds themselves has none. Whichever floor is higher is the one that applies, and the two are never added together.
 
-Same example, day start `$1,000`, daily peak `$1,200` → daily floor `$1,010`. The working floor is the max of the two.
+## Markets and leverage
 
-## TARGET
+There is no flat leverage cap. Each listed perp carries its own maximum, taken from the live protocol list, and both the market and the leverage are checked when the order is placed. A disallowed order is refused, which means it costs the trader a trade and costs you nothing. Trading outside the list is not a closure reason.
 
-`targetProfit` is on-chain. Zero disables it. The `A + targetProfit` threshold blocks ordinary withdrawal. The relayer writes `TargetReached` and keeps the ordinary split.
+If a market is removed from the list while the trader holds a position on it, that position is closed out and the rest of the account carries on trading.
 
-## Whitelist
+## What closes an account
 
-The live list is the rule for every Active account. Extra size is flattened. Other live markets stay tradeable. Emergency close of the whole account is Admin, and Admin keeps ordinary close profit.
+Two closures forfeit the profit still in the account: a drawdown breach, and the trader asking to close. Four do not: the subscription expiring, the trader cancelling it, an admin closure, and a profit target being reached.
 
-## What stays yours
+Your unused reserve returns in every one of the six. What changes is who receives the profit that was in the account when it closed. The amounts are on [Account Parameters and Fees](/builders/fees), the trader's side on [Profit and Payouts](/funded/payouts).
 
-How you select traders, what you charge them off-protocol, and how you brand the program. Tighter filters before activation are yours. After `activateFunded`, the protocol protects the capital.
+## The rules you keep
 
-Hyperliquid builder-code fees from a funded account go to `protocolFeeReceiver`, not the builder.
+The protocol enforces capital rules and nothing else. Everything that makes the product yours stays off-chain and stays yours: the evaluation and its price, minimum trading days, consistency rules, a daily limit stricter than the protocol's, and the decision about who gets an account at all. When a trader breaks one of those, you are the one who acts on it.
+
+One of your rules can sit on-chain if you want it there. A profit target set at activation closes the account on the ordinary split as soon as the trader reaches it.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/builders/fees">
+    What activation costs you and which part comes back
+  </Card>
+  <Card title="Funded Account Rules" icon="shield-check" href="/funded/rules">
+    The same limits written for the trader you fund
+  </Card>
+</CardGroup>

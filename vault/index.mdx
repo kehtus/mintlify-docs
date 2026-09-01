@@ -1,64 +1,78 @@
 ---
-title: "How it works"
-description: "The central liquidity contract: flows, shares, limits"
+title: "How It Works"
+description: "What the vault holds, how sharePrice is computed, and what limits allocation and exit"
 ---
 
-The center of Proportion is the MainVault contract. LP deposits, funded-account principal, builder reserve accounting and the single close path all meet here. Anything that moves capital in the system goes through the vault.
+`MainVault` holds the protocol's USDC. It mints LP shares, funds the trading capital of every funded account, holds each builder's reserve as a liability it does not own, and books every settlement.
+
+<Info>
+The product is not open to the public yet. The contracts and the SDK are open to read.
+</Info>
 
 ## Flows
 
 <CardGroup cols={3}>
-  <Card title="Funding" icon="banknote">
-    On activation the vault places principal `A` on Hypercore. The caller pays `R + P`
+  <Card title="Funding an account" icon="banknote" href="/builders/fees">
+    The vault allocates `accountSize` and sends it through HyperCore Spot to the funded account. That trading capital is LP money; the builder is charged the reserve `R` and the premium `P` on top of it
   </Card>
-  <Card title="Fees" icon="coins">
-    Half of the premium and half of subscription stay in NAV and move `sharePrice`
+  <Card title="Fees" icon="coins" href="/vault/yield">
+    The vault's half of each activation premium and each subscription payment stays on EVM and raises `sharePrice`
   </Card>
-  <Card title="Returns" icon="rotate-ccw">
-    Close takes the snapshot `Q`, unused reserve and attributed claims. Unattributed EVM remainder returns to the vault
+  <Card title="Settlement" icon="rotate-ccw" href="/funded/payouts">
+    On close the vault pulls back the recovered capital, releases the allocation, and books each party's claim
   </Card>
 </CardGroup>
 
-## Conservative NAV
+## Shares and sharePrice
 
-An LP's share is represented by vault shares. Accrued vault income lifts `sharePrice`. You do not claim it separately.
+An LP's position is shares. Accumulated profit raises `sharePrice`; yield is not claimed separately.
 
-```
-grossAssets = USDC on EVM + totalAllocated
-
-NAV = grossAssets
-    − active builder reserve
-    − claimable reserve refunds
-    − claimable payouts
-
-sharePrice = NAV / share count
+```text
+grossAssets = USDC held on EVM + totalAllocated
+totalAssets = grossAssets − active reserves − claimable refunds − claimable payouts
+sharePrice  = totalAssets / totalShares
 ```
 
-Reserve, unpaid refunds and unpaid payouts do not lift share price. Until close locks `Q`, deposits and exits use this on-chain NAV.
+Those three subtractions are USDC sitting in the vault that belongs to someone else: builders' reserves on live accounts, unused reserve from accounts already closed, and settled profit owed to traders, builders and the protocol. None of it may lift `sharePrice`, which is why the vault prices shares off `totalAssets` rather than off its balance.
+
+<Note>
+`totalAllocated` is carried at face value. It is not marked to an account's live equity, so an account trading below its entry still counts at full size until it settles. The loss reaches `sharePrice` at settlement, as [`reserveDeficit`](/vault/yield).
+</Note>
 
 ## Allocation limits
 
-| Parameter | Default | What it caps |
+| Limit | Value | What it constrains |
 |---|---|---|
-| Max utilization | 80% | `totalAllocated` vs NAV |
-| Single account | 10% / $20k | One `A` |
-| Account size | $10-$20,000 | One `A` |
-| Drawdown | 5%-25% | Trailing `D` |
+| Max utilization | **80 %** | `totalAllocated` against `totalAssets` |
+| Max single account | **10 %** of `totalAssets`, capped at **$20,000** | the size of one funded account |
+| Vault cap | **$25,000** | `totalAssets` |
 
-Activation also needs NAV ≥ $100 at defaults (`minAccountSize / maxSingleAccountBps`). Deposits below that still work.
+The account-size and drawdown bands a builder chooses inside these limits are on [account parameters and fees](/builders/fees).
 
-## Exits
+## Exit
 
-Ordinary `withdraw(shares)` is immediate. `requestWithdraw` / `executeWithdraw` is an optional 1-day pause on the same accounting.
+Shares can be burned at any time, and there is an optional one-day cooldown interface over the same accounting. Two things constrain a withdrawal: allocation must stay inside the utilization ceiling after the burn, and the payout comes from EVM cash above what the vault already owes in reserves, refunds and payouts.
 
-You can only spend EVM cash above reserve, refunds and payouts. Utilization after the exit must stay inside the cap. Open funded accounts do not lock shares.
+There is no share lock. A builder holding shares against live funded accounts exits on the same terms as any other LP. What can delay an exit is a busy vault — with utilization at the ceiling, a large withdrawal waits for an account to settle.
 
-`deposit(amount, proposedReferrer)` can bind an LP referral on first touch. `depositFor` never binds.
+<Warning>
+Every LP withdrawal path is disabled while the protocol is paused. Pausing can be triggered by the owner or the relayer; only the owner can lift it. Trader and builder payout claims are deliberately exempt and keep working through a pause. LP exits are not.
+</Warning>
 
 ## Governance
 
-Account-size, drawdown and utilization corridors move through `setRiskConfig`. Fee tiers and the 50/50 splits are constants.
+The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in a single call. The utilization and per-account ceilings have bounds compiled into the contract; the account-size band and the vault cap do not.
 
-<Card title="Yield and risks" icon="trending-up" href="/vault/yield">
-  Where LP yield comes from, and what can hit the vault
-</Card>
+The activation fee tiers, the profit splits and the subscription multiplier are constants. Changing one means replacing the implementation, which the owner can do in one call. Neither that call nor a parameter change carries an observation window today — see [Security](/security).
+
+<CardGroup cols={3}>
+  <Card title="Yield and Risks" icon="trending-up" href="/vault/yield">
+    What pays LPs, and what `reserveDeficit` takes from them
+  </Card>
+  <Card title="Security" icon="shield" href="/security">
+    Audit, upgrade authority, and administrative safeguards
+  </Card>
+  <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/builders/fees">
+    How `R` and `P` are priced on the account the vault funds
+  </Card>
+</CardGroup>

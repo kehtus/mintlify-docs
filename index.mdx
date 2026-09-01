@@ -1,31 +1,48 @@
 ---
 title: "Overview"
+description: "What Proportion is, and how traders, builders and LPs meet on it"
 ---
 
 ![Proportion overview](/images/image.jpeg)
 
-Proportion is on-chain prop-trading infrastructure on Hyperliquid. Traders get funded accounts on real capital, without a custodial firm login. Builders run their product on a stack that already has capital, a risk engine and settlement. LPs deposit USDC into a shared vault and earn from activation premium, subscription and forfeited surplus. Yield is not fixed and can be zero.
+Proportion is prop-trading infrastructure built on Hyperliquid.
 
-## Context
+Three sides meet on it. Traders get capital through funded accounts that trade the real Hyperliquid book. Builders launch prop-trading products without writing the capital, risk and settlement layer themselves. LPs deposit USDC into a shared Vault and earn from activation premiums, subscriptions and forfeited profit.
 
-Hyperliquid and builder codes created demand for trading capital on-chain. The same dynamic that produced thousands of forex prop firms is moving here.
+<Info>
+The product is not open to the public yet. The contracts and the SDK are open to read.
+</Info>
 
-Unlike a classic prop firm, an on-chain version has to be non-custodial, checkable and composable. Proportion is that layer. You do not write your own contracts or your own risk engine.
+## What is Proportion?
+
+The demand for trading capital that produced thousands of prop firms in forex is now appearing around Hyperliquid and builder codes. The retail answer to it sells an exam, simulates the account, and keeps the option to refuse a payout.
+
+Proportion is built the other way round. The trading capital is real and sits on HyperCore. The rules are contract code rather than a rulebook the firm interprets. The payout is a contract call that pays one address and cannot be redirected. And the backer posts a reserve that is spent before LP capital, so an account that blows up costs the person who funded it.
+
+## How it fits together
+
+A shared Vault holds LP capital and allocates it into isolated funded accounts. Each account trades on Hyperliquid under rules the contract enforces: a drawdown floor, per-market leverage caps, an allowed-market list, and the terms of withdrawal and closure.
 
 ## Mission
 
-Create an environment where each side takes their profit on terms that are transparent to everyone. Give traders what they deserve, what prop firms promised them.
+To be the capital layer other prop firms are built on: one vault, many programs, and terms that a trader can check before accepting them.
 
 ## Next
 
 <CardGroup cols={2}>
-  <Card title="Funded" icon="user" href="/funded">
-    How a funded account works and how profit is paid
+  <Card title="Trade" icon="user" href="/funded">
+    Funded accounts and trader rules
   </Card>
-  <Card title="Builders" icon="hammer" href="/builders">
-    Open an account on a ready stack
+  <Card title="Build" icon="hammer" href="/builders">
+    Prop-firm infrastructure for builders
   </Card>
   <Card title="Vault" icon="vault" href="/vault">
-    Protocol liquidity hub
+    Who funds the accounts, and what it earns
+  </Card>
+  <Card title="SDK" icon="code" href="/sdk">
+    TypeScript client — soon
+  </Card>
+  <Card title="API" icon="plug" href="/api">
+    REST/GraphQL — soon
   </Card>
 </CardGroup>

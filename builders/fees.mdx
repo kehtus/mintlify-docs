@@ -1,75 +1,98 @@
 ---
-title: "Parameters and fees"
-description: "What you pick at activation, and how R + P is calculated"
+title: "Account Parameters and Fees"
+description: "What activating a funded account costs you, which part of it comes back, and what you choose"
 ---
 
-## What the builder picks
+Activation charges you two amounts in one transaction: a reserve `R`, which stays your money and comes back unused when the account closes, and a fee `P`, which does not. The trading capital itself is not yours to fund. The vault allocates the account size `A` out of LP deposits, and you are charged `R + P` on top of it.
 
-| Parameter | Corridor | What it does |
-|---|---|---|
-| `trader` | any address | Who the account is opened for. If that is the caller, the path is self-funded |
-| `accountSize` | $10-$20,000 | Principal `A` |
-| `drawdownBps` | 5%-25% | Trailing `D`. Sets reserve `R` |
-| `builderPoolBps` | 10%-70% | Builder share of ordinary profit |
-| `targetProfit` | ≥ 0 | Absolute TARGET. `0` disables |
-| `feeBps` | 200 / 400 / 800 | Sponsored: **200** only. Self-funded picks the term |
-| `proposedReferrer` | optional | Binds the caller |
+> You pay a reserve to fund the account. Unused reserve is returned when it closes.
 
-Daily drawdown is not a parameter. Sponsored has it. Self-funded does not.
+<Info>
+The product is not open to the public yet. The contracts and the SDK are open to read.
+</Info>
 
-`MIN/MAX_ACCOUNT_SIZE` and `MIN/MAX_DRAWDOWN_BPS` can move through `setRiskConfig`.
+## What you pay
 
-## Activation charge
+```text
+A = account size    D = trailing drawdown you choose, 5 %–25 %
 
-```
-R = floor(A × D / 10_000)     // builder reserve
-P = ceil(A × F / 10_000)      // premium from A, not from R
+R = A × D       your reserve, refundable
+P = A × 2 %     the activation fee, kept
 charge = R + P
 ```
 
-Raising `D` means posting more refundable reserve. Premium does not grow with it.
+| Account size `A` | Drawdown `D` | Reserve `R` | Fee `P` | Charged at activation |
+|---|---|---|---|---|
+| $500 | 5 % | $25 | $10 | **$35** |
+| $1,000 | 10 % | $100 | $20 | **$120** |
+| $1,000 | 25 % | $250 | $20 | **$270** |
+| $2,500 | 10 % | $250 | $50 | **$300** |
 
-| Path | `F` | Term |
+<Note>
+One account may be at most 10 % of the Vault's assets. With the Vault cap at $25,000 that puts today's largest account at $2,500, well under the $20,000 ceiling in the parameter table below. The ceiling rises with the vault.
+</Note>
+
+The reserve column is the part that can come back: an account that returns its principal costs you `P` and nothing else, and an account that blows up costs you `P` plus as much of `R` as the trader lost.
+
+`D` prices two things at once: how far the trader may fall before the account closes, and the whole of your reserve. The fee does not move with it. `P` is a share of `A` alone, so widening the drawdown buys the trader room with your first-loss capital rather than with a larger fee.
+
+<Note>
+Sponsoring is always the 2 % tier, and it opens a 30-day subscription period. The 4 % and 8 % tiers buy a prepaid 7-day or 30-day term for a trader funding their own account; a sponsored activation cannot use them.
+</Note>
+
+A sponsored month costs 2 % of account size and a self-funded month costs 8 %. The spread is the price of removing the intraday brake: with no daily floor an account travels further inside one session, so it is likelier to overshoot the trailing floor on a gap, and the overshoot lands on LPs.
+
+## What comes back
+
+| What the account returns | Your reserve |
+|---|---|
+| Its full principal | All of `R` |
+| Less than that | `R` minus the shortfall |
+| Less than `A − R` | Nothing, and the excess lands on [LPs](/vault/yield) rather than on you |
+
+Your loss on one account is capped at `R + P` — the reserve you can lose plus the fee you never get back — and the refund is credited to your address for you to collect without anyone's approval.
+
+Profit is the other half. On every profit withdrawal and every ordinary close you receive `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **40 %** of whatever profit was still in the account, the protocol takes 20 %, and the vault keeps the rest.
+
+<Warning>
+The reserve is real money and it is spent before LP capital is. A trader who breaches the floor costs you the whole of `R` on that account, and nothing you earned on other accounts is netted against it.
+</Warning>
+
+## What you choose at activation
+
+| Parameter | Range | What it sets |
 |---|---|---|
-| Sponsored | 2% | 30 days, renewing subscription |
-| Self-funded T1 | 2% | 1 day prepaid |
-| Self-funded T2 | 4% | 7 days prepaid |
-| Self-funded T3 | 8% | 30 days prepaid |
+| Trader | any address | Who the account is issued to |
+| Account size `A` | $10–$20,000 | Trading capital the vault allocates |
+| Trailing drawdown `D` | 5 %–25 % | The trader's floor, and your reserve |
+| `builderPoolBps` | 10 %–70 % | Your cut of each withdrawal and each ordinary close |
+| Profit target | optional | Closes the account on the ordinary split when reached |
 
-```
-protocol premium = floor(P × 50%)
-vault premium    = P − protocol premium
-```
+Daily drawdown is not among them. It follows from the mode: an account you sponsor always carries it, an account a trader funds themselves never does. See [Protocol Rules](/builders/rules).
 
-The caller pays `R + P` in USDC. MainVault places exactly `A` as principal.
+## Who may activate
 
-Example: `A = $1,000`, `D = 10%`, sponsored 2% → `R = $100`, `P = $20`, charge `$120`. Vault and protocol take `$10` of premium each. Reserve `$100`. Allocation `$1,000`.
+Any wallet holding USDC for `R + P`. No registration, no minimum stake, no quota tied to you, no approval step. What limits activation is the vault's capacity, not your standing with it.
 
-## Allocation limits
-
-A vault deposit is not required to activate. The vault itself caps volume:
-
-| Limit | Default | What it cuts |
+| Limit | Value | What it constrains |
 |---|---|---|
-| Max utilization | 80% of NAV | Vault share in active accounts |
-| Single account | 10% of NAV, cap $20k | One `A` |
+| Max utilization | **80 %** | allocated capital against `totalAssets` |
+| Max single account | **10 %** of `totalAssets`, capped at **$20,000** | one account |
+| Vault cap | **$25,000** | `totalAssets` |
 
-At defaults you cannot activate until NAV is at least $100. Deposits below that still work.
+## Where your fee goes
 
-## Subscription
+The premium `P` splits **50/50** between the vault and the protocol, earned before the account places an order.
 
-```
-subscriptionFee = ceil_to_1_USDC(A × 1.5%)
-```
+The subscription is **1.5 % of account size every 30 days** and splits the same way. You receive none of it; the builder share it carried in the previous cohort is gone. On an account you sponsor it renews out of the account's own equity rather than your wallet, and renewal requires the account to be in profit by at least the fee.
 
-Split 50/50 vault / protocol. Builder gets 0.
+## Next
 
-Sponsored accounts renew from Core equity in the last 3 days of the period, if the fee can be taken without breaching floors. Self-funded does not renew that way. Extra time is `extendRental` (same tiers, no new `R`, horizon now + 30 days).
-
-## Profit and close
-
-Live withdrawal and a non-forfeiting close use `builderPoolBps`. A forfeiting close (`Drawdown`, `TraderRequested`) zeros unwithdrawn `Q − A` and splits that surplus 40 / 20 / LP residual. Unused `R` returns to `reserveRecipient`.
-
-Admin close keeps the ordinary split. That is break-glass, not a forfeit.
-
-Hyperliquid builder-code fees from a funded account go to `protocolFeeReceiver`, not the builder.
+<CardGroup cols={2}>
+  <Card title="Protocol Rules" icon="shield" href="/builders/rules">
+    What the protocol enforces on the account you funded
+  </Card>
+  <Card title="Profit and Payouts" icon="wallet" href="/funded/payouts">
+    The trader's side of the split, and what each closure pays
+  </Card>
+</CardGroup>

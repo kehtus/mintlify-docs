@@ -1,51 +1,33 @@
 ---
-title: "For traders"
-description: "Hyperliquid capital under contract rules"
+title: "For Traders"
+description: "Capital on Hyperliquid without KYC or artificial rules"
 ---
 
-> Real Hyperliquid execution. Rules and payouts live in the contract, not in a firm back-office.
+> Capital and strong execution on Hyperliquid, without KYC or artificial rules.
 
-A trader gets an on-chain funded account on Hyperliquid: deep liquidity, no custodial firm login, no hidden terms after activation. Fills are real capital on the real Hyperliquid book. That is checkable at every step.
+Proportion gives you capital through an onchain funded account on Hyperliquid. Your orders reach the real Hyperliquid book, and the rules you trade under are enforced by the contract rather than interpreted by a firm.
 
-Unlike a custodial prop firm, ordinary profit here is split between trader and builder by a pinned `builderPoolBps`. Vault and protocol take none of it. They earn from premium, subscription and forfeited surplus, not from denying a payout.
+The reserve behind your account is the backer's own money, and it is spent before anyone else's — so losing the account costs them. That holds until you are well ahead: once profit lifts your floor above the account size, a breach returns their reserve whole and pays them a share of what you forfeit. It is the one case where a closure pays them and not you, and it is the argument for taking profit out rather than letting it ride.
 
 <Tip>
-Profit the contract already credited does not belong to the firm. It cannot deny that payout outside protocol rules.
+Your profit share is written into the contract at activation and cannot be changed afterwards. Nobody can refuse the payout: settlement credits your address, and the release call pays that address and no other.
 </Tip>
 
-## How you get an account
+## How to get a funded account
 
-A builder opens it, or the trader calls `activateFunded` (self-funded). How a builder selects people off-protocol (evaluation, their store) is their product, not the protocol.
+Accounts are issued by the firms building on Proportion. Each runs its own selection, and how you qualify is part of that firm's product rather than the protocol's.
 
-The account is bound to the trader's HyperEVM address. Trading goes through an API wallet. The Exchange Proxy signs Hyperliquid. The trader never holds that key.
+You can also fund your own account through the same call, putting up the charge yourself. One wallet is then both backer and trader, and the whole ordinary split stays with you.
 
-| | Sponsored | Self-funded |
-|---|---|---|
-| Who pays `R + P` | The caller. They are `record.builder` | The trader |
-| Principal `A` | From MainVault | From MainVault |
-| Daily drawdown | On | Off |
-| Time | 30-day subscription, can renew | Prepaid 1 / 7 / 30 days |
-| Ordinary profit | Split by `builderPoolBps` | Same formulas, both buckets to the trader |
-
-Lifetime floor is the same. Self-funded has no daily floor, so the session path is wider.
-
-The live MainVault list is the only market list. An edit does not close the account. Off-list entries are refused. Leftover size on a withdrawn market is flattened.
-
-```
-activate → Active → trade
-                 → withdraw profit (optional)
-                 → close → settle → claim
-```
-
-Close is one path. The clone snapshots actual Core trading capital `Q`. MainVault applies the frozen record and credits a pull ledger.
+Either way the account is issued to your EVM address on HyperEVM. You do not need to hold HYPE — the protocol covers gas for every operation, including the withdrawal — so there is nothing for you to sign on-chain until you take money out.
 
 ## Sections
 
 <CardGroup cols={2}>
-  <Card title="Account rules" icon="shield-check" href="/funded/rules">
-    What the protocol enforces
+  <Card title="Funded Account Rules" icon="shield-check" href="/funded/rules">
+    The limits, and every reason an account closes
   </Card>
-  <Card title="Profit and payouts" icon="wallet" href="/funded/payouts">
-    How profit is withdrawn and when the account closes
+  <Card title="Profit and Payouts" icon="wallet" href="/funded/payouts">
+    How to withdraw profit, and what each closure pays
   </Card>
 </CardGroup>

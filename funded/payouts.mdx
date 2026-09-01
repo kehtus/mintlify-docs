@@ -1,94 +1,95 @@
 ---
-title: "Profit and payouts"
-description: "How profit is withdrawn and when the account closes"
+title: "Profit and Payouts"
+description: "How your profit is split, how you withdraw it, and which closures pay nothing"
 ---
 
-Ordinary profit is a two-way split. Vault and protocol take none of it. The split is pinned at activation and the firm cannot change it later.
+Nobody can refuse your payout. When your account settles, the vault credits your address in its payout ledger, and `claimPayout` sends that balance to that address and to no other. Anyone may call it. There is no approval step, no ticket, and no address the operator can substitute for yours.
 
-```
-builderShare = floor(profit × builderPoolBps / 10_000)
-traderShare  = profit − builderShare
-```
+What you can lose is the profit itself. Some closures pay the trader nothing. Both halves of that are on this page.
 
-`builderPoolBps` is 10%-70%. 20/80 is a common product term, not a protocol constant.
+## Your split
 
-On self-funded both buckets hit the same address. The trader gets 100%.
+One number decides it: `builderPoolBps`, written into your account record at activation, inside a range the contract refuses to leave.
 
-Protocol and LPs earn from activation premium, subscription and forfeited surplus. Not from a keep-profit withdrawal.
+| `builderPoolBps` | Builder | You |
+|---|---|---|
+| 1000 | 10 % | **90 %** |
+| 2000 | 20 % | **80 %** |
+| 7000 | 70 % | **30 %** |
 
-## Withdraw profit
+Your share is somewhere between 30 % and 90 %, and nothing changes it after activation. The same number governs a withdrawal and an ordinary close.
 
-Profit is `currentEquity − A`. High-water mark is not the basis.
+<Note>
+If you were quoted 80 %, that is a plan that set `builderPoolBps` to 2000. It is your plan's number, not the protocol's. Ask the firm issuing your account for its value before you accept it.
+</Note>
 
-All of this must hold:
+The split has no third leg. The vault and the protocol take nothing from an ordinary withdrawal or an ordinary close; their revenue is the activation premium and the subscription. On a self-funded account both legs land in the same wallet, so you keep all of it.
 
-- account Active, term still live
-- no pending trader-close intent
-- TARGET not reached
-- profit at least $1
-- account flat
-- enough tradeable Core USDC
+## Withdrawing profit
 
-Then either:
+Profit is your current equity above account size. The high-water mark is not the basis. You need at least $1 of it, and either route below.
 
-- 3 profitable checkpoint days (equity grew at least 0.70% vs the previous checkpoint)
-- or immediately: profit ≥ 3% of `A`
-
-The request snapshots the whole profit and bridges Core → EVM. After arrival, `claimWithdrawal` pays the ordinary split: trader residual from the clone, builder share to the pull ledger.
-
-After a proven claim, peaks reset to `A` and the profitable-day streak restarts. A rejected Core send can be cancelled. Stored peaks do not weaken.
-
-On a one-day self-funded term the first checkpoint is at expiry. In-term withdrawal is the 3% path only.
-
-<Info>
-On a sponsored account the owner can cancel the subscription. Close happens at the next qualifying checkpoint and keeps the ordinary split.
-</Info>
-
-## Close
-
-One reason, written once. Floors decide when. They are not a fee. Settlement uses snapshotted `Q` only.
-
-| Reason | Unwithdrawn close profit `max(Q − A, 0)` |
+| Route | Condition |
 |---|---|
-| Drawdown | Forfeited |
-| TraderRequested | Forfeited |
-| TARGET | Ordinary split |
-| Subscription expired | Ordinary split |
-| Subscription cancelled (sponsored) | Ordinary split |
-| Admin | Ordinary split |
+| Day count | Three profitable checkpoint days, each at least 0.7 % growth. They need not be consecutive |
+| Instant | Profit at or above 3 % of account size, with no day count at all |
 
-Profit already in a pending withdrawal stays vested. It never mixes into `Q`. Even on a forfeiting close that piece still splits by ordinary `builderPoolBps`.
+At the moment you request, the account must also be flat, the subscription active, and the profit target not yet reached.
 
-### Forfeited surplus
-
-```
-builder    = 40% of (Q − A)
-protocol   = 20%
-vault / LP = residual
-trader     = 0
-```
-
-Unused reserve returns to `reserveRecipient`. Direct sponsor: the builder. Self-funded: the trader. Only actual principal loss consumes reserve.
-
-### Voluntary close
-
-A flat owner can request close. That is intent, not the reason. After the proxy drains positions and orders, the relayer commits `TraderRequested`. If profit can still be withdrawn, do that first.
-
-## Settlement and claims
-
-```
-principalLoss   = max(A − Q, 0)
-reserveConsumed = min(R, principalLoss)
-reserveRefund   = R − reserveConsumed
-closeProfit     = max(Q − A, 0)
-```
-
-Settlement credits fixed recipients. It does not push USDC.
-
-Anyone can call `claimPayout(recipient)`. Funds go only to that address. Several accounts can aggregate on one recipient.
-
-The vault share of premium, subscription and forfeited surplus stays in NAV. It does not enter the ledger.
+<Steps>
+  <Step title="You request">
+    The request is yours alone to make, and the gas is paid for you.
+  </Step>
+  <Step title="The profit bridges">
+    Your profit moves from HyperCore to HyperEVM.
+  </Step>
+  <Step title="Anyone claims">
+    The claim takes no permissions. Your share transfers to your address; the builder's share is booked to theirs.
+  </Step>
+</Steps>
 
 <Warning>
-A forfeiting close zeros unwithdrawn close profit. Withdraw and claim first if the account is still eligible.
+A claim resets your protection. The high-water mark, the daily baseline and the daily peak all return to account size, and the profitable-day count returns to zero. The floor you had ratcheted up is gone.
 </Warning>
+
+<Note>
+Reaching the profit target closes the account on the ordinary split, but it also ends ordinary withdrawals — once the target is reached a withdrawal request is refused. If your account has a target, plan the withdrawal before you touch it.
+</Note>
+
+## What each closure pays
+
+| Why the account closed | Profit still in the account |
+|---|---|
+| Drawdown breach | Nothing |
+| You asked to close | Nothing |
+| Subscription expired | Your ordinary split |
+| Subscription cancelled | Your ordinary split |
+| Admin closure | Your ordinary split |
+| Profit target reached | Your ordinary split |
+
+On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital goes to the builder, the protocol and the vault. If it comes back at or below account size there is no profit to divide, and the builder's reserve absorbs the loss before LP capital does.
+
+<Warning>
+Closing your own account is a forfeiting close. It closes at any equity and creates no payout entitlement. If you have profit and you want it, withdraw and claim it before you ask to close.
+</Warning>
+
+<Note>
+An unpaid subscription is not a breach. Expiry and cancellation keep your ordinary split, and so do an admin closure and a reached target.
+</Note>
+
+## The one thing a close cannot reach
+
+Profit already accepted into a pending withdrawal is vested. If a close interrupts it, that amount still settles under your ordinary split, whatever the reason for the close turns out to be. A drawdown breach in the next block does not touch it.
+
+So the order of your actions matters more than the size of any single trade. Eligible profit you have requested is yours. Eligible profit you have not requested is not.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Funded Account Rules" icon="shield-check" href="/funded/rules">
+    The limits, and every reason an account closes
+  </Card>
+  <Card title="Vault" icon="vault" href="/vault">
+    Where the capital comes from, and where forfeited profit goes
+  </Card>
+</CardGroup>
