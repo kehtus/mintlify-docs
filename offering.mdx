@@ -3,40 +3,35 @@ title: "What We Offer"
 description: "Problems Proportion solves and what each side gets"
 ---
 
-<Info>
-The product is not open to the public yet. The contracts and the SDK are open to read.
-</Info>
+## Problems Proportion solves
 
-## Problems Proportion Solves
+- **Opaque rules and blocked payouts.** Floors, splits and payouts are contract code. A firm cannot refuse a payout the protocol has already credited.
+- **B-book conflict of interest.** Orders reach the real Hyperliquid book, and the backer's own reserve is the first money a loss consumes. A trader losing the account costs the person who funded it and pays nobody.
+- **Counterparty risk.** Funded accounts are non-custodial, and the payout is a contract call the firm cannot block.
+- **High barrier to launching a prop firm.** Proportion supplies the capital, the risk enforcement and the settlement, so a builder does not run a contract stack of their own.
+- **Fragmented on-chain capital.** One Vault funds every program instead of a separate pool per firm.
+- **No way in for outside capital.** Vault shares give LPs a claim on activation premiums, subscriptions and forfeited profit.
 
-- **Opaque rules and blocked payouts** in classic prop — rules and splits are encoded in the protocol, with payouts handled through the on-chain flow
-- **B-book conflict of interest** — builders and the protocol are aligned with trader profit, not trader losses
-- **Counterparty risk** — funded accounts are non-custodial, and protocol rules prevent arbitrary payout denial by the prop firm
-- **High barrier to launching a prop firm** — Proportion provides capital, risk enforcement, and settlement without requiring builders to run their own contract stack
-- **Fragmented onchain capital** — one Vault coordinates liquidity instead of separate pools for every firm
-- **Lack of DeFi access to prop-industry economics** — Vault shares create a composable primitive for LPs
-
-## What Each Side Gets
+## What each side gets
 
 <Tabs>
   <Tab title="Trader">
-    - Capital access without KYC or artificial rules
-    - A-book execution on real Hyperliquid liquidity — real trades with real capital
-    - A profit split fixed in the contract at activation, between 30 % and 90 % to you, and unchangeable afterwards
+    - Capital without KYC or artificial rules
+    - Orders filled on the real Hyperliquid book, with real capital
+    - A profit split fixed in the contract at activation and unchangeable afterwards
     - Nobody can refuse the payout: settlement credits your address, and the release call pays that address and no other
     - The account is yours to trade within the protocol's rules, and the firm that issued it cannot block a withdrawal
   </Tab>
   <Tab title="Builder">
     - Infrastructure for funded accounts: capital from the Vault, on-chain risk enforcement, and settlement
-    - No registration, no minimum stake, no quota — any wallet holding USDC for the activation charge can fund a trader
+    - No registration, no minimum stake, no quota. Any wallet holding USDC for the activation charge can fund a trader
     - You post a reserve as first-loss capital, and whatever the trader does not lose comes back to you
-    - Revenue on three levels: your share of trader profit, 40 % of profit forfeited on a breach, and whatever margin you price into your own evaluation
+    - Revenue on three levels: your share of trader profit, a fixed share of the profit forfeited on a forfeiting close, and whatever margin you price into your own evaluation
   </Tab>
   <Tab title="LP">
-    - Yield from the ecosystem: half of every activation premium, half of every subscription, and the Vault's residual when an account forfeits
-    - Your capital is not first in line for a loss — each account carries a builder's reserve that is spent before LP principal, though a loss larger than that reserve still reaches you
-    - No need to pick builders or traders — sharePrice reflects Vault P&L and can increase or decrease
-    - Composable shares (potentially for DeFi integrations)
+    - Yield from three flows: half of every activation premium, half of every subscription, and the Vault's residual when an account forfeits. Not fixed, and can be zero
+    - Your capital is not first in line for a loss. Each account carries a builder's reserve that is spent before LP principal, though a loss larger than that reserve still reaches you
+    - You do not pick builders or traders. The Vault's whole book is priced into `sharePrice`, which can fall as well as rise
   </Tab>
 </Tabs>
 

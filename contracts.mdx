@@ -1,0 +1,45 @@
+---
+title: "Contract Addresses"
+description: "Deployed contracts on HyperEVM, and the roles that administer them"
+---
+
+{/* Source: EVM/deployment-config.json and EVM/deployment-challenge-hyperevm.json (2026-08-28), checked against chain 999 on 2026-09-02: code at every address, proxy implementation slots, and the wiring read from MainVault, ChallengeVault and FundedAccountFactory. Re-check after any redeploy. */}
+
+Every contract is deployed on HyperEVM mainnet. Amounts are in USDC with six decimals.
+
+| | |
+|---|---|
+| Network | HyperEVM mainnet |
+| Chain id | 999 |
+| RPC | `https://rpc.hyperliquid.xyz/evm` |
+| USDC | [`0xb88339CB7199b77E23DB6E890353E22632Ba630f`](https://hyperscan.com/address/0xb88339CB7199b77E23DB6E890353E22632Ba630f) |
+
+## Funded accounts
+
+| Contract | Address | What it does |
+|---|---|---|
+| `MainVault` (proxy) | [`0x133cfAD49494c3f0D3471a4b232e918fd31cF92A`](https://hyperscan.com/address/0x133cfAD49494c3f0D3471a4b232e918fd31cF92A) | Holds the USDC, mints LP shares, funds and settles every funded account. UUPS proxy; the owner can replace the implementation |
+| `MainVault` implementation | [`0x83A22583B1f7CFbE1498317C424c64989CF1F2FC`](https://hyperscan.com/address/0x83A22583B1f7CFbE1498317C424c64989CF1F2FC) | Logic the proxy points to today |
+| `FundedAccountFactory` | [`0xE9305DCC92dE991A13Ff32668Be03476E5E19301`](https://hyperscan.com/address/0xE9305DCC92dE991A13Ff32668Be03476E5E19301) | Clones one `FundedAccount` per activation |
+| `FundedAccount` implementation | [`0xc93B873f147B665703779a1E82D04Dbf7E40A3bE`](https://hyperscan.com/address/0xc93B873f147B665703779a1E82D04Dbf7E40A3bE) | Logic every funded-account clone runs |
+| `Forwarder` | [`0x0a31e62e565C82f9D99CDfFc849A5720eFB414f5`](https://hyperscan.com/address/0x0a31e62e565C82f9D99CDfFc849A5720eFB414f5) | ERC-2771 forwarder behind gasless calls |
+| `ReferralRegistry` | [`0xD419345671d0eDd624C932fC57983aF164c6848F`](https://hyperscan.com/address/0xD419345671d0eDd624C932fC57983aF164c6848F) | Referral bindings shared by funded accounts and challenges |
+
+## Challenges
+
+| Contract | Address | What it does |
+|---|---|---|
+| `ChallengeVault` (proxy) | [`0x2AA69E062D200534bd9fdBF1497a7663c5337e4F`](https://hyperscan.com/address/0x2AA69E062D200534bd9fdBF1497a7663c5337e4F) | Sole holder of challenge USDC: purchase locks, outcomes, promotion into a funded account. UUPS proxy |
+| `ChallengeVault` implementation | [`0x2Ecf273cB23D954c42872a03A7372De5d1B1A9d8`](https://hyperscan.com/address/0x2Ecf273cB23D954c42872a03A7372De5d1B1A9d8) | Logic the proxy points to today |
+| `ChallengeFactory` | [`0x5AbbcfB778D159EF3b5aCe2c700d2E9F6b77441e`](https://hyperscan.com/address/0x5AbbcfB778D159EF3b5aCe2c700d2E9F6b77441e) | Checkout: pricing, fee routing, `buyChallenge` |
+| `ChallengePlanRegistry` | [`0xA05470Fff7b91912003f7D6a16693f90FDDc678F`](https://hyperscan.com/address/0xA05470Fff7b91912003f7D6a16693f90FDDc678F) | Builder plans: immutable once published, can be disabled |
+
+## Roles
+
+| Role | Address | Can |
+|---|---|---|
+| Owner | [`0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d`](https://hyperscan.com/address/0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d) | Upgrade both vaults, change parameters and integrations, pause and unpause. A single address today; see [Security](/security) |
+| Relayer | [`0x5A0dEd9E22563240c4aa29fA02d1A4528EF02c74`](https://hyperscan.com/address/0x5A0dEd9E22563240c4aa29fA02d1A4528EF02c74) | Sync risk state, commit closes, lower a leverage cap or remove a market, pause |
+| Protocol fee receiver | [`0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d`](https://hyperscan.com/address/0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d) | Receives the protocol half of premiums and subscriptions, the protocol share of forfeited profit, and the builder-code fee |
+
+Contract source is in the `EVM` repository under `src/funded` and `src/challenge`.

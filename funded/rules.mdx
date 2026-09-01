@@ -7,23 +7,23 @@ Your account size, your drawdown percentage and your profit split are fixed at a
 
 ## Limits
 
-| Rule | Description | If it is hit |
-|------|-------------|--------------|
+| Rule | Description | Consequence |
+|------|-------------|-------------|
 | **Trailing drawdown** | A floor below your account size, which rises as you lock in profit | Account closes, unwithdrawn profit forfeited |
 | **Daily drawdown** | Half the trailing percentage, measured from the day's start. Sponsored accounts only | Account closes, unwithdrawn profit forfeited |
 | **Leverage** | A cap per market, taken from the live protocol list | Order refused |
 | **Markets** | Only perps on the live protocol list | Order refused |
-| **Subscription** | 1.5 % of account size every 30 days, on a sponsored account | Account closes on the ordinary split |
+| **Subscription** | 1.5 % of account size every 30 days, on a sponsored account | If it lapses, the account closes on the ordinary split |
 
-<Info>
+<Note>
 At activation the firm issuing your account sets its size, the drawdown percentage and the split. Daily drawdown and the renewing subscription both apply to sponsored accounts only. A trader funding their own account prepays a fixed term instead, and it does not renew.
-</Info>
+</Note>
 
 ## The floor
 
-Your floor starts at account size minus your drawdown percentage. As you make money, 30 % of the profit above account size is locked into it, so the floor follows you up and never comes back down while the account is open.
+Your floor starts at account size minus your drawdown percentage. As you make money, 30 % of your peak profit above account size is locked into it, so the floor follows you up and never comes back down while the account is open.
 
-It moves during the session, not once a day. A new peak counts as soon as it clears 1 % above the last accepted one, and the floor rises with it — so profit you have held for an hour is already partly protected, and giving it all back can close the account before the day ends.
+It moves during the session, not once a day. A new peak counts as soon as it clears 1 % above the last accepted one, and the floor rises with it. Profit you have held for an hour is already partly protected, and giving it all back can close the account before the day ends.
 
 On a sponsored account a second floor runs from the day's opening equity, at half the trailing percentage, with its own 30 % lock on the day's peak. Whichever floor is higher is the one that applies. The two are never added together.
 
@@ -31,29 +31,24 @@ Equity has to fall strictly below the floor to breach it. Touching it exactly is
 
 ## Markets and leverage
 
-Trading is allowed on the perps the protocol lists, at that market's leverage cap. Both are checked when the order is placed, so an order outside them is simply refused — neither costs you the account.
+Trading is allowed on the perps the protocol lists, at that market's leverage cap. Both are checked when the order is placed, so an order outside them is simply refused. Neither costs you the account.
 
 If a market is removed from the list while you hold a position on it, that position is closed out and the rest of your account keeps trading.
 
 ## Profit target
 
-Some accounts carry an absolute profit target. Reaching it closes the account on your ordinary split — it is not a breach and nothing is forfeited.
+Some accounts carry an absolute profit target. Reaching it closes the account on your ordinary split. It is not a breach and nothing is forfeited.
 
 <Warning>
-Reaching the target also ends ordinary withdrawals. Once equity reaches the target a withdrawal request is refused, and the account is closed out on the ordinary split. If your account has a target, take your profit out before you reach it.
+Reaching the target also ends ordinary withdrawals: once equity is at the target a withdrawal request is refused, and the account is closed on the ordinary split. If your account has a target, take your profit out before you reach it.
 </Warning>
 
-## What Is Allowed
+## What is allowed
 
-| Activity       | Status   |
-|----------------|----------|
-| Copy Trading   | Allowed  |
-| Bots & EAs     | Allowed  |
-| News Trading   | Allowed  |
-| Information-based Trading | Allowed |
+Copy trading, bots and EAs, news trading and information-based trading are all allowed.
 
 <Tip>
-Everything not forbidden on this page is allowed. Trading style, trade frequency, position size, holding overnight or through weekends — no restrictions within the listed limits.
+Everything not forbidden on this page is allowed. Trading style, trade frequency, position size, holding overnight or through weekends: none of it is restricted within the listed limits.
 </Tip>
 
 ## What closes the account

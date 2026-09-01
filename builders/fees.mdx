@@ -5,11 +5,17 @@ description: "What activating a funded account costs you, which part of it comes
 
 Activation charges you two amounts in one transaction: a reserve `R`, which stays your money and comes back unused when the account closes, and a fee `P`, which does not. The trading capital itself is not yours to fund. The vault allocates the account size `A` out of LP deposits, and you are charged `R + P` on top of it.
 
-> You pay a reserve to fund the account. Unused reserve is returned when it closes.
+## What you choose at activation
 
-<Info>
-The product is not open to the public yet. The contracts and the SDK are open to read.
-</Info>
+| Parameter | Range | What it sets |
+|---|---|---|
+| Trader | any address | Who the account is issued to |
+| Account size `A` | $10–$20,000 | Trading capital the vault allocates |
+| Trailing drawdown `D` | 5 %–25 % | The trader's floor, and your reserve |
+| `builderPoolBps` | 10 %–70 % | Your cut of each withdrawal and each ordinary close |
+| Profit target | optional | Closes the account on the ordinary split when reached |
+
+Daily drawdown is not among them. It follows from the mode: an account you sponsor always carries it, an account a trader funds themselves never does. See [Protocol Rules](/builders/rules).
 
 ## What you pay
 
@@ -29,7 +35,7 @@ charge = R + P
 | $2,500 | 10 % | $250 | $50 | **$300** |
 
 <Note>
-One account may be at most 10 % of the Vault's assets. With the Vault cap at $25,000 that puts today's largest account at $2,500, well under the $20,000 ceiling in the parameter table below. The ceiling rises with the vault.
+One account may be at most 10 % of the Vault's assets. With the Vault cap at $25,000 that puts today's largest account at $2,500, well under the $20,000 ceiling in the parameter table above. The ceiling rises with the vault.
 </Note>
 
 The reserve column is the part that can come back: an account that returns its principal costs you `P` and nothing else, and an account that blows up costs you `P` plus as much of `R` as the trader lost.
@@ -37,7 +43,7 @@ The reserve column is the part that can come back: an account that returns its p
 `D` prices two things at once: how far the trader may fall before the account closes, and the whole of your reserve. The fee does not move with it. `P` is a share of `A` alone, so widening the drawdown buys the trader room with your first-loss capital rather than with a larger fee.
 
 <Note>
-Sponsoring is always the 2 % tier, and it opens a 30-day subscription period. The 4 % and 8 % tiers buy a prepaid 7-day or 30-day term for a trader funding their own account; a sponsored activation cannot use them.
+Sponsoring is always the 2 % tier, and it opens a 30-day subscription period. For a trader funding their own account the same 2 % buys a prepaid day, 4 % buys 7 days and 8 % buys 30 days; a sponsored activation cannot use the higher tiers.
 </Note>
 
 A sponsored month costs 2 % of account size and a self-funded month costs 8 %. The spread is the price of removing the intraday brake: with no daily floor an account travels further inside one session, so it is likelier to overshoot the trailing floor on a gap, and the overshoot lands on LPs.
@@ -50,41 +56,23 @@ A sponsored month costs 2 % of account size and a self-funded month costs 8 %. T
 | Less than that | `R` minus the shortfall |
 | Less than `A − R` | Nothing, and the excess lands on [LPs](/vault/yield) rather than on you |
 
-Your loss on one account is capped at `R + P` — the reserve you can lose plus the fee you never get back — and the refund is credited to your address for you to collect without anyone's approval.
+Your loss on one account is capped at `R + P`, the reserve you can lose plus the fee you never get back, and the refund is credited to your address for you to collect without anyone's approval.
 
 Profit is the other half. On every profit withdrawal and every ordinary close you receive `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **40 %** of whatever profit was still in the account, the protocol takes 20 %, and the vault keeps the rest.
 
 <Warning>
-The reserve is real money and it is spent before LP capital is. A trader who breaches the floor costs you the whole of `R` on that account, and nothing you earned on other accounts is netted against it.
+The reserve is real money and it is spent before LP capital is. A trader who gives back the designed drawdown costs you the whole of `R` on that account, and nothing you earned on other accounts is netted against it.
 </Warning>
-
-## What you choose at activation
-
-| Parameter | Range | What it sets |
-|---|---|---|
-| Trader | any address | Who the account is issued to |
-| Account size `A` | $10–$20,000 | Trading capital the vault allocates |
-| Trailing drawdown `D` | 5 %–25 % | The trader's floor, and your reserve |
-| `builderPoolBps` | 10 %–70 % | Your cut of each withdrawal and each ordinary close |
-| Profit target | optional | Closes the account on the ordinary split when reached |
-
-Daily drawdown is not among them. It follows from the mode: an account you sponsor always carries it, an account a trader funds themselves never does. See [Protocol Rules](/builders/rules).
 
 ## Who may activate
 
-Any wallet holding USDC for `R + P`. No registration, no minimum stake, no quota tied to you, no approval step. What limits activation is the vault's capacity, not your standing with it.
-
-| Limit | Value | What it constrains |
-|---|---|---|
-| Max utilization | **80 %** | allocated capital against `totalAssets` |
-| Max single account | **10 %** of `totalAssets`, capped at **$20,000** | one account |
-| Vault cap | **$25,000** | `totalAssets` |
+Any wallet holding USDC for `R + P`. No registration, no minimum stake, no quota tied to you, no approval step. What limits activation is the vault's capacity, not your standing with it: the utilization ceiling, the per-account ceiling and the vault cap are on [How It Works](/vault#allocation-limits).
 
 ## Where your fee goes
 
 The premium `P` splits **50/50** between the vault and the protocol, earned before the account places an order.
 
-The subscription is **1.5 % of account size every 30 days** and splits the same way. You receive none of it; the builder share it carried in the previous cohort is gone. On an account you sponsor it renews out of the account's own equity rather than your wallet, and renewal requires the account to be in profit by at least the fee.
+The subscription is **1.5 % of account size every 30 days** and splits the same way. You receive none of it. On an account you sponsor it renews out of the account's own equity rather than your wallet, and renewal requires the account to be in profit by at least the fee, with equity still above both floors once it is paid.
 
 ## Next
 

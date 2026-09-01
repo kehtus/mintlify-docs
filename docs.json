@@ -54,17 +54,17 @@
             ]
           },
           {
-            "group": "Security",
-            "pages": [
-              "security"
-            ]
-          },
-          {
-            "group": "Funded",
+            "group": "Funded accounts",
             "pages": [
               "funded/index",
               "funded/rules",
               "funded/payouts"
+            ]
+          },
+          {
+            "group": "Challenges",
+            "pages": [
+              "challenges/index"
             ]
           },
           {
@@ -84,8 +84,15 @@
             ]
           },
           {
+            "group": "Security",
+            "pages": [
+              "security"
+            ]
+          },
+          {
             "group": "Reference",
             "pages": [
+              "contracts",
               "api",
               "sdk"
             ]
@@ -103,13 +110,7 @@
             ]
           },
           {
-            "group": "Безопасность",
-            "pages": [
-              "ru/security"
-            ]
-          },
-          {
-            "group": "Funded",
+            "group": "Funded-аккаунты",
             "pages": [
               "ru/funded/index",
               "ru/funded/rules",
@@ -131,6 +132,12 @@
               "ru/vault/index",
               "ru/vault/yield"
             ]
+          },
+          {
+            "group": "Безопасность",
+            "pages": [
+              "ru/security"
+            ]
           }
         ]
       },
@@ -145,13 +152,7 @@
             ]
           },
           {
-            "group": "安全",
-            "pages": [
-              "zh/security"
-            ]
-          },
-          {
-            "group": "Funded",
+            "group": "Funded 账户",
             "pages": [
               "zh/funded/index",
               "zh/funded/rules",
@@ -172,6 +173,12 @@
             "pages": [
               "zh/vault/index",
               "zh/vault/yield"
+            ]
+          },
+          {
+            "group": "安全",
+            "pages": [
+              "zh/security"
             ]
           }
         ]

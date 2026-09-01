@@ -5,9 +5,9 @@ description: "Capital and infrastructure for launching a prop firm on Hyperliqui
 
 > The builder owns the product. Proportion provides the funded layer.
 
-For a builder, the funded account is the most capital-intensive and infrastructure-heavy part of a prop firm. Proportion provides that layer: capital, on-chain risk enforcement, and settlement. Evaluation, brand, marketing and trader selection stay your product. Proportion is API-compatible with Hyperliquid Builder Codes, so it integrates into an existing trading frontend with minimal client-side change.
+For a builder, the funded account is the most capital-intensive and infrastructure-heavy part of a prop firm. Proportion provides that layer: capital, on-chain risk enforcement, and settlement. Evaluation, brand, marketing and trader selection stay your product. Proportion is API-compatible with Hyperliquid Builder Codes, so it fits into an existing trading frontend with little client-side change.
 
-You buy capital from the protocol and pay for it at activation with `R + P`. Any wallet holding USDC for that charge can open a funded account for someone else, and whoever paid is recorded as its builder. The first loss is the reserve `R`, not a second deposit in shares.
+You buy capital from the protocol and pay for it at activation with `R + P`.
 
 ## What Proportion gives you
 
@@ -21,28 +21,20 @@ An SDK call creates an isolated on-chain account with capital, a drawdown limit 
 
 Boundary: everything before activation is handled by the builder; everything after activation is enforced by the protocol.
 
-### Who counts as the builder
+## Who counts as the builder
 
-Whoever paid `R + P`. There is no registration, no minimum stake and no funding quota. Funding yourself uses the same call with your own address as the trader, so one wallet is both backer and trader. Your profit share and, on a forfeiting close, your 40 % of the forfeited profit are both recorded against that address.
+Whoever paid `R + P`. There is no registration, no minimum stake and no funding quota. Funding yourself uses the same call with your own address as the trader, so one wallet is both backer and trader. Your profit share and, on a forfeiting close, your share of the forfeited profit are both recorded against that address. The first loss is the reserve `R`, not a second deposit in shares.
 
-### Where your revenue comes from
+## Where your revenue comes from
 
-<CardGroup cols={2}>
-  <Card title="Your share of trader profit" icon="percent" href="/funded/payouts">
-    `builderPoolBps`, fixed per account at activation. You take that share of every profit withdrawal and of an ordinary close
-  </Card>
-  <Card title="Forfeited profit" icon="shield-x" href="/vault/yield">
-    If the account closes on a drawdown breach or a trader's own request, you take **40 %** of whatever profit it returns
-  </Card>
-  <Card title="Evaluation margin" icon="ticket">
-    Whatever you charge for selection, above the activation charge you pay the protocol
-  </Card>
-  <Card title="LP yield, if you want it" icon="trending-up" href="/vault/yield">
-    Depositing into the vault is optional and independent of funding traders
-  </Card>
-</CardGroup>
+| Source | What it is |
+|---|---|
+| Your share of trader profit | `builderPoolBps`, fixed per account at activation. You take that share of every profit withdrawal and of an ordinary close. See [Profit and Payouts](/funded/payouts) |
+| Forfeited profit | If the account closes on a drawdown breach or a trader's own request, you take **40 %** of whatever profit it returns |
+| Evaluation margin | Whatever you charge for selection, above the activation charge you pay the protocol. See [Challenges](/challenges) |
+| LP yield, if you want it | Depositing into the vault is optional and independent of funding traders. See [Yield and Risks](/vault/yield) |
 
-Two things that are not builder revenue. The subscription splits between the vault and the protocol. The Hyperliquid builder-code fee on a funded account is approved for the protocol's fee receiver, not for you. Unused reserve does come back, but that is your own capital returning rather than income.
+Two things are not builder revenue. The subscription splits between the vault and the protocol. The Hyperliquid builder-code fee on a funded account is approved for the protocol's fee receiver, not for you. Unused reserve does come back, but that is your own capital returning rather than income.
 
 ## Sections
 

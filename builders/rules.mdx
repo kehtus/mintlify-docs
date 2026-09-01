@@ -3,7 +3,7 @@ title: "Protocol Rules"
 description: "What the protocol enforces on a funded account, and which rules stay yours"
 ---
 
-The risk engine is the part of a prop firm you stop building. You set the account size and the drawdown percentage at activation; from that point the floor, the allowed markets and the leverage caps are enforced by the protocol against the account's live equity. You cannot soften them afterwards, and neither can the trader.
+The risk engine is the part of a prop firm you stop building. You set the account size and the drawdown percentage at activation. From that point the protocol enforces the floor against the account's live equity, and the allowed markets and leverage caps at order entry. You cannot soften them afterwards, and neither can the trader.
 
 ## What the protocol enforces
 
@@ -33,7 +33,7 @@ The floor also moves during the session rather than once a day. See [Funded Acco
 
 ## Daily drawdown
 
-Not a switch you set, and not a discount you buy. An account you sponsor carries a second floor at half the trailing percentage, measured from the day's opening equity; an account a trader funds themselves has none. Whichever floor is higher is the one that applies, and the two are never added together.
+Daily drawdown is not a parameter you set. An account you sponsor carries a second floor at half the trailing percentage, measured from the day's opening equity; an account a trader funds themselves has none. Whichever floor is higher is the one that applies, and the two are never added together.
 
 ## Markets and leverage
 
@@ -49,7 +49,7 @@ Your unused reserve returns in every one of the six. What changes is who receive
 
 ## The rules you keep
 
-The protocol enforces capital rules and nothing else. Everything that makes the product yours stays off-chain and stays yours: the evaluation and its price, minimum trading days, consistency rules, a daily limit stricter than the protocol's, and the decision about who gets an account at all. When a trader breaks one of those, you are the one who acts on it.
+The protocol enforces capital rules and nothing else. Everything that makes the product yours stays yours: [the evaluation](/challenges) and its price, minimum trading days, consistency rules, a daily limit stricter than the protocol's, and the decision about who gets an account at all. When a trader breaks one of those, you are the one who acts on it.
 
 One of your rules can sit on-chain if you want it there. A profit target set at activation closes the account on the ordinary split as soon as the trader reaches it.
 

@@ -52,10 +52,6 @@ At the moment you request, the account must also be flat, the subscription activ
 A claim resets your protection. The high-water mark, the daily baseline and the daily peak all return to account size, and the profitable-day count returns to zero. The floor you had ratcheted up is gone.
 </Warning>
 
-<Note>
-Reaching the profit target closes the account on the ordinary split, but it also ends ordinary withdrawals — once the target is reached a withdrawal request is refused. If your account has a target, plan the withdrawal before you touch it.
-</Note>
-
 ## What each closure pays
 
 | Why the account closed | Profit still in the account |
@@ -70,12 +66,8 @@ Reaching the profit target closes the account on the ordinary split, but it also
 On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital goes to the builder, the protocol and the vault. If it comes back at or below account size there is no profit to divide, and the builder's reserve absorbs the loss before LP capital does.
 
 <Warning>
-Closing your own account is a forfeiting close. It closes at any equity and creates no payout entitlement. If you have profit and you want it, withdraw and claim it before you ask to close.
+Closing your own account is a forfeiting close. You can ask only while the account is flat, it closes at whatever equity it has, and it creates no payout entitlement. If you have profit and you want it, withdraw and claim it before you ask to close.
 </Warning>
-
-<Note>
-An unpaid subscription is not a breach. Expiry and cancellation keep your ordinary split, and so do an admin closure and a reached target.
-</Note>
 
 ## The one thing a close cannot reach
 

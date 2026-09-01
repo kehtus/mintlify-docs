@@ -7,26 +7,16 @@ Three flows reach the vault and raise `sharePrice`: half of each activation prem
 
 One flow runs the other way. Every funded account carries a reserve `R` posted by its builder, and a principal loss consumes `R` before it touches LP capital. The part of the loss larger than `R` is `reserveDeficit`, and that lands on you. The buffer is real, it is charged for, and it is finite.
 
-<Info>
-The product is not open to the public yet. The contracts and the SDK are open to read.
-</Info>
-
 ## What pays the vault
 
-<CardGroup cols={3}>
-  <Card title="Activation premium" icon="percent" href="/builders/fees">
-    The builder pays the premium `P` at activation. **Half** stays in the vault and the protocol takes the other half. It is earned before the account places an order
-  </Card>
-  <Card title="Subscription" icon="repeat" href="/builders/fees">
-    Each subscription payment splits **50 / 50** between the vault and the protocol. The builder receives none of it
-  </Card>
-  <Card title="Forfeiting-close residual" icon="chart-line" href="/funded/rules">
-    A forfeiting close pays the trader nothing. The builder takes **40 %** and the protocol **20 %**; the remaining **40 %**, with every integer-division dust atom, stays with LPs
-  </Card>
-</CardGroup>
+| Flow | What the vault gets |
+|---|---|
+| Activation premium | The builder pays the premium `P` at activation. **Half** stays in the vault and the protocol takes the other half. It is earned before the account places an order |
+| Subscription | Each subscription payment splits **50 / 50** between the vault and the protocol. The builder receives none of it |
+| Forfeiting-close residual | A forfeiting close pays the trader nothing. The builder takes **40 %** and the protocol **20 %**; the remaining **40 %**, rounding included, stays with LPs |
 
 <Warning>
-An ordinary close pays the vault nothing. When an account closes for expiry, cancellation, admin action or a reached target, profit is split between trader and builder by `builderPoolBps` and the vault's share is zero. The residual in the third card exists only on a forfeiting close. Do not model LP return as a cut of trader profit.
+An ordinary close pays the vault nothing. When an account closes for expiry, cancellation, admin action or a reached target, profit is split between trader and builder by `builderPoolBps` and the vault's share is zero. The residual in the last row exists only on a forfeiting close. Do not model LP return as a cut of trader profit.
 </Warning>
 
 ## What the vault does not earn
@@ -56,9 +46,9 @@ reserveDeficit  = principalLoss − reserveConsumed
 
 `reserveConsumed` is the builder's money. `reserveDeficit` is yours, and it is the only way a closing account can move `sharePrice` down. The fall is exactly `reserveDeficit`.
 
-A deficit appears only when the account exits below its floor rather than at it — a gap, a HyperCore liquidation, slippage during a forced close, or a settlement that recovers less than the snapshot. Nothing reimburses it, and the premium already collected on that account is the only sum ever charged against the possibility.
+A deficit appears only when the account exits below its floor rather than at it: a gap, a HyperCore liquidation, slippage during a forced close, or a settlement that recovers less than the snapshot. Nothing reimburses it, and the premium already collected on that account is the only sum ever charged against the possibility.
 
-This is the part of the design with no counterpart in a firm that funds evaluations out of its own fee revenue. Such a firm has no outside capital with a claim on the P&L, so there is nothing for it to offer an LP and no reserve ordering to describe. Here the backer, not the LP, absorbs the first loss.
+A firm that funds accounts out of its own fee revenue has no outside capital with a claim on the P&L, so it has nothing to offer an LP and no loss ordering to describe. Here there is one: the backer absorbs the first loss, and the LP absorbs what is left.
 
 ## Risks
 
@@ -66,13 +56,13 @@ Placing capital in the vault involves several risks that affect share value and 
 
 <AccordionGroup>
   <Accordion title="Correlated drawdowns" icon="waves">
-    Each overshoot contributes its own `reserveDeficit`, which the premium the vault has already earned is meant to absorb in isolated events. With simultaneous breach closures across many funded accounts, aggregate losses may exceed the pool's accumulated buffer, reducing `sharePrice` — potentially below the deposit's nominal value. Deficits are not netted against the reserves of accounts that closed whole.
+    Each overshoot contributes its own `reserveDeficit`, which the premium the vault has already earned is meant to absorb in isolated events. With simultaneous breach closures across many funded accounts, aggregate losses may exceed the pool's accumulated buffer, reducing `sharePrice`, potentially below the deposit's nominal value. Deficits are not netted against the reserves of accounts that closed whole.
   </Accordion>
   <Accordion title="Issuance quality" icon="users">
-    LPs do not participate in trader selection or activation parameter decisions — these are made by builders. Activation is permissionless: any wallet that can pay `R + P` becomes the builder of record, with no registration and no approval. Deterioration in underwriting quality by any builder affects vault yield in proportion to their share of active issuance.
+    LPs do not participate in trader selection or activation parameter decisions; these are made by builders. Activation is permissionless: any wallet that can pay `R + P` becomes the builder of record, with no registration and no approval. Deterioration in underwriting quality by any builder affects vault yield in proportion to their share of active issuance.
   </Accordion>
   <Accordion title="Smart-contract risk" icon="file-code">
-    MainVault and FundedAccount are exposed to critical vulnerability risk. The codebase has undergone an [independent audit](/security), but residual risk cannot be eliminated, and the audited implementation is not frozen — see governance risk below.
+    `MainVault` and `FundedAccount` carry smart-contract risk. The codebase has had an [independent audit](/security), but residual risk cannot be eliminated, and the audited implementation is not frozen. See governance risk below.
   </Accordion>
   <Accordion title="Dependency on Hyperliquid and HyperCore" icon="link">
     Vault operations rely on HyperCore data (balances, prices) and on Hyperliquid spot and perp infrastructure. Failures or incorrect behaviour in these components are reflected in vault capital.
@@ -84,9 +74,11 @@ Placing capital in the vault involves several risks that affect share value and 
     Shares are not locked against open funded accounts, for any LP. What limits an exit is the utilization ceiling measured after the burn, EVM cash above the reserve, refund and payout liabilities, and whether the protocol is paused. Allocated capital cannot be recalled to serve a withdrawal, so a full exit may be unavailable until accounts close.
   </Accordion>
   <Accordion title="Governance risk" icon="settings">
-    The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in one call, and only the utilization and per-account ceilings have bounds compiled into the contract. The owner can also replace the vault implementation. Neither carries an observation window today. Separately, a pause disables every LP withdrawal path while leaving payout claims working; the owner or the relayer can trigger one, and only the owner can lift it.
+    The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in one call. The utilization and per-account ceilings, and the top of the drawdown band, have bounds compiled into the contract; the account-size band and the vault cap do not. The owner can also replace the vault implementation. Neither carries an observation window today. Separately, a pause disables every LP withdrawal path while leaving payout claims working; the owner or the relayer can trigger one, and only the owner can lift it.
   </Accordion>
 </AccordionGroup>
+
+## Next
 
 <CardGroup cols={3}>
   <Card title="Vault Mechanics" icon="calculator" href="/vault">

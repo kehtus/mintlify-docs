@@ -3,7 +3,7 @@ title: "How It Works"
 description: "What the vault holds, how sharePrice is computed, and what limits allocation and exit"
 ---
 
-`MainVault` holds the protocol's USDC. It mints LP shares, funds the trading capital of every funded account, holds each builder's reserve as a liability it does not own, and books every settlement.
+`MainVault` holds the USDC. It mints LP shares, funds the trading capital of every funded account, holds each builder's reserve as a liability it does not own, and books every settlement.
 
 <Info>
 The product is not open to the public yet. The contracts and the SDK are open to read.
@@ -11,17 +11,11 @@ The product is not open to the public yet. The contracts and the SDK are open to
 
 ## Flows
 
-<CardGroup cols={3}>
-  <Card title="Funding an account" icon="banknote" href="/builders/fees">
-    The vault allocates `accountSize` and sends it through HyperCore Spot to the funded account. That trading capital is LP money; the builder is charged the reserve `R` and the premium `P` on top of it
-  </Card>
-  <Card title="Fees" icon="coins" href="/vault/yield">
-    The vault's half of each activation premium and each subscription payment stays on EVM and raises `sharePrice`
-  </Card>
-  <Card title="Settlement" icon="rotate-ccw" href="/funded/payouts">
-    On close the vault pulls back the recovered capital, releases the allocation, and books each party's claim
-  </Card>
-</CardGroup>
+| Flow | What happens |
+|---|---|
+| Funding an account | The vault allocates `accountSize` and deposits it on HyperCore for the funded account. That trading capital is LP money; the builder is charged the reserve `R` and the premium `P` on top of it. See [Account Parameters and Fees](/builders/fees) |
+| Fees | The vault's half of each activation premium and each subscription payment stays on EVM and raises `sharePrice`. See [Yield and Risks](/vault/yield) |
+| Settlement | On close the vault pulls back the recovered capital, releases the allocation, and books each party's claim. See [Profit and Payouts](/funded/payouts) |
 
 ## Shares and sharePrice
 
@@ -51,9 +45,9 @@ The account-size and drawdown bands a builder chooses inside these limits are on
 
 ## Exit
 
-Shares can be burned at any time, and there is an optional one-day cooldown interface over the same accounting. Two things constrain a withdrawal: allocation must stay inside the utilization ceiling after the burn, and the payout comes from EVM cash above what the vault already owes in reserves, refunds and payouts.
+Shares can be burned at any time, and there is an optional request-then-execute route with a one-day cooldown over the same accounting. Two things constrain a withdrawal: allocation must stay inside the utilization ceiling after the burn, and the payout comes from EVM cash above what the vault already owes in reserves, refunds and payouts.
 
-There is no share lock. A builder holding shares against live funded accounts exits on the same terms as any other LP. What can delay an exit is a busy vault — with utilization at the ceiling, a large withdrawal waits for an account to settle.
+There is no share lock. A builder holding shares against live funded accounts exits on the same terms as any other LP. What can delay an exit is a busy vault: with utilization at the ceiling, a large withdrawal waits for an account to settle.
 
 <Warning>
 Every LP withdrawal path is disabled while the protocol is paused. Pausing can be triggered by the owner or the relayer; only the owner can lift it. Trader and builder payout claims are deliberately exempt and keep working through a pause. LP exits are not.
@@ -61,9 +55,11 @@ Every LP withdrawal path is disabled while the protocol is paused. Pausing can b
 
 ## Governance
 
-The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in a single call. The utilization and per-account ceilings have bounds compiled into the contract; the account-size band and the vault cap do not.
+The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in a single call. The utilization and per-account ceilings have bounds compiled into the contract, and the drawdown band cannot be raised above 50 %; the account-size band and the vault cap have no bounds.
 
-The activation fee tiers, the profit splits and the subscription multiplier are constants. Changing one means replacing the implementation, which the owner can do in one call. Neither that call nor a parameter change carries an observation window today — see [Security](/security).
+The activation fee tiers, the profit splits and the subscription multiplier are constants. Changing one means replacing the implementation, which the owner can do in one call. Neither that call nor a parameter change carries an observation window today. See [Security](/security).
+
+## Next
 
 <CardGroup cols={3}>
   <Card title="Yield and Risks" icon="trending-up" href="/vault/yield">
