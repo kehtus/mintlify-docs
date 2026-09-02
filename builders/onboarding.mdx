@@ -15,9 +15,9 @@ description: "How to open your first funded account"
   </Step>
 </Steps>
 
-## Skin in the game
+## Your reserve
 
-The first loss is the reserve `R`. It is not a second deposit and not an LP cushion.
+The first loss is the reserve `R`. There is no separate builder deposit, and LP shares play no part in it.
 
 - You pay a reserve to fund the account. Unused reserve is returned when it closes.
 - A loss larger than `R` lands on the LP vault as `reserveDeficit`, not on you.
@@ -25,12 +25,12 @@ The first loss is the reserve `R`. It is not a second deposit and not an LP cush
 - The premium `P` is charged on every activation and is not returned.
 
 <Warning>
-`R` is your capital at risk. If your trader gives back the account's designed drawdown, you lose the reserve. That is the point of it, and it is why the protocol does not need to approve you.
+`R` is your capital at risk. If your trader gives back the account's designed drawdown, you lose the reserve.
 </Warning>
 
 ## Onboarding a trader
 
-The account is issued to the trader's EVM address on HyperEVM. On the Proportion frontend they pay no gas and need no HYPE: every operation, the profit withdrawal included, is relayed for them. In practice a trader need not touch the chain at all until they take money out.
+The account is issued to the trader's EVM address on HyperEVM. On the Proportion frontend they pay no gas and need no HYPE: every operation is relayed for them, and the only things they sign are their own requests, a withdrawal or a close.
 
 That keeps your product simple. The trader pays for whatever selection you run, passes it, and receives an account, without having to understand gas, wallets or signing.
 

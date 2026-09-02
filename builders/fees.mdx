@@ -19,7 +19,7 @@ Daily drawdown is not among them. It follows from the mode: an account you spons
 
 ### The floor your drawdown buys
 
-`D` sets the floor at exactly `A − R`, so the reserve covers the whole of the designed fall. As the trader makes money, 30 % of every gain above account size locks into the floor, and it never comes back down while the account is open.
+`D` sets the floor at exactly `A − R`, so the reserve covers the whole of the designed fall. As the trader makes money, 30 % of every gain above account size locks into the floor, and it does not come back down until the trader claims a withdrawal, which resets it to account size.
 
 ```text
 A = $10,000, D = 10 %, reserve R = $1,000
@@ -29,7 +29,7 @@ peak $15,000, 30 % of the $5,000 gain       $10,500
 equity strictly below $10,500               the account closes
 ```
 
-From that peak the trader may still fall $4,500 before the account closes. Most of a winning run is not protected, which is what makes `D` a product decision rather than a formality: it is the only number standing between the trader's worst session and your money.
+From that peak the trader may still fall $4,500 before the account closes. Most of a winning run is unprotected, so `D` decides how much of your reserve one bad session can take.
 
 ## What you pay
 
@@ -37,7 +37,7 @@ From that peak the trader may still fall $4,500 before the account closes. Most 
 A = account size    D = trailing drawdown you choose, 5 %–25 %
 
 R = A × D       your reserve, refundable
-P = A × 2 %     the activation fee, kept
+P = A × 2 %     the premium, kept
 charge = R + P
 ```
 
@@ -60,7 +60,7 @@ The reserve column is the part that can come back: an account that returns its p
 Sponsoring is always the 2 % tier, and it opens a 30-day subscription period. For a trader funding their own account the same 2 % buys a prepaid day, 4 % buys 7 days and 8 % buys 30 days; a sponsored activation cannot use the higher tiers.
 </Note>
 
-A sponsored month costs 2 % of account size and a self-funded month costs 8 %. The spread is the price of removing the intraday brake: with no daily floor an account travels further inside one session, so it is likelier to overshoot the trailing floor on a gap, and the overshoot lands on LPs.
+The first sponsored month costs 2 % of account size and each renewal 1.5 %. A self-funded month costs 8 %. The spread is the price of removing the intraday brake: with no daily floor an account travels further inside one session, so it is likelier to overshoot the trailing floor on a gap, and the overshoot lands on LPs.
 
 ## What comes back
 
@@ -86,7 +86,7 @@ Any wallet holding USDC for `R + P`. No registration, no minimum stake, no quota
 
 The premium `P` splits **50/50** between the vault and the protocol, earned before the account places an order.
 
-The subscription is **1.5 % of account size every 30 days** and splits the same way. You receive none of it. On an account you sponsor it renews out of the account's own equity rather than your wallet, and renewal requires the account to be in profit by at least the fee, with equity still above both floors once it is paid.
+The subscription is **1.5 % of account size every 30 days** and splits the same way. You receive none of it. On a sponsored account the subscription is taken from the account's equity, not from your wallet, and renewal requires the account to be in profit by at least the fee, with equity still above both floors once it is paid.
 
 ## Next
 

@@ -3,7 +3,7 @@ title: "Profit and Payouts"
 description: "How your profit is split, how you withdraw it, and which closures pay nothing"
 ---
 
-Nobody can refuse your payout. When your account settles, the vault credits your address in its payout ledger, and `claimPayout` sends that balance to that address and to no other. Anyone may call it. There is no approval step, no ticket, and no address the operator can substitute for yours.
+Nobody can refuse your payout. When your account settles, the vault credits your address in its payout ledger, and `claimPayout` sends that balance to that address and to no other. Anyone may call it. No one approves it and no one can change the address.
 
 What you can lose is the profit itself. Some closures pay the trader nothing. Both are on this page.
 
@@ -31,7 +31,7 @@ Profit is your current equity above account size, not the distance from a high-w
 
 | Route | Condition |
 |---|---|
-| Day count | Three profitable checkpoint days, each at least 0.7 % growth. They need not be consecutive |
+| Day count | Three daily checkpoints at which equity is at least 0.7 % above the previous checkpoint. They need not be consecutive |
 | Instant | Profit at or above 3 % of account size, with no day count at all |
 
 At the moment you request, the account must also be flat, the subscription active, and the profit target not yet reached.
@@ -49,7 +49,7 @@ At the moment you request, the account must also be flat, the subscription activ
 </Steps>
 
 <Warning>
-A claim resets your protection. The high-water mark, the daily baseline and the daily peak all return to account size, and the profitable-day count returns to zero. The floor you had ratcheted up is gone.
+A claim resets your floor. The high-water mark, the daily baseline and the daily peak all return to account size, and the profitable-day count returns to zero.
 </Warning>
 
 ## What each closure pays
@@ -66,14 +66,12 @@ A claim resets your protection. The high-water mark, the daily baseline and the 
 On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital goes to the builder, the protocol and the vault. If it comes back at or below account size there is no profit to divide, and the builder's reserve absorbs the loss before LP capital does.
 
 <Warning>
-Closing your own account is a forfeiting close. You can ask only while the account is flat, it closes at whatever equity it has, and it creates no payout entitlement. If you have profit and you want it, withdraw and claim it before you ask to close.
+Closing your own account is a forfeiting close. You can ask only while the account is flat. It closes at whatever equity it has and pays you nothing. If you have profit and you want it, withdraw and claim it before you ask to close.
 </Warning>
 
 ## The one thing a close cannot reach
 
 Profit already accepted into a pending withdrawal is vested. If a close interrupts it, that amount still settles under your ordinary split, whatever the reason for the close turns out to be. A drawdown breach in the next block does not touch it.
-
-So the order of your actions matters more than the size of any single trade. Eligible profit you have requested is yours. Eligible profit you have not requested is not.
 
 ## Next
 

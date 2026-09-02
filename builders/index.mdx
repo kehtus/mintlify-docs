@@ -5,25 +5,25 @@ description: "Capital and infrastructure for launching a prop firm on Hyperliqui
 
 > The builder owns the product. Proportion provides the funded layer.
 
-For a builder, the funded account is the most capital-intensive and infrastructure-heavy part of a prop firm. Proportion provides that layer: capital, on-chain risk enforcement, and settlement. Evaluation, brand, marketing and trader selection stay your product. Interaction with the protocol goes through the exchange proxy API, which any Hyperliquid-compatible frontend can use and which answers faster than Hyperliquid's public endpoint.
+For a builder, the funded account is the most capital-intensive part of a prop firm. Proportion funds it, enforces its floor and settles it. Evaluation, brand, marketing and trader selection stay your product. Interaction with the protocol goes through the exchange proxy API, which any Hyperliquid-compatible frontend can use and which answers faster than Hyperliquid's public endpoint.
 
-You buy capital from the protocol and pay for it at activation with `R + P`. Where that money comes from is your business: in a prop firm it is usually the fees from challenges that did not pass, or any other revenue.
+The vault allocates the capital. You pay `R + P` at activation, and `R` comes back unused. Where that money comes from is your business: in a prop firm it is usually the fees from challenges that did not pass, or any other revenue.
 
 ## What Proportion gives you
 
-An SDK call creates an isolated on-chain account with capital, a drawdown limit and automatic risk enforcement. The account belongs to the trader within the protocol's rules.
+An SDK call creates an isolated on-chain account with capital, a floor and automatic risk enforcement. The account belongs to the trader within the protocol's rules.
 
 | Your product | The protocol |
 |--------------|--------------|
 | Evaluation and selection | Capital from the LP vault |
-| Trader onboarding | Drawdown floors enforced on-chain; markets and leverage enforced at order entry |
+| Trader onboarding | Floors computed on-chain, closes triggered by the risk engine, markets and leverage enforced at order entry |
 | Brand, marketing, pricing | Settlement: fees, subscriptions, and the profit split |
 
 Boundary: everything before activation is handled by the builder; everything after activation is enforced by the protocol.
 
 ## Who counts as the builder
 
-Whoever paid `R + P`. There is no registration, no minimum stake and no funding quota. Funding yourself uses the same call with your own address as the trader, so one wallet is both backer and trader. Your profit share and, on a forfeiting close, your share of the forfeited profit are both recorded against that address. The first loss is the reserve `R`, not a second deposit in shares.
+Whoever paid `R + P`. Funding yourself uses the same call with your own address as the trader, so one wallet is both backer and trader. Your profit share and, on a forfeiting close, your share of the forfeited profit are both recorded against that address.
 
 ## Where your revenue comes from
 

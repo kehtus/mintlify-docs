@@ -3,21 +3,21 @@ title: "Protocol Rules"
 description: "What the protocol enforces on a funded account, and which rules stay yours"
 ---
 
-Risk enforcement is the part of a prop firm you stop building. You set the account size and the drawdown percentage at activation. From that point the protocol enforces the floor against the account's live equity, and the allowed markets and leverage caps at order entry. An off-chain risk engine does the sampling and the calls, but every floor and every close is the contract's decision. You cannot soften them afterwards, and neither can the trader.
+You set the account size and the drawdown percentage at activation. From that point the protocol enforces the floor against the account's live equity, and the allowed markets and leverage caps at order entry. An off-chain risk engine does the sampling and the calls, but every floor and every close is the contract's decision. You cannot soften them afterwards, and neither can the trader.
 
 ## What the protocol enforces
 
 | Rule | Enforced | On breach |
 |---|---|---|
 | Trailing floor | on-chain, against live equity | The account closes. The trader forfeits unwithdrawn profit and your reserve absorbs the loss |
-| Daily floor, sponsored accounts only | same | Same |
+| Daily floor, sponsored accounts only | Same | Same |
 | Allowed markets | at order entry | The order is refused. The account keeps trading |
 | Leverage cap, per market | at order entry | The order is refused. The account keeps trading |
 | Subscription | at the daily checkpoint | The account closes on the ordinary split |
 
 ## The floor you priced
 
-The floor starts at exactly the account size minus your reserve, so `R` is sized to cover the whole of the designed fall. It then rises as the trader banks gains: 30 % of every gain above account size locks into it, and it never comes back down while the account is open. A worked example is on [Account Parameters and Fees](/builders/fees#the-floor-your-drawdown-buys).
+The floor starts at exactly the account size minus your reserve, so `R` is sized to cover the whole of the designed fall. It then rises as the trader banks gains: 30 % of every gain above account size locks into it, and it does not come back down until the trader claims a withdrawal, which resets it to account size. A worked example is on [Account Parameters and Fees](/builders/fees#the-floor-your-drawdown-buys).
 
 The floor moves during the session rather than once a day. See [Funded Account Rules](/funded/rules) for how a new peak is accepted.
 

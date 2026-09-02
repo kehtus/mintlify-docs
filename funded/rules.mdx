@@ -3,7 +3,7 @@ title: "Funded Account Rules"
 description: "The limits your funded account is held to, and every reason it closes"
 ---
 
-Your account size, your drawdown percentage and your profit split are fixed at activation and nothing changes them afterwards. The floor your account is held to is readable on-chain at any moment, and the code that returns it is the code that acts on it.
+Your account size, your drawdown percentage and your profit split are set by your backer at activation, and nothing changes them afterwards. You can read your floor on-chain at any moment, and the contract closes the account by that same number.
 
 Your equity is read from HyperCore precompiles, which the contract uses directly as its oracle. An off-chain risk engine samples the account and calls the contract, but it can only trigger what the contract's rules already allow: it works through API wallets and never holds your funds.
 
@@ -15,17 +15,17 @@ Your equity is read from HyperCore precompiles, which the contract uses directly
 | **Daily drawdown** | Half the trailing percentage, measured from the day's start. Sponsored accounts only | Account closes, unwithdrawn profit forfeited |
 | **Leverage** | A cap per market, taken from the live protocol list | Order refused |
 | **Markets** | Only perps on the live protocol list | Order refused |
-| **Subscription** | 1.5 % of account size every 30 days, on a sponsored account | If it lapses, the account closes on the ordinary split |
+| **Subscription** | 1.5 % of account size every 30 days, taken from your equity. Sponsored accounts only | If it lapses, the account closes on the ordinary split |
 
 <Note>
-At activation your backer sets the account size, the drawdown percentage and the split. Daily drawdown and the renewing subscription both apply to sponsored accounts only. A trader funding their own account prepays a fixed term instead, and it does not renew.
+Daily drawdown and the subscription apply only to sponsored accounts. A self-funded account prepays a fixed term instead, and it does not renew.
 </Note>
 
 ## The floor
 
-Your floor starts at account size minus your drawdown percentage. As you make money, 30 % of your peak profit above account size is locked into it, so the floor follows you up and never comes back down while the account is open.
+Your floor starts at account size minus your drawdown percentage. As you make money, 30 % of your peak profit above account size is locked into it, so the floor follows you up. It does not come back down until you claim a withdrawal, which resets it to account size.
 
-It moves during the session, not once a day. A new peak counts as soon as it clears 1 % above the last accepted one, and the floor rises with it. Profit you have held for an hour is already partly protected, and giving it all back can close the account before the day ends.
+It moves during the session, not once a day. A new peak counts once it is at least 1 % higher than the last accepted peak, and the floor rises with it. Profit you have held for an hour has already raised your floor. Give it all back and the account can close before the day ends.
 
 On a sponsored account a second floor runs from the day's opening equity, at half the trailing percentage, with its own 30 % lock on the day's peak. Whichever floor is higher is the one that applies. The two are never added together.
 
@@ -42,15 +42,15 @@ If a market is removed from the list while you hold a position on it, that posit
 Some accounts carry an absolute profit target. Reaching it closes the account on your ordinary split. It is not a breach and nothing is forfeited.
 
 <Warning>
-Reaching the target also ends ordinary withdrawals: once equity is at the target a withdrawal request is refused, and the account is closed on the ordinary split. If your account has a target, take your profit out before you reach it.
+Once equity is at the target, ordinary withdrawals are refused and the account is closed on the ordinary split. You keep the profit but lose the account. If you want to keep trading it, take profit out before you reach the target.
 </Warning>
 
 ## What is allowed
 
-Copy trading, bots and EAs, news trading and information-based trading are all allowed.
+Copy trading, bots and EAs, and news trading are all allowed.
 
 <Tip>
-Everything not forbidden on this page is allowed. Trading style, trade frequency, position size, holding overnight or through weekends: none of it is restricted within the listed limits.
+Everything not forbidden on this page is allowed. Trading style, trade frequency, holding overnight or through weekends: none of it is restricted within the listed limits.
 </Tip>
 
 ## What closes the account

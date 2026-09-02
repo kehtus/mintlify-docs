@@ -15,17 +15,17 @@ The product is not open to the public yet. The contracts and the SDK are open to
 
 ## Why it exists
 
-The demand for trading capital that produced thousands of prop firms in forex is now appearing around Hyperliquid and its builder codes. The retail answer to it sells an exam, simulates the account, and keeps the option to refuse a payout.
+The demand for trading capital that produced thousands of prop firms in forex is now appearing around Hyperliquid and its builder codes. Retail prop firms sell an exam, keep the funded account simulated, and keep the option to refuse the payout.
 
-Proportion is built the other way round. The trading capital is real and sits on HyperCore. The rules are contract code rather than a rulebook the firm interprets. The payout is a contract call that pays one address and cannot be redirected. And the backer posts a reserve that is spent before LP capital, so an account that blows up costs the person who funded it.
+Proportion is built the other way round. The capital is real and sits on HyperCore, the rules are contract code, and the payout is a contract call to one address. The backer posts a reserve that is spent before LP capital, so a blown account costs the person who funded it.
 
 ## How it fits together
 
-A shared vault holds LP capital and allocates it into isolated funded accounts. Each account trades on Hyperliquid under rules the protocol enforces: a drawdown floor, an allowed-market list with a leverage cap per market, and the terms of withdrawal and closure. An off-chain risk engine watches every account and closes it at its floor, acting only by the contract's rules. It works through API wallets and holds no funds.
+A shared vault holds LP capital and allocates it into isolated funded accounts. Each account trades on Hyperliquid under rules the protocol enforces: a floor below which the account closes, an allowed-market list with a leverage cap per market, and the terms of withdrawal and closure. An off-chain risk engine watches every account and closes it when it breaches its floor. The engine can only trigger what the contract allows, works through API wallets, and holds no funds.
 
 ## Mission
 
-The capital layer other prop firms are built on. One vault, many programs, and terms a trader can check before accepting them.
+One vault funding many programs, on terms a trader can check before accepting them.
 
 ## Next
 
@@ -43,9 +43,9 @@ The capital layer other prop firms are built on. One vault, many programs, and t
     Who funds the accounts, and what it earns
   </Card>
   <Card title="SDK" icon="code" href="/sdk">
-    TypeScript client, coming soon
+    TypeScript client, docs coming soon
   </Card>
   <Card title="API" icon="plug" href="/api">
-    REST and GraphQL, coming soon
+    REST and GraphQL, docs coming soon
   </Card>
 </CardGroup>
