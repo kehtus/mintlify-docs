@@ -3,7 +3,7 @@ title: "Challenges"
 description: "Escrowed evaluations that lead to a funded account, what is on-chain today, and what is not yet"
 ---
 
-A challenge is an escrowed evaluation. A builder publishes a plan with its price and terms, a trader buys it, and the builder's share of the payment stays locked in `ChallengeVault` until the challenge ends. Pass is not funded: the end of a challenge is one of five outcomes recorded on-chain, and the one a trader is after is a promotion into a funded account on the terms pinned at purchase.
+A challenge is an escrowed evaluation. A builder publishes a plan with its price and terms, a trader buys it, and the builder's share of the payment stays locked in `ChallengeVault` until the challenge ends. Passing does not fund by itself: a challenge ends in one of five outcomes recorded on-chain, and the one a trader wants is a promotion into a funded account on the terms pinned at purchase.
 
 <Info>
 The product is not open to the public yet. Publishing a live challenge is not a public flow today.
@@ -30,15 +30,15 @@ A promotion is atomic: the lock is released, `MainVault` collects the charge, an
 
 ## What is not on-chain
 
-The trading. Today the evaluation runs off-chain, on a simulated account that is opened from the on-chain purchase and marked against a live price feed. The account is held to the same floors as a [funded account](/funded/rules), and the plan sets the rest: the profit target, one step or two, and whether profitable days are required. Reaching the target does not pass the challenge by itself. The chain never sees the exam equity and records no pass or fail, so the grade is the builder's promotion. A stranger can verify that the fee was locked and where the money went. They cannot verify the grade.
+The trading. Today the evaluation runs off-chain, on a simulated account that is opened from the on-chain purchase and marked against a live price feed. The account is held to the same floors as a [funded account](/funded/rules), and the plan sets the rest: the profit target, one step or two, and whether profitable days are required. Reaching the target does not pass the challenge by itself. The chain never sees the exam equity and records no pass or fail, so the grade is the builder's decision to promote. A stranger can verify that the fee was locked and where the money went. They cannot verify the grade.
 
 ## What we are building
 
-A challenge type whose result can be verified on-chain, so that the promotion follows from the record rather than from the builder's decision, and the remaining ways an evaluation can be abused go with it. The escrow, the pinned terms and the promotion path above stay as they are.
+A challenge type whose result can be verified on-chain, so that the promotion follows from the record rather than from the builder's decision, and with it the remaining ways an evaluation can be gamed. The escrow, the pinned terms and the promotion path above stay as they are.
 
 ## Without an evaluation
 
-A funded account can also be opened without an exam through a finance listing on the same vault. A trader seeking a builder, or a builder seeking a trader, posts pinned terms and any escrow, and a counterparty fills it by paying the rest of `R + P`. The fill opens the funded account in the same transaction. A listing lives three days, and one party cannot fill their own.
+A funded account can also be opened without an exam through a finance listing on the same vault. A trader seeking a builder, or a builder seeking a trader, posts pinned terms and any escrow, and a counterparty fills it by paying the rest of `R + P`. The fill opens the funded account in the same transaction. A listing lives three days, and the creator cannot fill their own.
 
 ## Next
 

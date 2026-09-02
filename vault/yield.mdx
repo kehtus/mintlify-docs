@@ -48,7 +48,7 @@ reserveDeficit  = principalLoss − reserveConsumed
 
 A deficit appears only when the risk engine cannot close the account at its floor: a gap, a HyperCore liquidation, slippage during a forced close, or a settlement that recovers less than the snapshot. Nothing reimburses it, and the premium already collected on that account is the only sum ever charged against the possibility.
 
-A firm that funds accounts out of its own fee revenue has no outside capital with a claim on the P&L, so it has nothing to offer an LP and no loss ordering to describe. Here there is one: the backer absorbs the first loss, and the LP absorbs what is left.
+A firm that funds accounts from its own fee revenue has no outside capital and nothing to offer an LP. Here the order of losses is explicit: the backer absorbs the first loss, and the LP absorbs what is left.
 
 ## Risks
 
@@ -67,7 +67,7 @@ Placing capital in the vault involves several risks that affect share value and 
   <Accordion title="Dependency on Hyperliquid and HyperCore" icon="link">
     Vault operations rely on HyperCore data (balances, prices) and on Hyperliquid spot and perp infrastructure. Failures or incorrect behaviour in these components are reflected in vault capital.
   </Accordion>
-  <Accordion title="Price slippage during liquidation" icon="zap">
+  <Accordion title="Overshoot below the floor" icon="zap">
     In extreme volatility a position may realize a loss below the floor before the risk engine's close completes, and the engine is off-chain, so anything that delays its close widens the overshoot. Everything down to `A − R` is covered by the builder's reserve; the overshoot is `reserveDeficit` and lands on `sharePrice` directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage.
   </Accordion>
   <Accordion title="Vault utilization and LP exit" icon="lock">

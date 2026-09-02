@@ -5,11 +5,11 @@ description: "How your profit is split, how you withdraw it, and which closures 
 
 Nobody can refuse your payout. When your account settles, the vault credits your address in its payout ledger, and `claimPayout` sends that balance to that address and to no other. Anyone may call it. There is no approval step, no ticket, and no address the operator can substitute for yours.
 
-What you can lose is the profit itself. Some closures pay the trader nothing. Both halves of that are on this page.
+What you can lose is the profit itself. Some closures pay the trader nothing. Both are on this page.
 
 ## Your split
 
-One number decides it: `builderPoolBps`, written into your account record at activation, inside a range the contract refuses to leave.
+One number decides it: `builderPoolBps`, written into your account record at activation, inside a range the contract enforces.
 
 | `builderPoolBps` | Builder | You |
 |---|---|---|
@@ -27,7 +27,7 @@ The split has no third leg. The vault and the protocol take nothing from an ordi
 
 ## Withdrawing profit
 
-Profit is your current equity above account size. The high-water mark is not the basis. You need at least $1 of it, and either route below.
+Profit is your current equity above account size, not the distance from a high-water mark. You need at least $1 of it, and either route below.
 
 | Route | Condition |
 |---|---|

@@ -16,23 +16,23 @@ description: "Problems Proportion solves and what each side gets"
 <Tabs>
   <Tab title="Trader">
     - Capital without KYC or artificial rules
-    - Orders filled on the real Hyperliquid book, with real capital, through an exchange proxy with lower latency than Hyperliquid's public endpoint
+    - Orders filled on the real Hyperliquid book with real capital, routed through an exchange proxy that answers faster than Hyperliquid's public endpoint
     - A profit split fixed in the contract at activation and unchangeable afterwards
     - Nobody can refuse the payout: settlement credits your address, and the release call pays that address and no other
     - The account is yours to trade within the protocol's rules, and whoever funded it cannot block a withdrawal
     - A risk engine that can only trigger what the contract already allows, and never holds your funds
   </Tab>
   <Tab title="Builder">
-    - Infrastructure for funded accounts: capital from the Vault, on-chain risk enforcement, and settlement
+    - Infrastructure for funded accounts: capital from the vault, on-chain risk enforcement, and settlement
     - No registration, no minimum stake, no quota. Any wallet holding USDC for the activation charge can fund a trader
     - You post a reserve as first-loss capital, and whatever the trader does not lose comes back to you
-    - Revenue on three levels: your share of trader profit, a fixed share of the profit forfeited on a forfeiting close, and whatever margin you price into your own evaluation
+    - Revenue from three sources: your share of trader profit, a fixed share of the profit forfeited on a forfeiting close, and whatever margin you price into your own evaluation
   </Tab>
   <Tab title="LP">
-    - Yield from three flows: half of every activation premium, half of every subscription, and the Vault's residual when an account forfeits. Not fixed, and can be zero
+    - Yield from three flows: half of every activation premium, half of every subscription, and the vault's residual when an account forfeits. Not fixed, and can be zero
     - Your capital is not first in line for a loss. Each account carries a builder's reserve that is spent before LP principal, though a loss larger than that reserve still reaches you
-    - You do not pick builders or traders. The Vault's whole book is priced into `sharePrice`, which can fall as well as rise
-    - An off-chain risk engine closes an account at its floor, after the builder's reserve is spent and before LP capital is. It acts only by the contract's rules and holds no funds
+    - You do not pick builders or traders. The vault's whole book is priced into `sharePrice`, which can fall as well as rise
+    - An off-chain risk engine closes an account at its floor, once the builder's reserve is spent and before LP capital is touched. It acts only by the contract's rules and holds no funds
   </Tab>
 </Tabs>
 
