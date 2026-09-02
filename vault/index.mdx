@@ -1,53 +1,35 @@
 ---
 title: "How It Works"
-description: "What the vault holds, how sharePrice is computed, and what limits allocation and exit"
+description: "What the vault holds, what limits allocation, and what limits exit"
 ---
 
-`MainVault` holds the USDC. It mints LP shares, funds the trading capital of every funded account, holds each builder's reserve as a liability it does not own, and books every settlement.
-
-<Info>
-The product is not open to the public yet. The contracts and the SDK are open to read.
-</Info>
+`MainVault` holds the USDC. It mints LP shares, funds the trading capital of every funded account, holds each builder's buffer as money it does not own, and books every settlement.
 
 ## Flows
 
 | Flow | What happens |
 |---|---|
-| Funding an account | The vault allocates `accountSize` and deposits it on HyperCore for the funded account. That trading capital is LP money; the builder is charged the reserve `R` and the premium `P` on top of it. See [Account Parameters and Fees](/builders/fees) |
-| Fees | The vault's half of each activation premium and each subscription payment stays on EVM and raises `sharePrice`. See [Yield and Risks](/vault/yield) |
+| Funding an account | The vault allocates `accountSize` and deposits it on HyperCore for the funded account. That trading capital is LP money; the builder is charged the buffer `B` and the premium `P` on top of it. See [Account Parameters and Fees](/builders/fees) |
+| Fees | The vault's half of each activation premium and each subscription payment stays on EVM and raises the share price. See [Yield and Risks](/vault/yield) |
 | Settlement | On close the vault pulls back the recovered capital, releases the allocation, and books each party's claim. See [Profit and Payouts](/funded/payouts) |
 
-Between funding and settlement the risk engine watches every account and closes it when it breaches its floor, the level at which the builder's reserve runs out. It reads equity from the same HyperCore precompiles the contract does and holds no funds.
+Between funding and settlement the risk engine watches every account and closes it when it breaches its floor, the level at which the builder's buffer runs out. It reads equity from the same HyperCore precompiles the contract does and holds no funds.
 
-## Shares and sharePrice
-
-An LP's position is shares. Accumulated profit raises `sharePrice`; yield is not claimed separately.
-
-```text
-grossAssets = USDC held on EVM + totalAllocated
-totalAssets = grossAssets − active reserves − claimable refunds − claimable payouts
-sharePrice  = totalAssets / totalShares
-```
-
-Those three subtractions are USDC sitting in the vault that belongs to someone else: builders' reserves on live accounts, unused reserve from accounts already closed, and settled profit owed to traders, builders and the protocol. None of it may lift `sharePrice`, which is why the vault prices shares off `totalAssets` rather than off its balance.
-
-<Note>
-`totalAllocated` is carried at face value. It is not marked to an account's live equity, so an account trading below its entry still counts at full size until it settles. The loss reaches `sharePrice` at settlement, as [`reserveDeficit`](/vault/yield).
-</Note>
+An LP's position is shares. Fees raise the share price, a loss larger than a builder's buffer lowers it at settlement, and yield is not claimed separately.
 
 ## Allocation limits
 
 | Limit | Value | What it constrains |
 |---|---|---|
-| Max utilization | **80 %** | `totalAllocated` against `totalAssets` |
-| Max single account | **10 %** of `totalAssets`, capped at **$20,000** | the size of one funded account |
-| Vault cap | **$25,000** | `totalAssets` |
+| Max utilization | **80 %** | capital allocated to funded accounts, against the vault's assets |
+| Max single account | **10 %** of the vault's assets, capped at **$20,000** | the size of one funded account |
+| Vault cap | **$25,000** | the vault's assets |
 
-The account-size and drawdown bands a builder chooses inside these limits are on [account parameters and fees](/builders/fees).
+The account size and drawdown a builder chooses inside these limits are on [Account Parameters and Fees](/builders/fees).
 
 ## Exit
 
-Shares can be burned without notice or lock-up, and there is an optional request-then-execute route with a one-day cooldown over the same accounting. A withdrawal must leave utilization under the ceiling, and it is paid only from EVM cash the vault does not already owe in reserves, refunds and payouts.
+Shares can be burned without notice or lock-up. A withdrawal must leave utilization under the ceiling, and it is paid only from EVM cash the vault does not already owe in buffers, refunds and payouts.
 
 There is no share lock. A builder holding shares against live funded accounts exits on the same terms as any other LP. What can delay an exit is a busy vault: with utilization at the ceiling, a large withdrawal waits for an account to settle.
 
@@ -71,6 +53,6 @@ The premium tiers, the profit splits and the subscription multiplier are constan
     Audit, upgrade authority, and administrative safeguards
   </Card>
   <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/builders/fees">
-    How `R` and `P` are priced on the account the vault funds
+    How `B` and `P` are priced on the account the vault funds
   </Card>
 </CardGroup>

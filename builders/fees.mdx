@@ -3,7 +3,7 @@ title: "Account Parameters and Fees"
 description: "What activating a funded account costs you, which part of it comes back, and what you choose"
 ---
 
-Activation charges you two amounts in one transaction: a reserve `R`, which stays your money and comes back unused when the account closes, and a fee `P`, which does not. The trading capital itself is not yours to fund. The vault allocates the account size `A` out of LP deposits, and you are charged `R + P` on top of it.
+Activation charges you two amounts in one transaction: a buffer `B`, which stays your money and comes back when the account closes, less whatever the trader lost, and a premium `P`, which does not come back at all. The trading capital itself is not yours to fund. The vault allocates the account size `A` out of LP deposits, and you are charged `B + P` on top of it.
 
 ## What you choose at activation
 
@@ -11,7 +11,7 @@ Activation charges you two amounts in one transaction: a reserve `R`, which stay
 |---|---|---|
 | Trader | any address | Who the account is issued to |
 | Account size `A` | $10–$20,000 | Trading capital the vault allocates |
-| Trailing drawdown `D` | 5 %–25 % | The trader's floor, and your reserve |
+| Trailing drawdown `D` | 5 %–25 % | The trader's floor, and your buffer |
 | `builderPoolBps` | 10 %–70 % | Your cut of each withdrawal and each ordinary close |
 | Profit target | optional | Closes the account on the ordinary split when reached |
 
@@ -19,29 +19,29 @@ Daily drawdown is not among them. It follows from the mode: an account you spons
 
 ### The floor your drawdown buys
 
-`D` sets the floor at exactly `A − R`, so the reserve covers the whole of the designed fall. As the trader makes money, 30 % of every gain above account size locks into the floor, and it does not come back down until the trader claims a withdrawal, which resets it to account size.
+`D` sets the floor at exactly `A − B`, so the buffer covers the whole of the designed fall. As the trader makes money, 30 % of every gain above account size locks into the floor, and it does not come back down until the trader claims a withdrawal, which resets it to account size.
 
 ```text
-A = $10,000, D = 10 %, reserve R = $1,000
+A = $10,000, D = 10 %, buffer B = $1,000
 
 floor at activation                         $9,000
 peak $15,000, 30 % of the $5,000 gain       $10,500
 equity strictly below $10,500               the account closes
 ```
 
-From that peak the trader may still fall $4,500 before the account closes. Most of a winning run is unprotected, so `D` decides how much of your reserve one bad session can take.
+From that peak the trader may still fall $4,500 before the account closes. Most of a winning run is unprotected, so `D` decides how much of your buffer a losing run can take.
 
 ## What you pay
 
 ```text
 A = account size    D = trailing drawdown you choose, 5 %–25 %
 
-R = A × D       your reserve, refundable
+B = A × D       your buffer, refundable
 P = A × 2 %     the premium, kept
-charge = R + P
+charge = B + P
 ```
 
-| Account size `A` | Drawdown `D` | Reserve `R` | Fee `P` | Charged at activation |
+| Account size `A` | Drawdown `D` | Buffer `B` | Premium `P` | Charged at activation |
 |---|---|---|---|---|
 | $500 | 5 % | $25 | $10 | **$35** |
 | $1,000 | 10 % | $100 | $20 | **$120** |
@@ -49,12 +49,12 @@ charge = R + P
 | $2,500 | 10 % | $250 | $50 | **$300** |
 
 <Note>
-One account may be at most 10 % of the vault's assets. With the vault cap at $25,000 that puts today's largest account at $2,500, well under the $20,000 ceiling in the parameter table above. The ceiling rises with the vault.
+One account may be at most 10 % of the vault's assets. With the vault cap at $25,000 that puts today's largest account at $2,500, well under the $20,000 ceiling in the parameter table above. The ceiling rises with the vault. See [How It Works](/vault#allocation-limits).
 </Note>
 
-The reserve column is the part that can come back: an account that returns its principal costs you `P` and nothing else, and an account that blows up costs you `P` plus as much of `R` as the trader lost.
+The buffer column is the part that can come back: an account that returns its principal costs you `P` and nothing else, and an account that blows up costs you `P` plus as much of `B` as the trader lost.
 
-`D` prices two things at once: how far the trader may fall before the account closes, and the whole of your reserve. The fee does not move with it. `P` is a share of `A` alone, so widening the drawdown buys the trader room with your first-loss capital rather than with a larger fee.
+`D` prices two things at once: how far the trader may fall before the account closes, and the whole of your buffer. The premium does not move with it. `P` is a share of `A` alone, so widening the drawdown buys the trader room with your first-loss capital rather than with a larger premium.
 
 <Note>
 Sponsoring is always the 2 % tier, and it opens a 30-day subscription period. For a trader funding their own account the same 2 % buys a prepaid day, 4 % buys 7 days and 8 % buys 30 days; a sponsored activation cannot use the higher tiers.
@@ -64,25 +64,25 @@ The first sponsored month costs 2 % of account size and each renewal 1.5 %. A se
 
 ## What comes back
 
-| What the account returns | Your reserve |
+| What the account returns | Your buffer |
 |---|---|
-| Its full principal | All of `R` |
-| Less than that | `R` minus the shortfall |
-| Less than `A − R` | Nothing, and the excess lands on [LPs](/vault/yield) rather than on you |
+| Its full principal | All of `B` |
+| Less than that | `B` minus the shortfall |
+| Less than `A − B` | Nothing, and the excess lands on [LPs](/vault/yield) rather than on you |
 
-Your loss on one account is capped at `R + P`, the reserve you can lose plus the fee you never get back, and the refund is credited to your address for you to collect without anyone's approval.
+Your loss on one account is capped at `B + P`, the buffer you can lose plus the premium you never get back, and the refund is credited to your address for you to collect without anyone's approval.
 
 Profit is the other half. On every profit withdrawal and every ordinary close you receive `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **40 %** of whatever profit was still in the account, the protocol takes 20 %, and the vault keeps the rest.
 
 <Warning>
-The reserve is real money and it is spent before LP capital is. A trader who gives back the designed drawdown costs you the whole of `R` on that account, and nothing you earned on other accounts is netted against it.
+The buffer is real money and it is spent before LP capital is. A trader who gives back the designed drawdown costs you the whole of `B` on that account, and nothing you earned on other accounts is netted against it. On a sponsored account the daily floor closes a losing day at about half of `B` unless the close overshoots; see [Protocol Rules](/builders/rules#daily-drawdown).
 </Warning>
 
 ## Who may activate
 
-Any wallet holding USDC for `R + P`. No registration, no minimum stake, no quota tied to you, no approval step. What limits activation is the vault's capacity, not your standing with it: the utilization ceiling, the per-account ceiling and the vault cap are on [How It Works](/vault#allocation-limits).
+Any wallet holding USDC for `B + P`. No registration, no minimum stake, no quota tied to you, no approval step. What limits activation is the vault's capacity, not your standing with it: the utilization ceiling, the per-account ceiling and the vault cap are on [How It Works](/vault#allocation-limits).
 
-## Where your fee goes
+## Where your premium goes
 
 The premium `P` splits **50/50** between the vault and the protocol, earned before the account places an order.
 

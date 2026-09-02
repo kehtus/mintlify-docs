@@ -10,10 +10,10 @@ A B-book prop firm is the counterparty to its own traders, so every payout is it
 The only way out is an account that is actually funded, so that a payout is a share of profit that exists. A blockchain is the best place to run that. The capital sits in a vault on HyperEVM, the orders fill on the real Hyperliquid book on HyperCore where anyone can see them, and the rules and the payout are contract code that needs no one's goodwill.
 
 - **Opaque rules and blocked payouts.** Floors, splits and payouts are contract code. Nobody can refuse a payout the protocol has already credited.
-- **B-book conflict of interest.** Orders reach the real Hyperliquid book, and the backer's own reserve is the first money a loss consumes. A trader losing principal costs the person who funded it, and nobody is paid out of that loss.
+- **B-book conflict of interest.** Orders reach the real Hyperliquid book, and the builder's own buffer is the first money a loss consumes. A trader losing principal costs the person who funded it, and nobody is paid out of that loss.
 - **Counterparty risk.** Funded accounts are non-custodial, and the payout is a contract call, not a support ticket.
 - **High barrier to launching a prop firm.** Proportion supplies the capital, the risk enforcement and the settlement, so a builder does not run a contract stack of their own.
-- **Losses that reach the pool.** The floor of every account sits where the backer's reserve runs out, and the risk engine closes the account when it breaches that floor. In the ordinary case LP capital is not touched.
+- **Losses that reach the pool.** The floor of every account sits where the builder's buffer runs out, and the risk engine closes the account when it breaches that floor. In the ordinary case LP capital is not touched.
 
 ## What each side gets
 
@@ -28,18 +28,18 @@ The only way out is an account that is actually funded, so that a payout is a sh
   </Tab>
   <Tab title="Builder">
     - Infrastructure for funded accounts: capital from the vault, risk enforcement, and settlement
-    - No registration, no minimum stake, no quota. Any wallet holding USDC for the activation charge can fund a trader
-    - You post a reserve as first-loss capital, and whatever the trader does not lose comes back to you
+    - No registration, no minimum stake, no quota. Any wallet holding USDC for the buffer and the premium can fund a trader
+    - You post a buffer as first-loss capital, and whatever the trader does not lose comes back to you
     - Revenue from three sources: your share of trader profit, a fixed share of the profit forfeited on a forfeiting close, and whatever margin you price into your own evaluation
   </Tab>
   <Tab title="LP">
     - Yield from three flows: half of every activation premium, half of every subscription, and the vault's residual when an account forfeits. Not fixed, and can be zero
-    - Your capital is not first in line for a loss. Each account carries a builder's reserve that is spent before LP principal, though a loss larger than that reserve still reaches you
-    - You do not pick builders or traders. You hold a share of the vault's whole book, and `sharePrice` can fall as well as rise
-    - The risk engine closes an account when it breaches its floor, which is where the builder's reserve runs out. Only an overshoot past the floor reaches LP capital
+    - Your capital is not first in line for a loss. Each account carries a builder's buffer that is spent before LP principal, and the risk engine closes the account where that buffer runs out
+    - You do not pick builders or traders. You hold a share of the vault's whole book, and the share price can fall as well as rise
+    - A loss can still reach you if an account overshoots its floor, on a gap or a liquidation the close cannot catch in time. That overshoot, not the ordinary loss, is what LP capital is exposed to
   </Tab>
 </Tabs>
 
 <Note>
-Losses larger than a builder's reserve do reach LPs. What each flow pays, and what it costs when an account overshoots its floor, is on [Yield and Risks](/vault/yield).
+A loss larger than a builder's buffer can reach LPs. What each flow pays, and what an overshoot costs, is on [Yield and Risks](/vault/yield).
 </Note>

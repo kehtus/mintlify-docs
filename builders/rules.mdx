@@ -9,7 +9,7 @@ You set the account size and the drawdown percentage at activation. From that po
 
 | Rule | Enforced | On breach |
 |---|---|---|
-| Trailing floor | on-chain, against live equity | The account closes. The trader forfeits unwithdrawn profit and your reserve absorbs the loss |
+| Trailing floor | on-chain, against live equity | The account closes. The trader forfeits unwithdrawn profit and your buffer absorbs the loss |
 | Daily floor, sponsored accounts only | Same | Same |
 | Allowed markets | at order entry | The order is refused. The account keeps trading |
 | Leverage cap, per market | at order entry | The order is refused. The account keeps trading |
@@ -17,13 +17,15 @@ You set the account size and the drawdown percentage at activation. From that po
 
 ## The floor you priced
 
-The floor starts at exactly the account size minus your reserve, so `R` is sized to cover the whole of the designed fall. It then rises as the trader banks gains: 30 % of every gain above account size locks into it, and it does not come back down until the trader claims a withdrawal, which resets it to account size. A worked example is on [Account Parameters and Fees](/builders/fees#the-floor-your-drawdown-buys).
+The floor starts at exactly the account size minus your buffer, so `B` is sized to cover the whole of the designed fall. It then rises as the trader banks gains: 30 % of every gain above account size locks into it, and it does not come back down until the trader claims a withdrawal, which resets it to account size. A worked example is on [Account Parameters and Fees](/builders/fees#the-floor-your-drawdown-buys).
 
 The floor moves during the session rather than once a day. See [Funded Account Rules](/funded/rules) for how a new peak is accepted.
 
 ## Daily drawdown
 
 Daily drawdown is not a parameter you set. An account you sponsor carries a second floor at half the trailing percentage, measured from the day's opening equity; an account a trader funds themselves has none. Whichever floor is higher is the one that applies, and the two are never added together.
+
+The daily floor also protects your buffer. It closes the account once a day's loss reaches half the trailing percentage, so on an account that opened the day at its size a daily-drawdown close spends about half of `B` and returns the rest to you. Closed at its floors, an account gives back the whole of `B` only over several days. A gap or a liquidation the close cannot catch in time can take it in one, and anything beyond `B` lands on LPs, not on you.
 
 ## Markets and leverage
 
@@ -35,7 +37,7 @@ If a market is removed from the list while the trader holds a position on it, th
 
 Two closures forfeit the profit still in the account: a drawdown breach, and the trader asking to close. Four do not: the subscription expiring, the trader cancelling it, an admin closure, and a profit target being reached.
 
-Your unused reserve returns in every one of the six. What changes is who receives the profit that was in the account when it closed. The amounts are on [Account Parameters and Fees](/builders/fees), the trader's side on [Profit and Payouts](/funded/payouts).
+Your unused buffer returns in every one of the six. What changes is who receives the profit that was in the account when it closed. The amounts are on [Account Parameters and Fees](/builders/fees), the trader's side on [Profit and Payouts](/funded/payouts).
 
 ## The rules you keep
 

@@ -3,9 +3,9 @@ title: "Yield and Risks"
 description: "Where LP yield comes from, what a losing account costs an LP, and what can go wrong"
 ---
 
-Three flows reach the vault and raise `sharePrice`: half of each activation premium, half of each subscription fee, and the vault's residual on a forfeiting close. Never guaranteed, can be zero.
+Three flows reach the vault and raise the share price: half of each activation premium, half of each subscription fee, and the vault's residual on a forfeiting close. Never guaranteed, can be zero.
 
-One flow runs the other way. Every funded account carries a reserve `R` posted by its builder, and a principal loss consumes `R` before it touches LP capital. The risk engine closes the account when it breaches its floor, which is where `R` runs out, so in the ordinary case the loss stops there. The part of a loss larger than `R` is `reserveDeficit`, and that lands on you.
+One flow can run the other way. Every funded account carries a buffer `B` posted by its builder, and a principal loss consumes `B` before it touches LP capital. The risk engine closes the account when it breaches its floor, which is where `B` runs out, so in the ordinary case the loss stops there. If a loss overshoots `B`, the part beyond it is `reserveDeficit`, and that lands on you.
 
 ## What pays the vault
 
@@ -23,24 +23,24 @@ An ordinary close pays the vault nothing. When an account closes for expiry, can
 
 | Flow | Recipient |
 |------|-----------|
-| Unused reserve, `reserveRefund` | The builder who posted `R`, in full |
+| Unused buffer, `reserveRefund` | The builder who posted `B`, in full |
 | Ordinary close profit | Trader and builder, split by `builderPoolBps` |
 | Profit withdrawn during the account's life | Trader and builder, split by `builderPoolBps` |
 | Protocol half of premium and subscription | `protocolFeeReceiver` |
 | Builder 40 % and protocol 20 % at a forfeiting close | Builder and protocol |
 
-## Where a loss reaches you
+## Where a loss can reach you
 
-The risk engine closes an account when its equity falls below its floor. The trailing floor starts at exactly `A − R` and rises only as accepted profit locks in, so the reserve is sized to cover the whole of the designed fall and the engine is meant to act before LP capital is touched. Settlement then compares `Q`, the capital actually recovered from HyperCore, against the principal:
+The risk engine closes an account when its equity falls below its floor. The trailing floor starts at exactly `A − B` and rises only as accepted profit locks in, so the buffer is sized to cover the whole of the designed fall and the engine is meant to act before LP capital is touched. Settlement then compares `Q`, the capital actually recovered from HyperCore, against the account size `A`:
 
 ```text
 principalLoss   = max(A − Q, 0)
-reserveConsumed = min(R, principalLoss)
-reserveRefund   = R − reserveConsumed
+reserveConsumed = min(B, principalLoss)
+reserveRefund   = B − reserveConsumed
 reserveDeficit  = principalLoss − reserveConsumed
 ```
 
-`reserveConsumed` is the builder's money. `reserveDeficit` is yours, and it is the only way a closing account can move `sharePrice` down. The fall is exactly `reserveDeficit`.
+`reserveConsumed` is the builder's money. `reserveDeficit` is yours, and it is the only way a closing account can move the share price down. The fall is exactly `reserveDeficit`.
 
 A deficit appears only when the risk engine cannot close the account at its floor: a gap, a HyperCore liquidation, slippage during a forced close, or a settlement that recovers less than the snapshot. Nothing reimburses it, and the premium already collected on that account is the only sum ever charged against the possibility.
 
@@ -49,23 +49,17 @@ A deficit appears only when the risk engine cannot close the account at its floo
 Placing capital in the vault involves several risks that affect share value and LP yield.
 
 <AccordionGroup>
-  <Accordion title="Correlated drawdowns" icon="waves">
-    Each overshoot contributes its own `reserveDeficit`, which the premium the vault has already earned is meant to absorb in isolated events. With simultaneous breach closures across many funded accounts, aggregate losses may exceed the pool's accumulated buffer, reducing `sharePrice`, potentially below the deposit's nominal value. Deficits are not netted against the reserves of accounts that closed whole.
+  <Accordion title="Overshoot below the floor" icon="zap">
+    In extreme volatility a position may realize a loss below the floor before the risk engine's close completes, and the engine is off-chain, so anything that delays its close widens the overshoot. Everything down to `A − B` is covered by the builder's buffer; the overshoot is `reserveDeficit` and lands on the share price directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage. Several overshoots in one market move add up, and a deficit is not netted against the buffers of accounts that closed whole.
   </Accordion>
   <Accordion title="Issuance quality" icon="users">
-    LPs do not participate in trader selection or activation parameter decisions; these are made by builders. Activation is permissionless: any wallet that can pay `R + P` becomes the builder of record, with no registration and no approval. Deterioration in underwriting quality by any builder affects vault yield in proportion to their share of active issuance.
+    LPs do not participate in trader selection or activation parameter decisions; these are made by builders. Activation is permissionless: any wallet that can pay `B + P` becomes the builder of record, with no registration and no approval. Deterioration in underwriting quality by any builder affects vault yield in proportion to their share of active issuance.
   </Accordion>
-  <Accordion title="Smart-contract risk" icon="file-code">
-    `MainVault` and `FundedAccount` carry smart-contract risk. The codebase has had an [independent audit](/security), but residual risk cannot be eliminated, and the audited implementation is not frozen. See governance risk below.
-  </Accordion>
-  <Accordion title="Dependency on Hyperliquid and HyperCore" icon="link">
-    Vault operations rely on HyperCore data (balances, prices) and on Hyperliquid spot and perp infrastructure. Failures or incorrect behaviour in these components are reflected in vault capital.
-  </Accordion>
-  <Accordion title="Overshoot below the floor" icon="zap">
-    In extreme volatility a position may realize a loss below the floor before the risk engine's close completes, and the engine is off-chain, so anything that delays its close widens the overshoot. Everything down to `A − R` is covered by the builder's reserve; the overshoot is `reserveDeficit` and lands on `sharePrice` directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage.
+  <Accordion title="Smart-contract and platform risk" icon="file-code">
+    `MainVault` and `FundedAccount` carry smart-contract risk. The codebase has had an [independent audit](/security), but residual risk cannot be eliminated, and the audited implementation is not frozen. See governance risk below. The vault also reads equity from HyperCore precompiles and settles through Hyperliquid's bridge. An outage in either delays closes and settlements, and a loss that results is borne by vault capital.
   </Accordion>
   <Accordion title="Vault utilization and LP exit" icon="lock">
-    Shares are not locked against open funded accounts, for any LP. What limits an exit is the utilization ceiling measured after the burn, the EVM cash left after the reserves, refunds and payouts the vault owes, and whether the protocol is paused. Allocated capital cannot be recalled to serve a withdrawal, so a full exit may be unavailable until accounts close.
+    Shares are not locked against open funded accounts, for any LP. What limits an exit is the utilization ceiling measured after the burn, the EVM cash left after the buffers, refunds and payouts the vault owes, and whether the protocol is paused. Allocated capital cannot be recalled to serve a withdrawal, so a full exit may be unavailable until accounts close.
   </Accordion>
   <Accordion title="Governance risk" icon="settings">
     The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in one call. The utilization and per-account ceilings, and the top of the drawdown band, have bounds compiled into the contract; the account-size band and the vault cap do not. The owner can also replace the vault implementation. Neither carries an observation window today. Separately, a pause disables every LP withdrawal path while leaving payout claims working; the owner or the relayer can trigger one, and only the owner can lift it.
@@ -75,13 +69,13 @@ Placing capital in the vault involves several risks that affect share value and 
 ## Next
 
 <CardGroup cols={3}>
-  <Card title="Vault Mechanics" icon="calculator" href="/vault">
-    How `totalAssets` and `sharePrice` are computed, and what limits an exit
+  <Card title="Vault" icon="calculator" href="/vault">
+    What the vault holds, what limits allocation, and what limits an exit
   </Card>
   <Card title="Security" icon="shield" href="/security">
     Audit, upgrade authority, and administrative safeguards
   </Card>
   <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/builders/fees">
-    How `R` and `P` are priced on the account the vault funds
+    How `B` and `P` are priced on the account the vault funds
   </Card>
 </CardGroup>

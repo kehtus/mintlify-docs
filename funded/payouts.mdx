@@ -20,7 +20,7 @@ One number decides it: `builderPoolBps`, written into your account record at act
 Your share is somewhere between 30 % and 90 %, and nothing changes it after activation. The same number governs a withdrawal and an ordinary close.
 
 <Note>
-If you were quoted 80 %, that is a plan that set `builderPoolBps` to 2000. It is your plan's number, not the protocol's. Ask your backer for its value before you accept it.
+If you were quoted 80 %, that is a plan that set `builderPoolBps` to 2000. It is your plan's number, not the protocol's. Ask your builder for its value before you accept it.
 </Note>
 
 The split has no third leg. The vault and the protocol take nothing from an ordinary withdrawal or an ordinary close; their revenue is the activation premium and the subscription. On a self-funded account both legs land in the same wallet, so you keep all of it.
@@ -63,7 +63,7 @@ A claim resets your floor. The high-water mark, the daily baseline and the daily
 | Admin closure | Your ordinary split |
 | Profit target reached | Your ordinary split |
 
-On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital goes to the builder, the protocol and the vault. If it comes back at or below account size there is no profit to divide, and the builder's reserve absorbs the loss before LP capital does.
+On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital goes to the builder, the protocol and the vault. If it comes back at or below account size there is no profit to divide, and the builder's buffer absorbs the loss before LP capital does.
 
 <Warning>
 Closing your own account is a forfeiting close. You can ask only while the account is flat. It closes at whatever equity it has and pays you nothing. If you have profit and you want it, withdraw and claim it before you ask to close.

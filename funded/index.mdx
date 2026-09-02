@@ -7,13 +7,13 @@ description: "Capital on Hyperliquid without KYC or artificial rules"
 
 Proportion gives you capital through an on-chain funded account on Hyperliquid. Your orders reach the real Hyperliquid book, and the rules you trade under are enforced by the contract, not interpreted by whoever funded you. Your profit share is written into the contract at activation and cannot be changed afterwards, and nobody can refuse the payout: settlement credits your address, and the release call pays that address and no other.
 
-A funded account is, in essence, a bought drawdown. Someone, usually a backer, pays for the distance your account may fall before it closes, and that money is spent before anyone else's. How you got the account, through a challenge or a direct activation, is between you and them.
+A funded account is, in essence, a bought drawdown. Whoever funds it pays for the distance your account may fall before it closes, and that money is spent before anyone else's.
 
 ## How to get a funded account
 
-Anyone can fund anyone. A backer, the builder in the protocol's terms, opens the account for you and sets its terms: the size, the drawdown and your share of profit. Some backers run a [challenge](/challenges) first, some activate an account directly. How you qualify is between you and the backer, not the protocol.
+Anyone can fund anyone. The protocol calls whoever funds you the builder, whether that is a prop firm, an individual or you yourself. The builder opens the account for you and sets its terms: the size, the drawdown and your share of profit. Some builders run a [challenge](/challenges) first, some activate an account directly. How you qualify is between you and the builder, not the protocol.
 
-You can also fund your own account through the same call, putting up the charge yourself. One wallet is then both backer and trader, and the whole ordinary split stays with you.
+You can also fund your own account through the same call, posting the buffer and the premium yourself. One wallet is then both builder and trader, the account is self-funded rather than sponsored, and the whole ordinary split stays with you.
 
 Either way the account is issued to your EVM address on HyperEVM. On the Proportion frontend you pay no gas and need no HYPE: every operation is relayed for you. The only things you sign are your own requests, a withdrawal or a close.
 

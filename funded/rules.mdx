@@ -3,7 +3,7 @@ title: "Funded Account Rules"
 description: "The limits your funded account is held to, and every reason it closes"
 ---
 
-Your account size, your drawdown percentage and your profit split are set by your backer at activation, and nothing changes them afterwards. You can read your floor on-chain at any moment, and the contract closes the account by that same number.
+Your account size, your drawdown percentage and your profit split are set by your builder at activation, and nothing changes them afterwards. You can read your floor on-chain at any moment, and the contract closes the account by that same number.
 
 Your equity is read from HyperCore precompiles, which the contract uses directly as its oracle. An off-chain risk engine samples the account and calls the contract, but it can only trigger what the contract's rules already allow: it works through API wallets and never holds your funds.
 

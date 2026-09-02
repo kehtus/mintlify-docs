@@ -5,10 +5,6 @@ description: "Escrowed evaluations that lead to a funded account, what is on-cha
 
 A challenge is an escrowed evaluation. A builder publishes a plan with its price and terms, a trader buys it, and the builder's share of the payment stays locked in `ChallengeVault` until the challenge ends. Passing does not fund by itself: a challenge ends in one of five outcomes recorded on-chain, and the one a trader wants is a promotion into a funded account on the terms pinned at purchase.
 
-<Info>
-The product is not open to the public yet. Publishing a live challenge is not a public flow today.
-</Info>
-
 ## What is on-chain today
 
 The money and the outcome.
@@ -20,17 +16,17 @@ The money and the outcome.
 
 | Outcome | Who | What happens to the money |
 |---|---|---|
-| Promoted | Builder, or the protocol owner | The lock pays the funded account's `R + P`, the builder's wallet covers any shortfall, and a funded account opens on the pinned terms |
+| Promoted | Builder, or the protocol owner | The lock pays the funded account's `B + P`, the builder's wallet covers any shortfall, and a funded account opens on the pinned terms |
 | Rejected | Builder | The trader gets nothing back. The lock is released to the builder |
 | Refunded | Builder | The builder's locked net is paid back to the trader. The protocol and referral cuts are not |
 | Forfeited | Trader | Same as rejected |
 | Expired | Anyone, after 30 days | Same as rejected |
 
-A promotion is atomic: the lock is released, `MainVault` collects the charge, and the funded account exists with its reserve, or the whole transaction reverts. Unused reserve from that account returns to the builder's balance in `ChallengeVault` when it closes.
+A promotion is atomic: the lock is released, `MainVault` collects `B + P`, and the funded account exists with its buffer, or the whole transaction reverts. Unused buffer from that account returns to the builder's balance in `ChallengeVault` when it closes.
 
 ## What is not on-chain
 
-The trading. Today the evaluation runs off-chain, on a simulated account that is opened from the on-chain purchase and marked against a live price feed. The account is held to the same floors as a [funded account](/funded/rules), and the plan sets the rest: the profit target, one step or two, and whether profitable days are required. Reaching the target does not pass the challenge by itself. The chain never sees the exam equity and records no pass or fail, so the grade is the builder's decision to promote. A stranger can verify that the fee was locked and where the money went. They cannot verify the grade.
+The trading. Today the evaluation runs off-chain, on a simulated account that is opened from the on-chain purchase and marked against a live price feed. The account is held to the same floors as a [funded account](/funded/rules), and the plan sets the rest: the profit target, one step or two, and whether profitable days are required. Reaching the target does not pass the challenge by itself. The chain never sees the exam equity and records no pass or fail, so the grade is the builder's decision to promote. A stranger can verify that the payment was locked and where the money went. They cannot verify the grade.
 
 ## What we are building
 
@@ -38,7 +34,7 @@ A challenge type whose result can be verified on-chain, so that the promotion fo
 
 ## Without an evaluation
 
-A funded account can also be opened without an exam through a finance listing on the same vault. A trader seeking a builder, or a builder seeking a trader, posts pinned terms and any escrow, and a counterparty fills it by paying the rest of `R + P`. The fill opens the funded account in the same transaction. A listing lives three days, and the creator cannot fill their own.
+A funded account can also be opened without an exam through a finance listing on the same vault. A trader seeking a builder, or a builder seeking a trader, posts pinned terms and any escrow, and a counterparty fills it by paying the rest of `B + P`. The fill opens the funded account in the same transaction. A listing lives three days, and the creator cannot fill their own.
 
 ## Next
 
