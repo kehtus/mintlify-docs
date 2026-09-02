@@ -118,6 +118,12 @@
             ]
           },
           {
+            "group": "Челленджи",
+            "pages": [
+              "ru/challenges/index"
+            ]
+          },
+          {
             "group": "Билдеры",
             "pages": [
               "ru/builders/index",
@@ -137,6 +143,14 @@
             "group": "Безопасность",
             "pages": [
               "ru/security"
+            ]
+          },
+          {
+            "group": "Справочник",
+            "pages": [
+              "ru/contracts",
+              "ru/api",
+              "ru/sdk"
             ]
           }
         ]

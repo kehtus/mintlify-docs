@@ -1,0 +1,45 @@
+---
+title: "Адреса контрактов"
+description: "Развёрнутые контракты в HyperEVM и роли, которые ими управляют"
+---
+
+{/* Источник: EVM/deployment-config.json и EVM/deployment-challenge-hyperevm.json (2026-08-28), сверено с chain 999 2026-09-02: код по каждому адресу, слоты имплементаций прокси и связи, прочитанные из MainVault, ChallengeVault и FundedAccountFactory. Перепроверить после любого редеплоя. */}
+
+Все контракты развёрнуты в основной сети HyperEVM. Суммы — в USDC с шестью знаками после запятой.
+
+| | |
+|---|---|
+| Сеть | Основная сеть HyperEVM |
+| Chain id | 999 |
+| RPC | `https://rpc.hyperliquid.xyz/evm` |
+| USDC | [`0xb88339CB7199b77E23DB6E890353E22632Ba630f`](https://hyperscan.com/address/0xb88339CB7199b77E23DB6E890353E22632Ba630f) |
+
+## Funded-аккаунты
+
+| Контракт | Адрес | Что делает |
+|---|---|---|
+| `MainVault` (прокси) | [`0x133cfAD49494c3f0D3471a4b232e918fd31cF92A`](https://hyperscan.com/address/0x133cfAD49494c3f0D3471a4b232e918fd31cF92A) | Хранит USDC, выпускает доли LP, финансирует и рассчитывает каждый funded-аккаунт. UUPS-прокси; владелец может заменить имплементацию |
+| `MainVault`, имплементация | [`0x83A22583B1f7CFbE1498317C424c64989CF1F2FC`](https://hyperscan.com/address/0x83A22583B1f7CFbE1498317C424c64989CF1F2FC) | Логика, на которую прокси указывает сегодня |
+| `FundedAccountFactory` | [`0xE9305DCC92dE991A13Ff32668Be03476E5E19301`](https://hyperscan.com/address/0xE9305DCC92dE991A13Ff32668Be03476E5E19301) | Клонирует один `FundedAccount` на каждую активацию |
+| `FundedAccount`, имплементация | [`0xc93B873f147B665703779a1E82D04Dbf7E40A3bE`](https://hyperscan.com/address/0xc93B873f147B665703779a1E82D04Dbf7E40A3bE) | Логика, которую выполняет каждый клон funded-аккаунта |
+| `Forwarder` | [`0x0a31e62e565C82f9D99CDfFc849A5720eFB414f5`](https://hyperscan.com/address/0x0a31e62e565C82f9D99CDfFc849A5720eFB414f5) | ERC-2771-форвардер, стоящий за вызовами без газа |
+| `ReferralRegistry` | [`0xD419345671d0eDd624C932fC57983aF164c6848F`](https://hyperscan.com/address/0xD419345671d0eDd624C932fC57983aF164c6848F) | Реферальные привязки, общие для funded-аккаунтов и челленджей |
+
+## Челленджи
+
+| Контракт | Адрес | Что делает |
+|---|---|---|
+| `ChallengeVault` (прокси) | [`0x2AA69E062D200534bd9fdBF1497a7663c5337e4F`](https://hyperscan.com/address/0x2AA69E062D200534bd9fdBF1497a7663c5337e4F) | Единственный держатель USDC челленджей: блокировки покупок, исходы, перевод в funded-аккаунт. UUPS-прокси |
+| `ChallengeVault`, имплементация | [`0x2Ecf273cB23D954c42872a03A7372De5d1B1A9d8`](https://hyperscan.com/address/0x2Ecf273cB23D954c42872a03A7372De5d1B1A9d8) | Логика, на которую прокси указывает сегодня |
+| `ChallengeFactory` | [`0x5AbbcfB778D159EF3b5aCe2c700d2E9F6b77441e`](https://hyperscan.com/address/0x5AbbcfB778D159EF3b5aCe2c700d2E9F6b77441e) | Оформление покупки: ценообразование, маршрутизация комиссий, `buyChallenge` |
+| `ChallengePlanRegistry` | [`0xA05470Fff7b91912003f7D6a16693f90FDDc678F`](https://hyperscan.com/address/0xA05470Fff7b91912003f7D6a16693f90FDDc678F) | Планы билдеров: неизменяемы после публикации, могут быть отключены |
+
+## Роли
+
+| Роль | Адрес | Может |
+|---|---|---|
+| Владелец | [`0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d`](https://hyperscan.com/address/0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d) | Обновлять оба vault, менять параметры и интеграции, включать и снимать паузу. Сегодня это один адрес; см. [Безопасность](/ru/security) |
+| Релеер | [`0x5A0dEd9E22563240c4aa29fA02d1A4528EF02c74`](https://hyperscan.com/address/0x5A0dEd9E22563240c4aa29fA02d1A4528EF02c74) | Синхронизировать риск-состояние, фиксировать закрытия, снижать лимит плеча или удалять рынок, включать паузу |
+| Получатель комиссий протокола | [`0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d`](https://hyperscan.com/address/0xA5DD314d50CfAd448d7a9329F2f9f041c4C3673d) | Получает половину премий и подписок, причитающуюся протоколу, долю протокола в конфискованной прибыли и комиссию по builder-коду |
+
+Исходный код контрактов — в репозитории `EVM`, в `src/funded` и `src/challenge`.
