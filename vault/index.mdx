@@ -17,6 +17,8 @@ The product is not open to the public yet. The contracts and the SDK are open to
 | Fees | The vault's half of each activation premium and each subscription payment stays on EVM and raises `sharePrice`. See [Yield and Risks](/vault/yield) |
 | Settlement | On close the vault pulls back the recovered capital, releases the allocation, and books each party's claim. See [Profit and Payouts](/funded/payouts) |
 
+Between funding and settlement an off-chain risk engine watches every account and closes it at its floor, after the builder's reserve is spent and before LP capital is touched. It reads equity from the same HyperCore precompiles the contract does, acts only by the contract's rules, and holds no funds.
+
 ## Shares and sharePrice
 
 An LP's position is shares. Accumulated profit raises `sharePrice`; yield is not claimed separately.

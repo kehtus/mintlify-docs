@@ -5,7 +5,7 @@ description: "Where LP yield comes from, what a losing account costs an LP, and 
 
 Three flows reach the vault and raise `sharePrice`: half of each activation premium, half of each subscription fee, and the vault's residual on a forfeiting close. All three are paid for the use of LP capital. Never guaranteed, can be zero.
 
-One flow runs the other way. Every funded account carries a reserve `R` posted by its builder, and a principal loss consumes `R` before it touches LP capital. The part of the loss larger than `R` is `reserveDeficit`, and that lands on you. The buffer is real, it is charged for, and it is finite.
+One flow runs the other way. Every funded account carries a reserve `R` posted by its builder, and a principal loss consumes `R` before it touches LP capital. An off-chain risk engine closes the account at its floor, which is where `R` runs out, so in the ordinary case the loss stops there. The part of a loss larger than `R` is `reserveDeficit`, and that lands on you. The buffer is real, it is charged for, and it is finite.
 
 ## What pays the vault
 
@@ -35,7 +35,7 @@ Unused reserve returns to the builder. The builder's terms say it plainly: **You
 
 ## Where a loss reaches you
 
-An account closes when its equity falls below the risk floor. The trailing floor starts at exactly `A − R` and rises only as accepted profit locks in, so the reserve is sized to cover the whole of the designed fall. Settlement then compares `Q`, the capital actually recovered from HyperCore, against the principal:
+The risk engine closes an account when its equity falls below the risk floor. The trailing floor starts at exactly `A − R` and rises only as accepted profit locks in, so the reserve is sized to cover the whole of the designed fall and the engine is meant to act before LP capital is touched. Settlement then compares `Q`, the capital actually recovered from HyperCore, against the principal:
 
 ```text
 principalLoss   = max(A − Q, 0)
@@ -46,7 +46,7 @@ reserveDeficit  = principalLoss − reserveConsumed
 
 `reserveConsumed` is the builder's money. `reserveDeficit` is yours, and it is the only way a closing account can move `sharePrice` down. The fall is exactly `reserveDeficit`.
 
-A deficit appears only when the account exits below its floor rather than at it: a gap, a HyperCore liquidation, slippage during a forced close, or a settlement that recovers less than the snapshot. Nothing reimburses it, and the premium already collected on that account is the only sum ever charged against the possibility.
+A deficit appears only when the risk engine cannot close the account at its floor: a gap, a HyperCore liquidation, slippage during a forced close, or a settlement that recovers less than the snapshot. Nothing reimburses it, and the premium already collected on that account is the only sum ever charged against the possibility.
 
 A firm that funds accounts out of its own fee revenue has no outside capital with a claim on the P&L, so it has nothing to offer an LP and no loss ordering to describe. Here there is one: the backer absorbs the first loss, and the LP absorbs what is left.
 
@@ -68,7 +68,7 @@ Placing capital in the vault involves several risks that affect share value and 
     Vault operations rely on HyperCore data (balances, prices) and on Hyperliquid spot and perp infrastructure. Failures or incorrect behaviour in these components are reflected in vault capital.
   </Accordion>
   <Accordion title="Price slippage during liquidation" icon="zap">
-    In extreme volatility a position may realize a loss below the trailing floor before closure begins. Everything down to `A − R` is covered by the builder's reserve; the overshoot is `reserveDeficit` and lands on `sharePrice` directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage.
+    In extreme volatility a position may realize a loss below the floor before the risk engine's close completes, and the engine is off-chain, so anything that delays its close widens the overshoot. Everything down to `A − R` is covered by the builder's reserve; the overshoot is `reserveDeficit` and lands on `sharePrice` directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage.
   </Accordion>
   <Accordion title="Vault utilization and LP exit" icon="lock">
     Shares are not locked against open funded accounts, for any LP. What limits an exit is the utilization ceiling measured after the burn, EVM cash above the reserve, refund and payout liabilities, and whether the protocol is paused. Allocated capital cannot be recalled to serve a withdrawal, so a full exit may be unavailable until accounts close.

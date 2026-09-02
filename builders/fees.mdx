@@ -17,6 +17,20 @@ Activation charges you two amounts in one transaction: a reserve `R`, which stay
 
 Daily drawdown is not among them. It follows from the mode: an account you sponsor always carries it, an account a trader funds themselves never does. See [Protocol Rules](/builders/rules).
 
+### The floor your drawdown buys
+
+`D` sets the floor at exactly `A − R`, so the reserve covers the whole of the designed fall. As the trader makes money, 30 % of every gain above account size locks into the floor, and it never comes back down while the account is open.
+
+```text
+A = $10,000, D = 10 %, reserve R = $1,000
+
+floor at activation                         $9,000
+peak $15,000, 30 % of the $5,000 gain       $10,500
+equity strictly below $10,500               the account closes
+```
+
+From that peak the trader may still fall $4,500 before the account closes. Most of a winning run is not protected, which is what makes `D` a product decision rather than a formality: it is the only number standing between the trader's worst session and your money.
+
 ## What you pay
 
 ```text

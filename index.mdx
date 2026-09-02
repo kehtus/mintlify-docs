@@ -5,9 +5,9 @@ description: "What Proportion is, and how traders, builders and LPs meet on it"
 
 ![Proportion overview](/images/image.jpeg)
 
-Proportion is prop-trading infrastructure built on Hyperliquid.
+Proportion is a DeFi protocol on HyperEVM: prop-trading infrastructure built on Hyperliquid.
 
-Three sides meet on it. Traders get capital through funded accounts that trade the real Hyperliquid book. Builders launch prop-trading products without writing the capital, risk and settlement layer themselves. LPs deposit USDC into a shared Vault and earn from activation premiums, subscriptions and forfeited profit.
+Three sides meet on it. Traders get capital through funded accounts that trade the real Hyperliquid book. Builders launch prop-trading products without writing the capital, risk and settlement layer themselves. LPs deposit USDC into a shared Vault and earn from activation premiums and subscriptions.
 
 <Info>
 The product is not open to the public yet. The contracts and the SDK are open to read.
@@ -15,13 +15,13 @@ The product is not open to the public yet. The contracts and the SDK are open to
 
 ## Why it exists
 
-The demand for trading capital that produced thousands of prop firms in forex is now appearing around Hyperliquid and builder codes. The retail answer to it sells an exam, simulates the account, and keeps the option to refuse a payout.
+The demand for trading capital that produced thousands of prop firms in forex is now appearing around Hyperliquid and its builder codes. The retail answer to it sells an exam, simulates the account, and keeps the option to refuse a payout.
 
 Proportion is built the other way round. The trading capital is real and sits on HyperCore. The rules are contract code rather than a rulebook the firm interprets. The payout is a contract call that pays one address and cannot be redirected. And the backer posts a reserve that is spent before LP capital, so an account that blows up costs the person who funded it.
 
 ## How it fits together
 
-A shared Vault holds LP capital and allocates it into isolated funded accounts. Each account trades on Hyperliquid under rules the protocol enforces: a drawdown floor, an allowed-market list with a leverage cap per market, and the terms of withdrawal and closure. Most traders reach a funded account through a challenge, an escrowed evaluation a builder publishes with the funded terms pinned at purchase.
+A shared Vault holds LP capital and allocates it into isolated funded accounts. Each account trades on Hyperliquid under rules the protocol enforces: a drawdown floor, an allowed-market list with a leverage cap per market, and the terms of withdrawal and closure. An off-chain risk engine watches every account and closes it at its floor, acting only by the contract's rules; it works through API wallets and holds no funds.
 
 ## Mission
 

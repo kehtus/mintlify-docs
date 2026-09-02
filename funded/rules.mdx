@@ -5,6 +5,8 @@ description: "The limits your funded account is held to, and every reason it clo
 
 Your account size, your drawdown percentage and your profit split are fixed at activation and nothing changes them afterwards. The floor your account is held to is readable on-chain at any moment, and the code that returns it is the code that acts on it.
 
+Your equity is read from HyperCore precompiles, which the contract uses directly as its oracle. An off-chain risk engine samples the account and calls the contract, but it can only trigger what the contract's rules already allow: it works through API wallets and never holds your funds.
+
 ## Limits
 
 | Rule | Description | Consequence |
@@ -16,7 +18,7 @@ Your account size, your drawdown percentage and your profit split are fixed at a
 | **Subscription** | 1.5 % of account size every 30 days, on a sponsored account | If it lapses, the account closes on the ordinary split |
 
 <Note>
-At activation the firm issuing your account sets its size, the drawdown percentage and the split. Daily drawdown and the renewing subscription both apply to sponsored accounts only. A trader funding their own account prepays a fixed term instead, and it does not renew.
+At activation your backer sets the account size, the drawdown percentage and the split. Daily drawdown and the renewing subscription both apply to sponsored accounts only. A trader funding their own account prepays a fixed term instead, and it does not renew.
 </Note>
 
 ## The floor
