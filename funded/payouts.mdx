@@ -1,11 +1,9 @@
 ---
 title: "Profit and Payouts"
-description: "How your profit is split, how you withdraw it, and which closures pay nothing"
+description: "How your profit is split, how you withdraw it, and what you receive when the account closes"
 ---
 
 Nobody can refuse your payout. When your account settles, the vault credits your address in its payout ledger, and `claimPayout` sends that balance to that address and to no other. Anyone may call it. No one approves it and no one can change the address.
-
-What you can lose is the profit itself. Some closures pay the trader nothing. Both are on this page.
 
 ## Your split
 
@@ -23,7 +21,7 @@ Your share is somewhere between 30 % and 90 %, and nothing changes it after acti
 If you were quoted 80 %, that is a plan that set `builderPoolBps` to 2000. It is your plan's number, not the protocol's. Ask your builder for its value before you accept it.
 </Note>
 
-The split has no third leg. The vault and the protocol take nothing from an ordinary withdrawal or an ordinary close; their revenue is the activation premium and the subscription. On a self-funded account both legs land in the same wallet, so you keep all of it.
+There is no third party to the split. The vault and the protocol take nothing from an ordinary withdrawal or an ordinary close; their revenue is the activation premium and the subscription. On a self-funded account both legs land in the same wallet, so you keep all of it.
 
 ## Withdrawing profit
 
@@ -34,7 +32,7 @@ Profit is your current equity above account size, not the distance from a high-w
 | Day count | Three daily checkpoints at which equity is at least 0.7 % above the previous checkpoint. They need not be consecutive |
 | Instant | Profit at or above 3 % of account size, with no day count at all |
 
-At the moment you request, the account must also be flat, the subscription active, and the profit target not yet reached.
+At the moment you request, the account must be flat and the subscription active.
 
 <Steps>
   <Step title="You request">
@@ -52,7 +50,7 @@ At the moment you request, the account must also be flat, the subscription activ
 A claim resets your floor. The high-water mark, the daily baseline and the daily peak all return to account size, and the profitable-day count returns to zero.
 </Warning>
 
-## What each closure pays
+## What you receive at each closure
 
 | Why the account closed | Profit still in the account |
 |---|---|
@@ -69,7 +67,7 @@ On a forfeiting close your share of the remaining profit is zero, and whatever t
 Closing your own account is a forfeiting close. You can ask only while the account is flat. It closes at whatever equity it has and pays you nothing. If you have profit and you want it, withdraw and claim it before you ask to close.
 </Warning>
 
-## The one thing a close cannot reach
+## What a close cannot touch
 
 Profit already accepted into a pending withdrawal is vested. If a close interrupts it, that amount still settles under your ordinary split, whatever the reason for the close turns out to be. A drawdown breach in the next block does not touch it.
 

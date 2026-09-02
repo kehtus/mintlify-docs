@@ -3,7 +3,7 @@ title: "Yield and Risks"
 description: "Where LP yield comes from, what a losing account costs an LP, and what can go wrong"
 ---
 
-Three flows reach the vault and raise the share price: half of each activation premium, half of each subscription fee, and the vault's residual on a forfeiting close. Never guaranteed, can be zero.
+Three flows reach the vault and raise the share price: half of each activation premium, half of each subscription fee, and the vault's residual on a forfeiting close. None of it is guaranteed, and any of it can be zero.
 
 One flow can run the other way. Every funded account carries a buffer `B` posted by its builder, and a principal loss consumes `B` before it touches LP capital. The risk engine closes the account when it breaches its floor, which is where `B` runs out, so in the ordinary case the loss stops there. If a loss overshoots `B`, the part beyond it is `reserveDeficit`, and that lands on you.
 

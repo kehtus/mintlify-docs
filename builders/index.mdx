@@ -5,7 +5,7 @@ description: "Capital and infrastructure for launching a prop firm on Hyperliqui
 
 > The builder owns the product. Proportion provides the funded layer.
 
-For a builder, the funded account is the most capital-intensive part of a prop firm. Proportion funds it, enforces its floor and settles it. Evaluation, brand, marketing and trader selection stay your product. Interaction with the protocol goes through the exchange proxy API, which any Hyperliquid-compatible frontend can use and which answers faster than Hyperliquid's public endpoint.
+For a builder, the funded account is the most capital-intensive part of a prop firm. Proportion funds it, enforces its floor and settles it. Evaluation, brand, marketing and trader selection stay your product. You interact with the protocol through its contracts. Your traders trade through the exchange proxy, a proxy in front of Hyperliquid's exchange endpoint that any Hyperliquid-compatible frontend can use and that answers faster than the public endpoint.
 
 The vault allocates the capital. You pay `B + P` at activation, and whatever part of `B` the trader does not lose comes back. Where that money comes from is your business: in a prop firm it is usually the fees from challenges that did not pass, or any other revenue.
 

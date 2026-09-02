@@ -29,7 +29,7 @@ peak $15,000, 30 % of the $5,000 gain       $10,500
 equity strictly below $10,500               the account closes
 ```
 
-From that peak the trader may still fall $4,500 before the account closes. Most of a winning run is unprotected, so `D` decides how much of your buffer a losing run can take.
+From that peak the trader may still give back $4,500 of the $5,000 gain before the account closes. A close at $10,500 returns the full principal, so your buffer comes back whole. The buffer is only at risk while the floor sits below account size, and `D` sets how far below.
 
 ## What you pay
 
@@ -49,10 +49,10 @@ charge = B + P
 | $2,500 | 10 % | $250 | $50 | **$300** |
 
 <Note>
-One account may be at most 10 % of the vault's assets. With the vault cap at $25,000 that puts today's largest account at $2,500, well under the $20,000 ceiling in the parameter table above. The ceiling rises with the vault. See [How It Works](/vault#allocation-limits).
+One account may be at most 10 % of the vault's assets, so the vault's size, not the ceiling in the table, sets the largest account you can open: with $25,000 in the vault, for example, the largest account is $2,500. The room grows with the vault. See [How It Works](/vault#allocation-limits).
 </Note>
 
-The buffer column is the part that can come back: an account that returns its principal costs you `P` and nothing else, and an account that blows up costs you `P` plus as much of `B` as the trader lost.
+The buffer column is the part that can come back. Whatever closes the account, you get `B` back less the trader's loss of principal: a trader whose equity never fell below account size returns all of it, a trader who went through the whole drawdown returns none, and `P` is gone either way.
 
 `D` prices two things at once: how far the trader may fall before the account closes, and the whole of your buffer. The premium does not move with it. `P` is a share of `A` alone, so widening the drawdown buys the trader room with your first-loss capital rather than with a larger premium.
 
@@ -72,7 +72,7 @@ The first sponsored month costs 2 % of account size and each renewal 1.5 %. A se
 
 Your loss on one account is capped at `B + P`, the buffer you can lose plus the premium you never get back, and the refund is credited to your address for you to collect without anyone's approval.
 
-Profit is the other half. On every profit withdrawal and every ordinary close you receive `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **40 %** of whatever profit was still in the account, the protocol takes 20 %, and the vault keeps the rest.
+On the profit side, every profit withdrawal and every ordinary close pays you `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **40 %** of whatever profit was still in the account, the protocol takes 20 %, and the vault keeps the rest.
 
 <Warning>
 The buffer is real money and it is spent before LP capital is. A trader who gives back the designed drawdown costs you the whole of `B` on that account, and nothing you earned on other accounts is netted against it. On a sponsored account the daily floor closes a losing day at about half of `B` unless the close overshoots; see [Protocol Rules](/builders/rules#daily-drawdown).
@@ -95,6 +95,6 @@ The subscription is **1.5 % of account size every 30 days** and splits the same 
     What the protocol enforces on the account you funded
   </Card>
   <Card title="Profit and Payouts" icon="wallet" href="/funded/payouts">
-    The trader's side of the split, and what each closure pays
+    The trader's side of the split, and what they receive when the account closes
   </Card>
 </CardGroup>
