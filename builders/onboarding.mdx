@@ -19,7 +19,7 @@ description: "How to open your first funded account"
 
 The first loss is the buffer `B`. There is no separate builder deposit, and LP shares play no part in it.
 
-- You post a buffer to fund the account. Unused buffer is returned when it closes.
+- You post a buffer, the account's prepaid drawdown. The unused part is returned when it closes.
 - A loss larger than `B` lands on the LP vault as `reserveDeficit`, not on you.
 - Depositing into the LP vault is optional. Shares earn and lose across the whole pool, and they neither grant nor withdraw your ability to fund traders.
 - The premium `P` is charged on every activation and is not returned.

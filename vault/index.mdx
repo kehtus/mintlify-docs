@@ -3,7 +3,7 @@ title: "How It Works"
 description: "What the vault holds, what limits allocation, and what limits exit"
 ---
 
-`MainVault` holds the USDC. It mints LP shares, funds the trading capital of every funded account, holds each builder's buffer as money it does not own, and books every settlement.
+`MainVault` is the contract that holds the USDC. It mints LP shares, allocates capital to every funded account, keeps the drawdown prepaid by builders separate from LP money, and settles every account when it closes.
 
 ## Flows
 
@@ -29,7 +29,7 @@ The account size and drawdown a builder chooses inside these limits are on [Acco
 
 ## Exit
 
-Shares can be burned without notice or lock-up. A withdrawal must leave utilization under the ceiling, and it is paid only from EVM cash the vault does not already owe in buffers, refunds and payouts.
+Shares can be burned without notice or lock-up. A withdrawal must leave utilization under the ceiling, and it is paid only from free EVM cash: what is not reserved for builders' money on open accounts or for unclaimed refunds and payouts.
 
 There is no share lock. A builder holding shares against live funded accounts exits on the same terms as any other LP. What can delay an exit is a busy vault: with utilization at the ceiling, a large withdrawal waits for an account to settle.
 
