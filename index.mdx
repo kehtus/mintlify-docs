@@ -7,13 +7,13 @@ description: "Where to start, whether you trade, build or provide liquidity"
 
 Proportion is a DeFi protocol on HyperEVM: prop-trading infrastructure built on Hyperliquid.
 
-It serves three sides. Traders get capital through funded accounts that trade the real Hyperliquid book. Builders launch prop-trading products without writing the capital, risk and settlement layer themselves. LPs deposit USDC into a shared vault and earn from activation premiums, subscriptions and the vault's share of forfeited profit.
+It serves three sides. Traders trade funded accounts on the real Hyperliquid book. Builders launch prop-trading products without writing the capital, risk and settlement layer themselves. LPs deposit USDC into a shared vault and earn from activation premiums, subscriptions and the vault's share of forfeited profit.
 
 ## Why it exists
 
 The demand for trading capital that produced thousands of prop firms in forex is now appearing around Hyperliquid and its builder codes. Retail prop firms sell an exam, keep the funded account simulated, and keep the option to refuse the payout.
 
-Proportion is built the other way round. The capital is real and held in a vault on HyperEVM, the trading runs on HyperCore, the rules are contract code, and the payout is a contract call to one address. The builder posts a buffer that is spent before LP capital, so a blown account costs the person who funded it.
+Proportion is built the other way round. The capital is real and held in a vault on HyperEVM, the trading runs on HyperCore, the rules are contract code, and the payout goes to the trader's address right away. The builder posts a buffer that is spent before LP capital, so a blown account costs the person who funded it.
 
 ## How it fits together
 
@@ -21,7 +21,7 @@ A shared vault holds LP capital and allocates it into isolated funded accounts. 
 
 ## Mission
 
-Funded trading where the terms are in the contract and the payout does not depend on anyone's goodwill.
+Make a genuinely good tool for prop trading.
 
 ## Next
 

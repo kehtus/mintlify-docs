@@ -7,27 +7,27 @@ description: "Problems Proportion solves and what each side gets"
 
 A B-book prop firm is the counterparty to its own traders, so every payout is its loss. Nobody wants to pay, and the rulebook grows until nobody has to. The effort spent fighting abuse lands on honest traders too: rules written for cheats, and refused payouts they earned.
 
-The only way out is an account that is actually funded, so that a payout is a share of profit that exists. A blockchain is the best place to run that. The capital sits in a vault on HyperEVM, the orders fill on the real Hyperliquid book on HyperCore where anyone can see them, and the rules and the payout are contract code that needs no one's goodwill.
+The only way out is an account that is actually funded, so that a payout is a share of profit that exists. A blockchain is the best place to run that. The capital sits in a vault on HyperEVM, the orders fill on the real Hyperliquid book on HyperCore where anyone can see them, and the rules and the payout are contract code.
 
 - **Opaque rules and blocked payouts.** Floors, splits and payouts are contract code. Nobody can refuse a payout the protocol has already credited.
 - **B-book conflict of interest.** Orders reach the real Hyperliquid book, and the builder's own buffer is the first money a loss consumes. A trader losing principal costs the person who funded it, and nobody is paid out of that loss.
 - **Counterparty risk.** Funded accounts are non-custodial, and the payout is a contract call, not a support ticket.
-- **High barrier to launching a prop firm.** Proportion supplies the capital, the risk enforcement and the settlement, so a builder does not run a contract stack of their own.
+- **High barrier to launching a prop firm.** Proportion runs the funded layer, from vault allocation to risk enforcement and settlement, so a builder does not run a contract stack of their own.
 - **Losses that reach the pool.** The floor of every account sits where the builder's buffer runs out, and the risk engine closes the account when it breaches that floor. In the ordinary case LP capital is not touched.
 
 ## What each side gets
 
 <Tabs>
   <Tab title="Trader">
-    - Capital without KYC or artificial rules
+    - A funded account without KYC or artificial rules
     - Orders filled on the real Hyperliquid book with real capital, routed through an exchange proxy that answers faster than Hyperliquid's public endpoint
     - A profit split fixed in the contract at activation and unchangeable afterwards
-    - Nobody can refuse the payout: settlement credits your address, and the release call pays that address and no other
+    - Nobody can refuse the payout: settlement credits your address and the release pays it out right away
     - The account is yours to trade within the protocol's rules, and whoever funded it cannot block a withdrawal
     - A risk engine that only does what the contract allows and never holds your funds
   </Tab>
   <Tab title="Builder">
-    - Infrastructure for funded accounts: capital from the vault, risk enforcement, and settlement
+    - Infrastructure for funded accounts: allocation from the vault, risk enforcement, and settlement
     - No registration, no minimum stake, no quota. Any wallet holding USDC for the buffer and the premium can fund a trader
     - You post a buffer as first-loss capital, and whatever the trader does not lose comes back to you
     - Revenue from three sources: your share of trader profit, a fixed share of the profit forfeited on a forfeiting close, and whatever margin you price into your own evaluation
