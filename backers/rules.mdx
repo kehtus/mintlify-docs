@@ -1,0 +1,57 @@
+---
+title: "Protocol Rules"
+description: "What the protocol enforces on a funded account, and which rules stay yours"
+---
+
+You set the account size and the drawdown percentage at activation. From that point the protocol enforces the floor against the account's live equity, and the allowed markets and leverage caps at order entry. An off-chain risk engine does the sampling and the calls, but every floor and every close is the contract's decision. You cannot soften them afterwards, and neither can the trader.
+
+## What the protocol enforces
+
+| Rule | Enforced | On breach |
+|---|---|---|
+| Trailing floor | on-chain, against live equity | The account closes. The trader forfeits unwithdrawn profit and your buffer absorbs the loss |
+| Daily floor, backed accounts only | Same | Same |
+| Allowed markets | at order entry | The order is refused. The account keeps trading |
+| Leverage cap, per market | at order entry | The order is refused. The account keeps trading |
+| Subscription | at the daily checkpoint | The account closes on the ordinary split |
+
+## How drawdown sets the floor
+
+The trailing floor starts at account size minus your buffer, `A − B`. It rises by 30 % of the accepted peak profit above `A`. After a completed profit withdrawal, the peak resets to `A` and the trailing floor returns to `A − B`. A worked example is on [Account Parameters and Fees](/backers/fees#how-drawdown-sets-the-floor).
+
+The floor moves during the session rather than once a day. See [Funded Account Rules](/funded/rules) for how a new peak is accepted.
+
+## Daily drawdown
+
+Daily drawdown is not a parameter you set. An account you back carries a second floor: the day's opening equity less half the trailing percentage, plus 30 % of the accepted gain above that opening equity. An account a trader funds themselves has no daily floor. Whichever floor is higher is the one that applies, and the two are never added together.
+
+The daily floor also limits losses against your buffer. If the day opens at `A` and equity has not set a higher peak, it starts about half of `B` below `A`. Equity must fall strictly below the floor to trigger a close; equality is allowed. If settlement returns roughly that amount, about half of `B` is consumed. A gap or liquidation can consume the whole buffer in one day, and anything beyond `B` lands on LPs.
+
+## Markets and leverage
+
+There is no flat leverage cap. Each listed perp carries its own maximum, taken from the live protocol list, and both the market and the leverage are checked when the order is placed. A disallowed order is refused without closing the account.
+
+If a market is removed from the list while the trader holds a position on it, that position is closed out and the rest of the account carries on trading.
+
+## What closes an account
+
+Two closures forfeit the profit still in the account: a drawdown breach, and the trader asking to close. Four do not: the subscription expiring, the trader cancelling it, an admin closure, and a profit target being reached.
+
+Your unused buffer returns in every one of the six. What changes is who receives the profit that was in the account when it closed. The amounts are on [Account Parameters and Fees](/backers/fees), the trader's side on [Profit and Payouts](/funded/payouts).
+
+## The rules you keep
+
+You remain responsible for [the evaluation](/challenges), its price, minimum trading days, consistency rules and trader selection. Any additional restrictions you offer, such as a daily limit stricter than the protocol's, need their own enforcement. The funded account does not enforce them automatically.
+
+One of your rules can sit on-chain if you want it there. A profit target set at activation closes the account on the ordinary split as soon as the trader reaches it.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/backers/fees">
+    What activation costs you and which part comes back
+  </Card>
+  <Card title="Funded Account Rules" icon="shield-check" href="/funded/rules">
+    The same limits written for the trader you fund
+  </Card>
+</CardGroup>

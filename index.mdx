@@ -1,0 +1,51 @@
+---
+title: "Overview"
+description: "Where to start, whether you trade, build or provide liquidity"
+---
+
+![Proportion overview](/images/image.jpeg)
+
+Proportion is a DeFi protocol on HyperEVM: prop-trading infrastructure built on Hyperliquid.
+
+<Info>
+Proportion is not open to the public yet. These pages describe the protocol's design and contract behavior.
+</Info>
+
+It serves three sides. Traders get capital through funded accounts that trade the real Hyperliquid book. Backers launch prop-trading products without writing the capital, risk and settlement layer themselves. LPs deposit USDC into a shared vault and earn from activation premiums, subscriptions and interest on idle funds.
+
+## Why it exists
+
+In a simulated funded account, a payout is an obligation of the firm rather than a withdrawal of profit earned on the market. The trader depends on the firm's payout policy and ability to pay.
+
+Proportion's funded accounts trade real capital on HyperCore. MainVault on HyperEVM allocates the principal and records settlement. The backer posts a reserve that absorbs principal losses before LP capital, and settlement credits each recipient's payout to a fixed address. Challenges are a separate, simulated evaluation with on-chain escrow; completing one does not automatically create a funded account.
+
+## How it fits together
+
+A shared vault holds LP capital and allocates it into isolated funded accounts. Each account trades on Hyperliquid under the protocol's equity floors, permitted markets, leverage limits and withdrawal terms. An off-chain keeper monitors risk and initiates closure when a floor is breached. The exchange proxy signs Hyperliquid orders; the contracts check closure and settlement. Execution takes time, so a final loss can exceed the backer's reserve.
+
+## Mission
+
+Funded trading with explicit contract terms and payouts that do not require a backer's approval. Decentralization has been the priority since the first design: the contracts enforce the terms, and the prop firm is a party to the deal on the same footing as the trader.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Trade" icon="user" href="/funded">
+    Funded accounts and trader rules
+  </Card>
+  <Card title="Challenges" icon="trophy" href="/challenges">
+    Escrowed evaluations, and what is on-chain today
+  </Card>
+  <Card title="Backers" icon="handshake" href="/backers">
+    Prop-firm infrastructure for backers
+  </Card>
+  <Card title="Vault" icon="vault" href="/vault">
+    Who funds the accounts, and what it earns
+  </Card>
+  <Card title="SDK" icon="code" href="/sdk">
+    TypeScript client, docs coming soon
+  </Card>
+  <Card title="API" icon="plug" href="/api">
+    REST and GraphQL, docs coming soon
+  </Card>
+</CardGroup>

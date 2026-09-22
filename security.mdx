@@ -1,0 +1,27 @@
+---
+title: "Security"
+description: "Security audits, code review practices, and administrative safeguards"
+---
+
+Proportion's smart contracts have undergone an independent security audit. The report covers the revision and scope identified in it; it does not establish that every later change has been audited. Manual review and automated analysis supplement independent audits.
+
+**Audit report:** [View the security audit report](https://beosin.com/audits/Proportion_202603161420.pdf)
+
+## Administrative security
+
+<Info>
+The multisig and timelocks below are planned safeguards. **They are not in force yet.** The current configuration has a single owner address, and the contracts impose no delay on its upgrades, factory changes, or integration and risk-parameter changes. The MainVault relayer can also pause MainVault; only its owner can unpause it.
+</Info>
+
+The planned configuration uses a 3-of-5 multisig and timelocks for critical administrative actions. Until it is implemented, users depend on the current owner's control of upgrades and configuration. The payout ledger fixes recipients, but does not remove this administrative trust.
+
+### Planned timelock schedule
+
+| Minimum delay | Changes covered |
+| --- | --- |
+| **72 hours** | `MainVault` and `ChallengeVault` implementation upgrades; `transferOwnership` and other governance-control changes; migrations that replace a core Vault implementation. |
+| **48 hours** | `queueFactoryChange` / `executeFactoryChange` for funded accounts; `proposeFactory` / `setFactory` for Challenge checkout; trusted integration changes such as `setRelayer`, `setForwarder`, `setMainVault`, and `setChallengeVault`; `setRiskConfig`, market additions, leverage increases, and other changes that increase protocol risk. |
+
+<Note>
+  Under the planned policy, defensive actions may be executed immediately: pausing the vault, cancelling a queued change, disabling checkout, removing a market, and lowering leverage. Unpausing or increasing risk would wait for the applicable timelock.
+</Note>

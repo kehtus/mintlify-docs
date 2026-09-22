@@ -1,0 +1,55 @@
+---
+title: "面向交易员"
+description: "合约规则下的 Hyperliquid 资本"
+---
+
+> 真实的 Hyperliquid 成交。规则和派付写在合约里，不在公司后台。
+
+<Note>
+Proportion 尚未向公众开放。本节描述当前合约中的 funded 账户机制。
+</Note>
+
+交易员通过链上 funded 账户操作分配到 Hyperliquid 的资本，订单进入真实的 Hyperliquid 订单簿。账户规模、回撤参数、利润分成和 TARGET 在激活时固定；市场白名单与杠杆上限仍以 MainVault 的当前配置为准。合约根据 HyperCore 权益检查风险规则。
+
+普通利润由交易员和出资方按激活时锁定的 `builderPoolBps` 分成，Vault 和协议不参与这部分分配。Vault 的收入包括激活费和订阅费的分成，协议还获得被没收利润的一半。
+
+<Tip>
+合约已经入账的利润不属于公司。公司不能在协议规则之外随意拒绝这笔派付。
+</Tip>
+
+## 如何获得账户
+
+由出资方开户，或交易员自己调用 `activateFunded`（自费）。出资方在协议外如何筛选（评估、自己的店铺）是他们的产品，不是协议。
+
+账户绑定交易员的 HyperEVM 地址。交易走 API 钱包。Exchange Proxy 为 Hyperliquid 签名。交易员从不持有该密钥。
+
+| | 出资方账户 | 自费 |
+|---|---|---|
+| 谁付 `R + P` | 调用方。他们就是 `record.builder` | 交易员 |
+| 本金 `A` | 来自 MainVault | 来自 MainVault |
+| 日回撤 | 开 | 关 |
+| 时间 | 30 天订阅，可续期 | 预付 1 / 7 / 30 天 |
+| 普通利润 | 按 `builderPoolBps` 分成 | 使用同一公式，两部分都归交易员 |
+
+两种模式使用相同的生命周期下限。自费账户没有额外的日回撤限制，但本金仍来自 MainVault，不能由交易员自由提走。
+
+当前 MainVault 名单是唯一市场名单。编辑不会关闭账户。名单外的新开仓会被拒绝。已撤市场上的剩余仓位会被平掉。
+
+```
+激活 → Active → 交易
+              → 提取利润（可选）
+              → 关闭 → 结算 → 领取
+```
+
+账户关闭采用统一的结算流程。克隆合约记录实际 Core USDC 余额的快照 `Q`；MainVault 根据已固定的账户记录结算，并将应付款项记入领取账本。
+
+## 章节
+
+<CardGroup cols={2}>
+  <Card title="账户规则" icon="shield-check" href="/zh/funded/rules">
+    协议强制执行什么
+  </Card>
+  <Card title="利润与派付" icon="wallet" href="/zh/funded/payouts">
+    如何提取利润，账户何时关闭
+  </Card>
+</CardGroup>

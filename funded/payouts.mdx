@@ -1,0 +1,91 @@
+---
+title: "Profit and Payouts"
+description: "How your profit is split, how you withdraw it, and what you receive when the account closes"
+---
+
+When your account settles, the vault credits your address in its payout ledger. Anyone may call `claimPayout` to send that balance to that address. The caller cannot redirect it, and the claim requires no separate approval from the backer.
+
+## Your split
+
+One number decides it: `builderPoolBps`, written into your account record at activation, inside a range the contract enforces.
+
+| `builderPoolBps` | Backer | You |
+|---|---|---|
+| 1000 | 10 % | **90 %** |
+| 2000 | 20 % | **80 %** |
+| 7000 | 70 % | **30 %** |
+
+Your share is somewhere between 30 % and 90 %, and nothing changes it after activation. The same number governs a withdrawal and an ordinary close.
+
+<Note>
+If you were quoted 80 %, that is a plan that set `builderPoolBps` to 2000. It is your plan's number, not the protocol's. Ask your backer for its value before you accept it.
+</Note>
+
+There is no third party to the split. The vault and the protocol take nothing from an ordinary withdrawal or an ordinary close; their revenue is the activation premium and the subscription. On a self-funded account both legs land in the same wallet, so you keep all of it.
+
+## Withdrawing profit
+
+Profit is your current equity above account size, not the distance from a high-water mark. Mid-life withdrawals are available only when the account has no profit target. You need at least $1 of profit and either route below.
+
+| Route | Condition |
+|---|---|
+| Day count | Three daily checkpoints at which equity is at least 0.7 % above the previous checkpoint. They need not be consecutive |
+| Instant | Profit at or above 1.5 % of account size, with no day count at all |
+
+At the moment you request, the account must be active and flat, its subscription or prepaid term must still be valid, and neither a close request nor a subscription-fee transfer may be pending. The account must also satisfy its floors and have enough transferable Core USDC for the profit.
+
+<Steps>
+  <Step title="You request">
+    The request is yours alone to make. On the Proportion frontend the gas is paid for you.
+  </Step>
+  <Step title="The profit bridges">
+    Your profit moves from HyperCore to HyperEVM.
+  </Step>
+  <Step title="Anyone claims">
+    The claim takes no permissions. Your share transfers to your address; the backer's share is booked to theirs.
+  </Step>
+</Steps>
+
+<Warning>
+A successful `claimWithdrawal` resets the high-water mark, daily baseline and daily peak to account size, and the profitable-day count to zero. The floors are then recalculated: with a $1,000 account and 10 % drawdown, the trailing floor returns to $900 and the backed account's daily floor to $950.
+</Warning>
+
+## What you receive at each closure
+
+For a backed account:
+
+| Why the account closed | Profit still in the account |
+|---|---|
+| Drawdown breach | Nothing |
+| You asked to close | Nothing |
+| Subscription expired | Your ordinary split |
+| Subscription cancelled | Your ordinary split |
+| Admin closure | Your ordinary split |
+| Profit target reached | Your ordinary split |
+
+On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital is split in half between the backer and the protocol. The vault gets none of it. If it comes back at or below account size there is no profit to divide, and the backer's buffer absorbs the loss before LP capital does.
+
+On a self-funded account you are also the backer. You receive the backer's half on a forfeiting close; the protocol receives the remainder, including rounding dust. On an ordinary close both profit shares go to you.
+
+<Warning>
+Voluntary closure is a forfeiting close. You can request it only while the account is flat. It forfeits your trader share of unwithdrawn close profit. If your account has no profit target and qualifies for a withdrawal, withdraw and claim that profit before requesting closure. A target account pays its ordinary profit only through a non-forfeiting close.
+</Warning>
+
+## What a close cannot touch
+
+Profit already accepted into a pending withdrawal is normally kept separate and paid under your ordinary split. The close reason itself does not forfeit it.
+
+<Note>
+The current implementation has a timeout exception. After seven days in `Closing`, if the EVM balance still cannot cover pending claims, a call to `closeAndReturn` can retire the missing portion. Any corresponding funds still on Core enter `Q` and follow the close reason's settlement rules; an exceptionally delayed transfer can also lose its original payout allocation. This requires a transaction, rather than happening automatically, and does not relax the full-snapshot funding requirement in `Returning`.
+</Note>
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Funded Account Rules" icon="shield-check" href="/funded/rules">
+    The limits, and every reason an account closes
+  </Card>
+  <Card title="Vault" icon="vault" href="/vault">
+    Where the capital comes from, and what the vault earns
+  </Card>
+</CardGroup>

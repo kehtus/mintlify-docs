@@ -1,0 +1,8 @@
+{
+  "name": "mintlify-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "node scripts/deploy.mjs"
+  }
+}

@@ -1,0 +1,37 @@
+name: Deploy docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Mintlify deployment
+        env:
+          MINTLIFY_API_KEY: ${{ secrets.MINTLIFY_API_KEY }}
+          MINTLIFY_PROJECT_ID: ${{ secrets.MINTLIFY_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${MINTLIFY_API_KEY:-}" ] || [ -z "${MINTLIFY_PROJECT_ID:-}" ]; then
+            echo "Add repository secrets MINTLIFY_API_KEY and MINTLIFY_PROJECT_ID."
+            exit 1
+          fi
+          if [[ "$MINTLIFY_API_KEY" == mint_us_* ]]; then
+            echo "MINTLIFY_API_KEY is an Index key. Use an Admin key that starts with mint_."
+            exit 1
+          fi
+          response="$(curl -sS -X POST \
+            "https://api.mintlify.com/v1/project/update/${MINTLIFY_PROJECT_ID}" \
+            -H "Authorization: Bearer ${MINTLIFY_API_KEY}" \
+            -H "Accept: application/json" \
+            -w "\n%{http_code}")"
+          body="${response%$'\n'*}"
+          code="${response##*$'\n'}"
+          echo "$body"
+          if [ "$code" != "202" ] && [ "$code" != "200" ]; then
+            echo "Mintlify deploy trigger failed with HTTP $code"
+            exit 1
+          fi

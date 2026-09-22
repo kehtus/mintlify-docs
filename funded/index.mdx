@@ -1,0 +1,33 @@
+---
+title: "For Traders"
+description: "Capital on Hyperliquid under contract rules"
+---
+
+> Capital on Hyperliquid's own book, under contract rules.
+
+<Note>
+Proportion is not open to the public yet. This section describes how funded accounts work in the current contracts.
+</Note>
+
+Proportion allocates capital through an on-chain funded account on Hyperliquid. Your orders reach the real Hyperliquid book. The contract fixes your account terms at activation and checks its risk rules against HyperCore equity. Settlement credits your payout to your address, and the claim call pays that address without a separate approval from the backer.
+
+Whoever funds the account posts a drawdown buffer. At settlement, that buffer absorbs principal loss before LP capital does.
+
+## How to get a funded account
+
+Anyone can fund anyone. The protocol calls whoever funds you the backer, recorded in the contracts as `builder`, whether that is a prop firm, an individual or you yourself. The backer opens the account for you and sets its terms: the size, the drawdown and your share of profit. Some backers run a [challenge](/challenges) first, some activate an account directly. How you qualify is between you and the backer, not the protocol.
+
+You can also fund your own account through the same call, posting the buffer and the premium yourself. One wallet is then both backer and trader, the account is self-funded rather than backed, and the whole ordinary split stays with you.
+
+Either way the account is assigned to your EVM address on HyperEVM. Supported frontend requests can be relayed: you sign the request, and the relayer submits the transaction and pays its gas.
+
+## Sections
+
+<CardGroup cols={2}>
+  <Card title="Funded Account Rules" icon="shield-check" href="/funded/rules">
+    The limits, and every reason an account closes
+  </Card>
+  <Card title="Profit and Payouts" icon="wallet" href="/funded/payouts">
+    How to withdraw profit, and what you receive when the account closes
+  </Card>
+</CardGroup>

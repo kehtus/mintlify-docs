@@ -1,0 +1,50 @@
+---
+title: "Onboarding"
+description: "How to open your first funded account"
+---
+
+<Note>
+Public onboarding is not open yet. These steps describe direct funded activation.
+</Note>
+
+<Steps>
+  <Step title="Connect a wallet">
+    Any EVM wallet on HyperEVM.
+  </Step>
+  <Step title="Hold USDC for B + P">
+    The activation charge is the buffer `B` plus the premium `P`. There is no separate deposit and nothing to register.
+  </Step>
+  <Step title="Activate the account">
+    One call opens the account for your trader, and whoever paid is recorded as its backer. Funding yourself is the same call with your own address as the trader.
+  </Step>
+</Steps>
+
+## Your buffer
+
+The first loss is the buffer `B`. There is no separate backer deposit, and LP shares play no part in it.
+
+- You post a buffer to fund the account. Unused buffer is returned when it closes.
+- A loss larger than `B` lands on the LP vault as `reserveDeficit`, not on you.
+- LP shares are not required for direct funded activation. They participate in the pool's returns and losses. Publishing and selling [challenge plans](/challenges) separately requires shares and any configured minimum stake.
+- The premium `P` is charged on every activation and is not returned.
+
+<Warning>
+`B` is your capital at risk. If your trader gives back the account's designed drawdown, you lose the buffer.
+</Warning>
+
+## Onboarding a trader
+
+The account is issued to the trader's EVM address on HyperEVM. The trader authorizes orders and account requests with their wallet. The protocol handles risk synchronization, checkpoints and the execution of closes.
+
+You decide whether to fund a trader after your selection process. Passing an evaluation does not activate the funded account by itself.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/backers/fees">
+    What you choose at activation, and how `B` and `P` are priced
+  </Card>
+  <Card title="Protocol Rules" icon="shield" href="/backers/rules">
+    What the protocol enforces on your trader
+  </Card>
+</CardGroup>

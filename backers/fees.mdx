@@ -1,0 +1,100 @@
+---
+title: "Account Parameters and Fees"
+description: "What activating a funded account costs you, which part of it comes back, and what you choose"
+---
+
+Activation charges you two amounts in one transaction: a buffer `B`, which stays your money and comes back when the account closes, less whatever the trader lost, and a premium `P`, which does not come back at all. The trading capital itself is not yours to fund. The vault allocates the account size `A` out of LP deposits, and you are charged `B + P` on top of it.
+
+## What you choose at activation
+
+| Parameter | Range | What it sets |
+|---|---|---|
+| Trader | any address | Who the account is issued to |
+| Account size `A` | $10–$20,000 | Trading capital the vault allocates |
+| Trailing drawdown `D` | 5 %–25 % | The trader's floor, and your buffer |
+| `builderPoolBps` | 10 %–70 % | Your cut of each withdrawal and each ordinary close |
+| Profit target | optional | Disables withdrawals during the account's life; closes on the ordinary split when reached |
+
+Daily drawdown is not among them. It follows from the mode: an account you back always carries it, an account a trader funds themselves never does. See [Protocol Rules](/backers/rules).
+
+### How drawdown sets the floor
+
+`D` sets the initial trailing floor at `A − B`. As the accepted equity peak rises above `A`, 30 % of that peak profit is added to the floor. After a completed profit withdrawal, the peak resets to `A` and the trailing floor returns to `A − B`.
+
+```text
+A = $10,000, D = 10 %, buffer B = $1,000
+
+floor at activation                         $9,000
+peak $15,000, 30 % of the $5,000 gain       $10,500
+equity strictly below $10,500               the account closes
+```
+
+The trailing floor in this example allows equity to fall $4,500 from the peak; a backed account's daily floor may trigger a close sooner. If final settlement returns $10,500, it covers the full principal and your buffer comes back whole. A floor triggers closing; it does not guarantee the amount returned, so a gap or liquidation can still consume the buffer.
+
+## What you pay
+
+```text
+A = account size    D = trailing drawdown you choose, 5 %–25 %
+
+B = A × D       your buffer, refundable
+P = A × 2 %     the premium, kept
+charge = B + P
+```
+
+| Account size `A` | Drawdown `D` | Buffer `B` | Premium `P` | Charged at activation |
+|---|---|---|---|---|
+| $500 | 5 % | $25 | $10 | **$35** |
+| $1,000 | 10 % | $100 | $20 | **$120** |
+| $1,000 | 25 % | $250 | $20 | **$270** |
+| $2,500 | 10 % | $250 | $50 | **$300** |
+
+<Note>
+The per-account limit is the lower of 10 % of the vault's assets and $20,000. With $25,000 in the vault, for example, that limit is $2,500. Available capacity can limit activation further. See [How It Works](/vault#allocation-limits).
+</Note>
+
+The buffer column is the part that can come back. Whatever closes the account, the refund depends on the principal returned at settlement: if it covers `A`, all of `B` returns; a shortfall consumes `B` dollar for dollar, up to the full buffer. `P` is not returned.
+
+`D` prices two things at once: how far the trader may fall before the account closes, and the whole of your buffer. The premium does not move with it. `P` is a share of `A` alone, so widening the drawdown buys the trader room with your first-loss capital rather than with a larger premium.
+
+<Note>
+Backing is always the 2 % tier, and it opens a 30-day subscription period. For a trader funding their own account the same 2 % buys a prepaid day, 4 % buys 7 days and 8 % buys 30 days; an activation by a backer cannot use the higher tiers.
+</Note>
+
+A backed account's first month costs 2 % of account size and each renewal 1.5 %, rounded up to a whole USDC. A self-funded month costs 8 %. Without the daily floor, a self-funded account can lose more within one day before a close is triggered. If the final loss exceeds the buffer, LPs bear the excess.
+
+## What comes back
+
+| What the account returns | Your buffer |
+|---|---|
+| Its full principal | All of `B` |
+| Less than that | `B` minus the shortfall |
+| Less than `A − B` | Nothing, and the excess lands on [LPs](/vault/yield) rather than on you |
+
+Your loss on one account is capped at `B + P`, the buffer you can lose plus the premium you never get back, and the refund is credited to your address for you to collect without anyone's approval.
+
+On the profit side, every profit withdrawal and every ordinary close pays you `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **half** of whatever profit was still in the account. The protocol takes the other half, and the vault gets none of it.
+
+<Warning>
+The buffer is real money and it is spent before LP capital is. A trader who gives back the designed drawdown costs you the whole of `B` on that account, and nothing you earned on other accounts is netted against it. On a backed account the daily floor closes a losing day at about half of `B` unless the close overshoots; see [Protocol Rules](/backers/rules#daily-drawdown).
+</Warning>
+
+## Who may activate
+
+Any wallet holding USDC for `B + P`. No registration, no minimum stake, no quota tied to you, no approval step. What limits activation is the vault's capacity, not your standing with it: the utilization ceiling, the per-account ceiling and the vault cap are on [How It Works](/vault#allocation-limits).
+
+## Where your premium goes
+
+The premium `P` splits **50/50** between the vault and the protocol, earned before the account places an order.
+
+The subscription is **1.5 % of account size every 30 days**, rounded up to a whole USDC, and splits the same way. You receive none of it. On a backed account it renews at a checkpoint in the last three days of the period. The fee is taken from the account's equity, not from your wallet, and renewal requires profit of at least the fee and equity that remains at or above both floors after payment.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Protocol Rules" icon="shield" href="/backers/rules">
+    What the protocol enforces on the account you funded
+  </Card>
+  <Card title="Profit and Payouts" icon="wallet" href="/funded/payouts">
+    The trader's side of the split, and what they receive when the account closes
+  </Card>
+</CardGroup>

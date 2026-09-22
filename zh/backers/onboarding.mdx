@@ -1,0 +1,29 @@
+---
+title: "入驻"
+description: "如何开立第一个 funded 账户"
+---
+
+<Steps>
+  <Step title="钱包">
+    HyperEVM 上的任意 EVM 钱包。
+  </Step>
+  <Step title="激活">
+    `activateFunded(trader, accountSize, drawdownBps, builderPoolBps, targetProfit, proposedReferrer, feeBps)`。你支付 `R + P`。Vault 存入本金 `A`。调用方成为 `record.builder`。出资方路径的 `feeBps` 只能是 200。
+  </Step>
+</Steps>
+
+如果 `trader` 是你自己，就是自费：同一个调用，档位 200 / 400 / 800。两条路径都不需要 vault 存款。
+
+没有委托。免 gas 走 ERC-2771 Forwarder：签名人支付 USDC，并成为出资方。
+
+`proposedReferrer` 绑定的是调用方，不是交易员。
+
+账户归属于交易员的 EVM 地址。交易员通过钱包授权订单和账户请求；风险同步、checkpoint 和平仓执行由协议处理。提取请求、取消订阅和自愿关闭需要交易员授权；`claimWithdrawal` 可由任何人调用，但只能支付给账户记录的收款人。
+
+<Warning>
+如果还把 USDC 存进 vault 当 LP，那是另一个角色。份额参与 vault 的收益与亏损，不影响直接 funded 激活的资格。发布和销售挑战计划则需要持有份额，并满足已配置的最低持仓价值。
+</Warning>
+
+<Info>
+Proportion 尚未向公众开放。如需了解接入安排，可在 Telegram 联系团队：[@keysigner](https://t.me/keysigner)。
+</Info>

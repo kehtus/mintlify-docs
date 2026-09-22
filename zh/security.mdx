@@ -1,0 +1,31 @@
+---
+title: "安全"
+description: "审计、代码复查与管理员权限"
+---
+
+智能合约已完成独立安全审计。审计仅覆盖报告中列明的代码版本和范围，并不代表之后的所有变更都已通过审计。
+
+**审计报告：** [查看安全审计报告](https://beosin.com/audits/Proportion_202603161420.pdf)
+
+## 审查
+
+代码会持续人工复查。这不能替代独立审计。
+
+## 管理员权限
+
+<Info>
+以下多签和时间锁是计划中的保护措施，**尚未生效**。当前配置由一个 owner 地址控制；合约不要求其升级、更换工厂、修改集成或风险参数时等待延迟。MainVault 的 relayer 也能暂停 MainVault，但只有 owner 能解除暂停。
+</Info>
+
+计划采用 3-of-5 多签和时间锁管理关键操作。在实施之前，用户仍需信任当前 owner 对升级和配置权限的使用。固定收款地址的付款记录并不能消除这项管理风险。
+
+### 计划中的时间锁
+
+| 最短延迟 | 覆盖的变更 |
+| --- | --- |
+| **72 小时** | `MainVault` 和 `ChallengeVault` 实现升级、`transferOwnership` 等管理权变更、替换核心 vault 实现的迁移 |
+| **48 小时** | `queueFactoryChange` / `executeFactoryChange`、Challenge 的 `proposeFactory` / `setFactory`、`setRelayer`、`setForwarder`、`setMainVault`、`setChallengeVault`、`setRiskConfig`、增加市场、提高杠杆及其他增加协议风险的变更 |
+
+<Note>
+  按计划中的政策，降低风险的操作可立即执行：暂停 vault、取消已排队变更、停止购买 Challenge、移除市场、降低杠杆。恢复运行或提高风险则需等待相应时间锁。
+</Note>

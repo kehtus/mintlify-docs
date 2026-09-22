@@ -1,0 +1,45 @@
+---
+title: "What We Offer"
+description: "Problems Proportion solves and what each side gets"
+---
+
+## Problems Proportion solves
+
+A B-book prop firm is the counterparty to its own traders, so every payout is its loss. Nobody wants to pay, and the rulebook grows until nobody has to: new rules, endless KYC checks. The effort spent fighting abuse lands on honest traders too: rules written for cheats, and refused payouts they earned.
+
+Proportion's funded accounts use real capital and execute orders on HyperCore. MainVault on HyperEVM allocates the principal, and contract settlement divides the resulting profit. Challenges remain simulated evaluations with on-chain escrow; the benefits below describe funded trading.
+
+- **Opaque rules and payout approval.** Contracts define equity floors, profit splits and settlement. A credited payout goes to its recorded recipient without backer approval.
+- **Backer exposure to losses.** Orders reach the real Hyperliquid book. Principal losses consume the backer's reserve first; the reserve is risk capital, not protocol revenue.
+- **Custody and settlement.** Funded capital is held in isolated accounts, and recipients claim credited payouts through the vault.
+- **High barrier to launching a prop firm.** Proportion supplies the capital, the risk enforcement and the settlement, so a backer does not run a contract stack of their own.
+- **Losses that reach the pool.** Equity floors trigger closure to limit losses. A floor can rise as the account earns profit; it is not simply the point where the backer's reserve runs out. Losses beyond that reserve reach LP capital.
+
+## What each side gets
+
+<Tabs>
+  <Tab title="Trader">
+    - Access to funded capital under explicit trading and withdrawal rules
+    - Orders filled on the real Hyperliquid book with real capital, routed through the exchange proxy
+    - A profit split fixed in the contract at activation and unchangeable afterwards
+    - Settlement credits your address, and the release call pays that address without backer approval
+    - You trade within the account's rules; profit withdrawals depend on its TARGET, trading history and current state
+    - A keeper that monitors risk, with contracts checking closure and settlement
+  </Tab>
+  <Tab title="Backer">
+    - Infrastructure for funded accounts: capital from the vault, risk enforcement, and settlement
+    - Direct backing needs no backer registration or LP stake. You pay the reserve and premium; vault liquidity and account limits still apply. Challenge sales have a separate LP-share requirement
+    - You post a buffer as first-loss capital, and whatever the trader does not lose comes back to you
+    - Revenue from three sources: your share of trader profit, half of the profit forfeited on a forfeiting close, and whatever margin you price into your own evaluation
+  </Tab>
+  <Tab title="LP">
+    - Revenue from half of each activation premium, half of each subscription, and interest on idle USDC supplied to Hyperlend. Net returns depend on revenue and losses
+    - Each account carries a backer's reserve that absorbs principal losses before LP capital. Equity floors trigger closure to limit further losses
+    - You do not pick backers or traders. You hold a share of the vault's whole book, and the share price can fall as well as rise
+    - A price gap, slippage or delayed close can leave a loss larger than the reserve. LPs bear that excess and the other protocol risks described in Yield and Risks
+  </Tab>
+</Tabs>
+
+<Note>
+A loss larger than a backer's buffer can reach LPs. See [Yield and Risks](/vault/yield) for vault economics and [Security](/security) for current administrative powers.
+</Note>

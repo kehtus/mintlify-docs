@@ -1,0 +1,39 @@
+---
+title: "概览"
+---
+
+![Proportion overview](/images/image.jpeg)
+
+Proportion 是 HyperEVM 上的 DeFi 协议，为 Hyperliquid 上的自营交易产品提供基础设施。交易员通过隔离的 funded 账户交易真实资本；出资方使用协议提供的资本、风控和结算系统；LP 将 USDC 存入共享 vault，从激活费、订阅费以及闲置资金的利息中获得收入。收益率不固定，也可能为零。
+
+<Info>
+Proportion 尚未向公众开放。这些文档介绍协议设计和合约行为。
+</Info>
+
+## 背景
+
+在模拟 funded 账户中，交易员的收益由公司支付，而不是从市场交易利润中提取，因此依赖公司的支付政策和支付能力。
+
+Proportion 的 funded 账户在 HyperCore 上使用真实资本交易。HyperEVM 上的 MainVault 分配本金并记录结算。出资方的准备金先于 LP 本金承担损失，结算后的款项记入固定收款地址。Challenge 则是使用链上托管资金的模拟考核；通过考核不会自动创建 funded 账户。
+
+## 运作方式
+
+每个 funded 账户都受到权益下限、允许市场、杠杆上限和提款条件的约束。链下 keeper 监控风险并发起关闭，exchange proxy 签署 Hyperliquid 订单，合约检查关闭和结算条件。执行需要时间，最终损失可能超过出资方的准备金。
+
+## 使命
+
+让 funded 交易采用明确的合约条款，领取已入账款项无需出资方批准。当前的管理员权限见[安全](/zh/security)。
+
+## 下一步
+
+<CardGroup cols={2}>
+  <Card title="Funded" icon="user" href="/zh/funded">
+    funded 账户如何运作，利润如何发放
+  </Card>
+  <Card title="出资方" icon="handshake" href="/zh/backers">
+    在现成栈上开户
+  </Card>
+  <Card title="Vault" icon="vault" href="/zh/vault">
+    协议流动性中心
+  </Card>
+</CardGroup>

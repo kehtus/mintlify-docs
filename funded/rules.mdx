@@ -1,0 +1,67 @@
+---
+title: "Funded Account Rules"
+description: "The limits your funded account is held to, and every reason it closes"
+---
+
+Your account size, drawdown percentage and profit split are fixed at activation. You can read your floor on-chain, and the contract uses that same number to check for a drawdown breach.
+
+Your equity is read from HyperCore precompiles, which the contract uses directly as its oracle. An off-chain risk engine monitors the account and calls the contract to enforce its rules. Trading orders are signed by the exchange proxy through an API wallet; neither component holds the account's funds.
+
+## Limits
+
+| Rule | Description | Consequence |
+|------|-------------|-------------|
+| **Trailing drawdown** | A floor that starts below account size and rises with accepted equity peaks | Account closes on the forfeiting split |
+| **Daily drawdown** | Half the trailing percentage, measured from the day's start. Backed accounts only | Account closes, unwithdrawn profit forfeited |
+| **Leverage** | A cap per market, taken from the live protocol list | Order refused |
+| **Markets** | Only perps on the live protocol list | Order refused |
+| **Subscription** | 1.5 % of account size per 30-day renewal, rounded up to a whole USDC and paid from profit. Backed accounts only | If it lapses, the account closes on the ordinary split |
+
+<Note>
+Daily drawdown and the subscription apply only to backed accounts. A self-funded account prepays a fixed term and does not renew automatically. Its owner can buy more time before expiry, up to a prepaid horizon of 30 days.
+</Note>
+
+## The floor
+
+Your trailing floor starts at account size minus the drawdown buffer. It adds 30 % of accepted peak profit above account size. It does not fall with equity; a successful profit withdrawal resets the peak to account size and removes that profit lock.
+
+The floor can rise within a session. An intraday update accepts a new peak once it is at least 1 % above the last accepted peak. The keeper evaluates that update after a fill with positive closed PnL; a mark-price rise alone does not trigger it. Daily checkpoints can also accept a higher lifetime peak without the 1 % threshold.
+
+Backed accounts also have a daily floor: the day's starting equity reduced by half the drawdown percentage, plus 30 % of accepted daily peak profit. The effective floor is the higher of the trailing and daily floors, never their sum. The daily baseline resets at each daily checkpoint.
+
+Equity has to fall strictly below the floor to breach it. Touching it exactly is not a breach.
+
+## Markets and leverage
+
+Trading is allowed on the perps the protocol lists, at that market's leverage cap. Both are checked when the order is placed, so an order outside them is simply refused. Neither costs you the account.
+
+If a market is removed from the list while you hold a position on it, that position is closed out and the rest of your account keeps trading.
+
+## Profit target
+
+Some accounts carry an absolute profit target. Any non-zero target disables mid-life profit withdrawals, including before the target is reached. At equity equal to account size plus the target, the relayer starts a close on your ordinary split. Drawdown is checked first; if it has also been breached, the drawdown reason takes priority.
+
+## What is allowed
+
+Copy trading, bots and EAs, and news trading are all allowed.
+
+<Tip>
+Everything not forbidden on this page is allowed. Trading style, trade frequency, holding overnight or through weekends: none of it is restricted within the listed limits.
+</Tip>
+
+## What closes the account
+
+Two closures use the forfeiting split: a drawdown breach and voluntary closure. Four preserve the ordinary split: subscription or prepaid-term expiry, subscription cancellation, an admin closure, and reaching the profit target. On a self-funded account the backer's half of forfeited profit still goes to your wallet.
+
+Profit you have already requested for withdrawal is vested and survives all six. See [Profit and Payouts](/funded/payouts).
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Profit and Payouts" icon="wallet" href="/funded/payouts">
+    How to withdraw, and what you receive when the account closes
+  </Card>
+  <Card title="Vault" icon="vault" href="/vault">
+    Where the capital comes from
+  </Card>
+</CardGroup>
