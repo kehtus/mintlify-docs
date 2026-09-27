@@ -9,19 +9,10 @@ Proportion's smart contracts have undergone an independent security audit. The r
 
 ## Administrative security
 
-<Info>
-The multisig and timelocks below are planned safeguards. **They are not in force yet.** The current configuration has a single owner address, and the contracts impose no delay on its upgrades, factory changes, or integration and risk-parameter changes. The MainVault relayer can also pause MainVault; only its owner can unpause it.
-</Info>
+The contracts are administered by a multisig wallet through a 72-hour timelock. Every administrative change is queued onchain first and can take effect only after the delay, so anyone can see it before it applies.
 
-The planned configuration uses a 3-of-5 multisig and timelocks for critical administrative actions. Until it is implemented, users depend on the current owner's control of upgrades and configuration. The payout ledger fixes recipients, but does not remove this administrative trust.
-
-### Planned timelock schedule
-
-| Minimum delay | Changes covered |
+| Waits 72 hours in the timelock | Takes effect immediately |
 | --- | --- |
-| **72 hours** | `MainVault` and `ChallengeVault` implementation upgrades; `transferOwnership` and other governance-control changes; migrations that replace a core Vault implementation. |
-| **48 hours** | `queueFactoryChange` / `executeFactoryChange` for funded accounts; `proposeFactory` / `setFactory` for Challenge checkout; trusted integration changes such as `setRelayer`, `setForwarder`, `setMainVault`, and `setChallengeVault`; `setRiskConfig`, market additions, leverage increases, and other changes that increase protocol risk. |
+| Upgrades of `MainVault` and `ChallengeVault`, ownership changes, factory and integration changes such as `setRelayer` and `setForwarder`, `setRiskConfig`, adding markets and raising leverage caps, unpausing | Pausing the vault, cancelling a queued change, disabling challenge checkout, removing a market, lowering leverage caps |
 
-<Note>
-  Under the planned policy, defensive actions may be executed immediately: pausing the vault, cancelling a queued change, disabling checkout, removing a market, and lowering leverage. Unpausing or increasing risk would wait for the applicable timelock.
-</Note>
+The risk engine's relayer cannot upgrade the contracts, change parameters or unpause.

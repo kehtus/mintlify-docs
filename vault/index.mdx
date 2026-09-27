@@ -43,9 +43,9 @@ Every LP withdrawal path is disabled while the protocol is paused. Pausing can b
 
 ## Governance
 
-The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in a single call. The utilization and per-account ceilings have bounds compiled into the contract, and the drawdown band cannot be raised above 50 %. The account-size band must remain positive and ordered, but it and the vault cap have no fixed economic upper limit.
+The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in a single call, which waits 72 hours in the timelock. The utilization and per-account ceilings have bounds compiled into the contract, and the drawdown band cannot be raised above 50 %. The account-size band must remain positive and ordered, but it and the vault cap have no fixed economic upper limit.
 
-The premium tiers, the allowed profit-split range, the forfeiting split and the subscription multiplier are constants. Changing one requires replacing the relevant implementation. The owner can upgrade MainVault in one call, without a contract-enforced delay; risk-parameter changes also have no delay. See [Security](/security).
+The premium tiers, the allowed profit-split range, the forfeiting split and the subscription multiplier are constants. Changing one requires replacing the relevant implementation. Upgrades of MainVault and risk-parameter changes wait 72 hours in the timelock. See [Security](/security).
 
 ## Next
 

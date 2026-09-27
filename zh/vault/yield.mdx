@@ -45,6 +45,6 @@ LP 不拿普通的交易员 /出资方利润。被没收的盈余由出资方与
     开放的账户不会锁定份额。退出后，`totalAllocated` 仍不得超过新 NAV 的利用率上限，默认 80%。退出还受未被负债占用的 EVM USDC、Hyperlend 可赎回资金及协议暂停状态限制；不能召回交易中的本金来满足退出。
   </Accordion>
   <Accordion title="治理" icon="settings">
-    所有者可通过 `setRiskConfig` 修改参数，也可升级 MainVault，目前均无合约强制等待期。利用率、单账户占 NAV 比例和最大回撤有固定边界；账户规模和 vault 上限没有固定的经济上界。所有者或 relayer 可暂停 LP 退出，只有所有者可解除暂停；派付领取仍可用。
+    所有者（多签）可通过 `setRiskConfig` 修改参数，也可升级 MainVault，两者都需在时间锁中等待 72 小时。利用率、单账户占 NAV 比例和最大回撤有固定边界；账户规模和 vault 上限没有固定的经济上界。所有者或 relayer 可暂停 LP 退出，只有所有者可解除暂停；派付领取仍可用。
   </Accordion>
 </AccordionGroup>

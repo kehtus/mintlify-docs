@@ -65,7 +65,7 @@ Placing capital in the vault involves several risks that affect share value and 
     Shares are not locked against open funded accounts, for any LP. What limits an exit is utilization after the burn, unencumbered EVM cash plus USDC redeemable from Hyperlend, and whether the protocol is paused. Allocated trading capital cannot be recalled to serve a withdrawal, so a full exit may be unavailable until accounts close.
   </Accordion>
   <Accordion title="Governance risk" icon="settings">
-    The owner can change the risk configuration in one call. Utilization, the per-account share of NAV and maximum drawdown have fixed bounds. Account sizes must remain positive and ordered, but they and the vault cap have no fixed economic upper limit. The owner can also replace the vault implementation; neither action has a contract-enforced delay. A pause disables LP withdrawals while leaving payout claims available. The owner or relayer can pause, and only the owner can unpause.
+    The owner, a multisig, can change the risk configuration. Utilization, the per-account share of NAV and maximum drawdown have fixed bounds. Account sizes must remain positive and ordered, but they and the vault cap have no fixed economic upper limit. The owner can also replace the vault implementation; both actions wait 72 hours in the timelock. A pause disables LP withdrawals while leaving payout claims available. The owner or relayer can pause, and only the owner can unpause.
   </Accordion>
 </AccordionGroup>
 
