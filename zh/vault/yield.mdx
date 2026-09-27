@@ -1,0 +1,50 @@
+---
+title: "收益与风险"
+description: "LP 收益从哪里来，以及 vault 资本会碰到什么"
+---
+
+Vault 收入来自费用，以及存入 Hyperlend 的闲置资本所获的利息。扣除损失后，LP 净收益可能为零或为负。
+
+<CardGroup cols={2}>
+  <Card title="激活溢价" icon="percent">
+    激活费 `P` 的 **50%**。`P` 按账户规模的一定比例计算，不以准备金为计算基数
+  </Card>
+  <Card title="订阅" icon="repeat">
+    出资方账户续期费用的 **50%**（每期为 `A` 的 1.5%）。自费账户的预付激活费也由 Vault 与协议各分得 50%
+  </Card>
+</CardGroup>
+
+所有者将闲置 USDC 存入 Hyperlend 时，利息累积在 hUSDC 余额中并计入 LP 净资产。
+
+LP 不拿普通的交易员 /出资方利润。被没收的盈余由出资方与协议平分，vault 也不拿。未使用的 `R` 退给记录的准备金收款方：直接激活时为出资方，通过 ChallengeVault 激活时回到其中的出资方运营余额。
+
+本金损失先消耗 `R`。若快照的 Core USDC `Q` 低于 `A − R`，超出准备金的部分成为 `reserveDeficit`，并按该 USDC 金额减少 NAV；结算不会因此被阻止。单份价格的变化取决于总份额数。
+
+## 风险
+
+<AccordionGroup>
+  <Accordion title="相关性回撤" icon="waves">
+    多个账户同时出现超出准备金的亏损时，累计损失可能超过 vault 已赚取的费用和利息，使 LP 份额价值低于其存入时的价值。
+  </Accordion>
+  <Accordion title="跳空 / 超调" icon="zap">
+    权益跌破下限会触发关闭，但不保证最终收回的资金不低于该下限。Core 清算或价格跳空可能使实际收回的 `Q` 低于下限。超过准备金 `R` 的本金损失由 LP 承担。
+  </Accordion>
+  <Accordion title="交易员筛选与开户决策" icon="users">
+    LP 不挑选交易员，也不决定账户参数。出资方的选择通过账户费用和超出准备金的损失影响资金池，并不简单与其拨付本金成正比。
+  </Accordion>
+  <Accordion title="智能合约" icon="file-code">
+    代码库经过[独立审计](/zh/security)，但 MainVault 与 FundedAccount 仍有合约风险。已审计的 vault 实现也可能被升级。
+  </Accordion>
+  <Accordion title="Hyperliquid / HyperCore" icon="link">
+    权益读取、成交和资金返回依赖 HyperCore 及其桥接机制。故障可能延迟关闭与结算；由此造成且超出出资方准备金的损失由 LP 承担。
+  </Accordion>
+  <Accordion title="Hyperlend" icon="landmark">
+    存入 Hyperlend 的闲置 USDC 面临该池子的合约和流动性风险。Vault 将 hUSDC 计入 NAV，但如果池子不能返回所需 USDC，依赖赎回的 LP 退出会失败。出资方准备金及派付负债不会存入该池。
+  </Accordion>
+  <Accordion title="LP 退出" icon="lock">
+    开放的账户不会锁定份额。退出后，`totalAllocated` 仍不得超过新 NAV 的利用率上限，默认 80%。退出还受未被负债占用的 EVM USDC、Hyperlend 可赎回资金及协议暂停状态限制；不能召回交易中的本金来满足退出。
+  </Accordion>
+  <Accordion title="治理" icon="settings">
+    所有者可通过 `setRiskConfig` 修改参数，也可升级 MainVault，目前均无合约强制等待期。利用率、单账户占 NAV 比例和最大回撤有固定边界；账户规模和 vault 上限没有固定的经济上界。所有者或 relayer 可暂停 LP 退出，只有所有者可解除暂停；派付领取仍可用。
+  </Accordion>
+</AccordionGroup>

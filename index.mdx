@@ -1,0 +1,41 @@
+---
+title: "Overview"
+description: "Prop trading on Hyperliquid: funded accounts trade real capital, supplied and settled by an onchain vault"
+---
+
+![Prop Trading, Settled On-Chain](/images/image.jpeg)
+
+Proportion is a prop-trading protocol on Hyperliquid. Funded accounts trade real capital on the Hyperliquid order book, so trader profit comes from the market, not from a firm.
+
+LPs supply the capital through an onchain vault. A backer opens each account and posts a buffer that takes losses before LP capital does.
+
+[What We Offer](/offering) explains why this model and what each side gets. Or go straight to your side:
+
+<CardGroup cols={2}>
+  <Card title="Traders" icon="user" href="/funded">
+    Getting funded, the rules and how you are paid
+  </Card>
+  <Card title="Backers" icon="handshake" href="/backers">
+    Opening accounts for your traders, costs and revenue
+  </Card>
+  <Card title="Liquidity providers" icon="vault" href="/vault">
+    What the vault earns and what it risks
+  </Card>
+  <Card title="Challenges" icon="trophy" href="/challenges">
+    Simulated evaluations with an onchain payment
+  </Card>
+</CardGroup>
+
+## What you can verify onchain
+
+Every stage of a funded account happens onchain, on Hyperliquid's L1: the contracts run on HyperEVM and the trading runs on HyperCore.
+
+- **Deposits.** LP deposits, vault shares and backer buffers are recorded in the vault contract. [How the vault works](/vault)
+- **Activation.** The payment and the account's terms are recorded in one transaction, which also sends the account's capital to HyperCore. Size, drawdown, profit split and target cannot change afterwards. [Funded account rules](/funded/rules)
+- **Trading.** Every order, fill and position is recorded on HyperCore, Hyperliquid's onchain order book, under the account's public address.
+- **Risk checks.** The account contract reads its equity from HyperCore and computes its floors. Anyone can start closing an account that falls below its floor.
+- **Closing.** An account settles only after every position on HyperCore is closed and its capital is back in the vault.
+- **Settlement.** A loss comes out of the backer's buffer first, then LP capital. Profit is split by the terms fixed at activation. [Profit and payouts](/funded/payouts)
+- **Payouts.** Each share is credited to a fixed address and can be claimed without anyone's approval.
+
+The risk engine and the exchange proxy act only within the rules set in the contracts. They trade through standard Hyperliquid API wallets, which can place and cancel orders but cannot withdraw or transfer funds. Settlement and every payout are computed by the contracts. [Security](/security) covers the audit and administrative controls.

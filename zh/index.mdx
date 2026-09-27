@@ -1,0 +1,38 @@
+---
+title: "概览"
+description: "Hyperliquid 上的自营交易：funded 账户使用真实资本交易，资本由链上 vault 提供并结算"
+---
+
+![Prop Trading, Settled On-Chain](/images/image.jpeg)
+
+Proportion 是 Hyperliquid 上的自营交易协议。Funded 账户在 Hyperliquid 订单簿上使用真实资本交易，因此交易员的利润来自市场，而不是来自公司。
+
+资本由 LP 通过链上 vault 提供。每个账户由出资方开立并缴纳准备金，损失先由准备金承担，再轮到 LP 资本。
+
+为什么采用这种模式、各方分别得到什么，请看[我们提供什么](/zh/offering)。也可以直接进入你的角色：
+
+<CardGroup cols={3}>
+  <Card title="交易员" icon="user" href="/zh/funded">
+    获得资金、账户规则与派付
+  </Card>
+  <Card title="出资方" icon="handshake" href="/zh/backers">
+    为交易员开立账户、成本与收入
+  </Card>
+  <Card title="LP" icon="vault" href="/zh/vault">
+    Vault 的收益与风险
+  </Card>
+</CardGroup>
+
+## 链上可验证的内容
+
+Funded 账户的每个环节都在 Hyperliquid 的 L1 链上完成：合约运行在 HyperEVM，交易在 HyperCore 进行。
+
+- **存款。** LP 存款、vault 份额和出资方准备金都记录在 vault 合约中。[工作原理](/zh/vault)
+- **激活。** 付款和账户条款在同一笔交易中写入，这笔交易同时把账户资本转入 HyperCore。此后规模、回撤、利润分成和目标都不能更改。[账户规则](/zh/funded/rules)
+- **交易。** 每一笔订单、成交和持仓都记录在 HyperCore（Hyperliquid 的链上订单簿）中，对应账户的公开地址。
+- **风控检查。** 账户合约从 HyperCore 读取权益并计算下限。任何人都可以对低于下限的账户发起平仓。
+- **平仓。** 只有在 HyperCore 上的所有持仓都已平掉、资本回到 vault 之后，账户才能结算。
+- **结算。** 损失先由出资方准备金承担，再由 LP 资本承担。利润按激活时固定的条款分配。[利润与派付](/zh/funded/payouts)
+- **派付。** 每一份款项都记入固定地址，领取无需任何人批准。
+
+风控 keeper 和 exchange proxy 只在合约设定的规则内行动。它们通过 Hyperliquid 标准 API 钱包交易：API 钱包可以下单和撤单，但不能提取或转移资金。结算和每一笔派付都由合约计算。审计和管理权限见[安全](/zh/security)。

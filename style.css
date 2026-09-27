@@ -1,0 +1,177 @@
+/* Proportion — main (cosmic) theme: bg #06080F, accent #00D4FF (cyan) */
+
+:root {
+  --proportion-accent: #00D4FF;
+  --proportion-accent-dark: #00A3CC;
+  --proportion-accent-darker: #0088B3;
+}
+
+/* === LINKS === */
+a {
+  color: var(--proportion-accent-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--proportion-accent-darker);
+  text-decoration: underline;
+}
+
+.dark a {
+  color: var(--proportion-accent);
+}
+
+.dark a:hover {
+  color: var(--proportion-accent-dark);
+}
+
+/* === INLINE CODE === */
+code:not(pre code) {
+  background-color: rgba(0, 212, 255, 0.08);
+  color: var(--proportion-accent-darker);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.875em;
+  border: none;
+}
+
+.dark code:not(pre code) {
+  background-color: rgba(0, 212, 255, 0.12);
+  color: var(--proportion-accent);
+}
+
+/* === BLOCKQUOTE === */
+blockquote {
+  border-left: 3px solid var(--proportion-accent);
+  background-color: rgba(0, 212, 255, 0.04);
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 0 4px 4px 0;
+  color: inherit;
+  font-style: normal;
+}
+
+.dark blockquote {
+  background-color: rgba(0, 212, 255, 0.06);
+}
+
+/* === TABLES === */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table th {
+  font-weight: 600;
+  text-align: left;
+  background-color: transparent;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark table th {
+  border-bottom-color: rgba(0, 212, 255, 0.15);
+}
+
+table td,
+table th {
+  padding: 8px 12px;
+}
+
+table tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dark table tr {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+/* === HEADINGS === */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.5rem; margin-top: 2.5rem; }
+h3 { font-size: 1.2rem; margin-top: 1.5rem; }
+
+/* === SELECTION === */
+::selection {
+  background-color: rgba(0, 212, 255, 0.25);
+}
+
+.dark ::selection {
+  background-color: rgba(0, 212, 255, 0.35);
+}
+
+/* === CONTENT IMAGES === */
+main img,
+article img,
+.prose img,
+img[src*="/images/image.jpeg"],
+img[src*="image.jpeg"] {
+  display: block;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+/* === SIDEBAR ACTIVE === */
+#sidebar a[aria-current="page"],
+#sidebar a.active {
+  color: var(--proportion-accent-dark);
+  font-weight: 500;
+}
+
+.dark #sidebar a[aria-current="page"],
+.dark #sidebar a.active {
+  color: var(--proportion-accent);
+}
+
+/* === DARK SURFACES (main cosmic theme) === */
+.dark {
+  --bg-cosmic-primary: #06080F;
+  --bg-cosmic-secondary: #0A0F21;
+  --bg-cosmic-tertiary: #0F1629;
+  --border-cosmic: #1A2138;
+}
+
+.dark body {
+  background-color: var(--bg-cosmic-primary);
+}
+
+.dark body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 100% at 50% 0%, rgba(0, 212, 255, 0.08), transparent 70%),
+    radial-gradient(ellipse 40% 70% at 50% 0%, rgba(0, 163, 204, 0.05), transparent 65%);
+}
+
+.dark #sidebar {
+  border-right-color: var(--border-cosmic);
+}
+
+/* === SCROLLBAR === */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: var(--bg-cosmic-primary);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #1A2340;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #2A3555;
+}

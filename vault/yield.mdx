@@ -1,0 +1,84 @@
+---
+title: "Yield and Risks"
+description: "Where LP yield comes from, what a losing account costs an LP, and what can go wrong"
+---
+
+The vault receives half of each activation premium and half of each subscription fee. Idle capital placed in Hyperlend can also earn interest. These flows raise share value, but do not guarantee a positive net return.
+
+Losses can run the other way. Every funded account carries a buffer `B` posted by its backer, and a principal loss consumes `B` before it touches LP capital. The risk engine starts closing at a floor breach, but the final execution price is not guaranteed. If a principal loss exceeds `B`, the part beyond it is `reserveDeficit`, which reduces LP assets.
+
+## What pays the vault
+
+| Flow | What the vault gets |
+|---|---|
+| Activation premium | The backer pays the premium `P` at activation. **Half** stays in the vault and the protocol takes the other half. It is earned before the account places an order |
+| Subscription | Each subscription payment splits **50 / 50** between the vault and the protocol. The backer receives none of it |
+| Hyperlend interest | If the owner parks idle capital in Hyperlend, interest accrues in the vault's hUSDC balance and is included in LP assets |
+
+<Warning>
+A close pays the vault nothing. When an account closes for expiry, cancellation, admin action or a reached target, profit is split between trader and backer by `builderPoolBps`. When it closes on a drawdown breach or the trader's own request, the forfeited profit is split between the backer and the protocol. The vault's share is zero either way. Do not model LP return as a cut of trader profit.
+</Warning>
+
+## What the vault does not earn
+
+| Flow | Recipient |
+|------|-----------|
+| Unused buffer, `reserveRefund` | The recorded reserve recipient: the backer for direct activation, or the backer's operating book in ChallengeVault for accounts activated through it |
+| Ordinary close profit | Trader and backer, split by `builderPoolBps` |
+| Profit withdrawn during the account's life | Trader and backer, split by `builderPoolBps` |
+| Protocol half of premium and subscription | `protocolFeeReceiver` |
+| Profit forfeited on a forfeiting close | Backer and protocol, half each |
+
+## Where a loss can reach you
+
+The trailing floor starts at `A − B` and rises as accepted profit locks in. A backed account may close earlier because its daily floor is higher. The buffer covers principal loss down to `A − B`; a floor breach starts closing but does not guarantee that price. Settlement compares `Q`, the snapshotted Core USDC used for the return, against account size `A`:
+
+```text
+principalLoss   = max(A − Q, 0)
+reserveConsumed = min(B, principalLoss)
+reserveRefund   = B − reserveConsumed
+reserveDeficit  = principalLoss − reserveConsumed
+```
+
+`reserveConsumed` is the backer's money. `reserveDeficit` is the principal loss borne by LPs: it reduces vault NAV by that USDC amount. The effect on the price of one share depends on the number of shares outstanding.
+
+A deficit arises when `Q` is below `A − B`, for example after a gap, HyperCore liquidation or slippage during a forced close. The settlement formula provides no reimbursement beyond that account's buffer. Fees and interest already earned contribute to NAV, but are not a guarantee against losses.
+
+## Risks
+
+Placing capital in the vault involves several risks that affect share value and LP yield.
+
+<AccordionGroup>
+  <Accordion title="Overshoot below the floor" icon="zap">
+    In extreme volatility a position may realize a loss below the floor before the risk engine's close completes, and the engine is off-chain, so anything that delays its close widens the overshoot. Everything down to `A − B` is covered by the backer's buffer; the overshoot is `reserveDeficit` and lands on the share price directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage. Several overshoots in one market move add up, and a deficit is not netted against the buffers of accounts that closed whole.
+  </Accordion>
+  <Accordion title="Issuance quality" icon="users">
+    LPs do not participate in trader selection or activation parameter decisions; these are made by backers. The protocol does not require backers to register or obtain approval before direct activation, but each activation must satisfy the vault's parameter, liquidity and utilization limits. A backer's choices affect LP returns through its accounts' fees and any losses beyond their buffers.
+  </Accordion>
+  <Accordion title="Smart-contract and platform risk" icon="file-code">
+    `MainVault` and `FundedAccount` carry smart-contract risk. The codebase has had an [independent audit](/security), but residual risk cannot be eliminated, and the audited implementation is not frozen. See governance risk below. The vault also reads equity from HyperCore precompiles and settles through Hyperliquid's bridge. An outage in either delays closes and settlements, and a loss that results is borne by vault capital.
+  </Accordion>
+  <Accordion title="Hyperlend risk" icon="landmark">
+    Idle USDC placed in Hyperlend is exposed to that pool's contract and liquidity risks. The vault includes hUSDC in NAV, but an LP exit that needs to redeem it can fail if the pool cannot return the required USDC. Backer buffers and payout liabilities are not parked there.
+  </Accordion>
+  <Accordion title="Vault utilization and LP exit" icon="lock">
+    Shares are not locked against open funded accounts, for any LP. What limits an exit is utilization after the burn, unencumbered EVM cash plus USDC redeemable from Hyperlend, and whether the protocol is paused. Allocated trading capital cannot be recalled to serve a withdrawal, so a full exit may be unavailable until accounts close.
+  </Accordion>
+  <Accordion title="Governance risk" icon="settings">
+    The owner can change the risk configuration in one call. Utilization, the per-account share of NAV and maximum drawdown have fixed bounds. Account sizes must remain positive and ordered, but they and the vault cap have no fixed economic upper limit. The owner can also replace the vault implementation; neither action has a contract-enforced delay. A pause disables LP withdrawals while leaving payout claims available. The owner or relayer can pause, and only the owner can unpause.
+  </Accordion>
+</AccordionGroup>
+
+## Next
+
+<CardGroup cols={3}>
+  <Card title="Vault" icon="calculator" href="/vault">
+    What the vault holds, what limits allocation, and what limits an exit
+  </Card>
+  <Card title="Security" icon="shield" href="/security">
+    Audit, upgrade authority, and administrative safeguards
+  </Card>
+  <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/backers/fees">
+    How `B` and `P` are priced on the account the vault funds
+  </Card>
+</CardGroup>

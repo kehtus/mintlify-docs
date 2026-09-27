@@ -1,0 +1,313 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Proportion",
+  "description": "Trader-financing protocol on HyperEVM.",
+  "colors": {
+    "primary": "#00D4FF",
+    "light": "#00D4FF",
+    "dark": "#00A3CC"
+  },
+  "favicon": "/logo/icon_black.png",
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "background": {
+    "color": {
+      "light": "#FFFFFF",
+      "dark": "#06080F"
+    },
+    "decoration": "gradient"
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter",
+      "weight": 600
+    },
+    "body": {
+      "family": "Inter",
+      "weight": 400
+    }
+  },
+  "icons": {
+    "library": "lucide"
+  },
+  "styling": {
+    "eyebrows": "breadcrumbs",
+    "codeblocks": "system"
+  },
+  "contextual": {
+    "options": []
+  },
+  "navigation": {
+    "languages": [
+      {
+        "language": "en",
+        "default": true,
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "index",
+              "offering"
+            ]
+          },
+          {
+            "group": "Funded accounts",
+            "pages": [
+              "funded/index",
+              "funded/rules",
+              "funded/payouts"
+            ]
+          },
+          {
+            "group": "Challenges",
+            "pages": [
+              "challenges/index"
+            ]
+          },
+          {
+            "group": "Backers",
+            "pages": [
+              "backers/index",
+              "backers/onboarding",
+              "backers/rules",
+              "backers/fees"
+            ]
+          },
+          {
+            "group": "Vault",
+            "pages": [
+              "vault/index",
+              "vault/yield"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": [
+              "security"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "contracts",
+              "api",
+              "sdk"
+            ]
+          }
+        ]
+      },
+      {
+        "language": "ru",
+        "groups": [
+          {
+            "group": "Введение",
+            "pages": [
+              "ru/index",
+              "ru/offering"
+            ]
+          },
+          {
+            "group": "Funded-аккаунты",
+            "pages": [
+              "ru/funded/index",
+              "ru/funded/rules",
+              "ru/funded/payouts"
+            ]
+          },
+          {
+            "group": "Челленджи",
+            "pages": [
+              "ru/challenges/index"
+            ]
+          },
+          {
+            "group": "Бэкеры",
+            "pages": [
+              "ru/backers/index",
+              "ru/backers/onboarding",
+              "ru/backers/rules",
+              "ru/backers/fees"
+            ]
+          },
+          {
+            "group": "Vault",
+            "pages": [
+              "ru/vault/index",
+              "ru/vault/yield"
+            ]
+          },
+          {
+            "group": "Безопасность",
+            "pages": [
+              "ru/security"
+            ]
+          },
+          {
+            "group": "Справочник",
+            "pages": [
+              "ru/contracts",
+              "ru/api",
+              "ru/sdk"
+            ]
+          }
+        ]
+      },
+      {
+        "language": "zh-Hans",
+        "groups": [
+          {
+            "group": "介绍",
+            "pages": [
+              "zh/index",
+              "zh/offering"
+            ]
+          },
+          {
+            "group": "Funded 账户",
+            "pages": [
+              "zh/funded/index",
+              "zh/funded/rules",
+              "zh/funded/payouts"
+            ]
+          },
+          {
+            "group": "出资方",
+            "pages": [
+              "zh/backers/index",
+              "zh/backers/onboarding",
+              "zh/backers/rules",
+              "zh/backers/fees"
+            ]
+          },
+          {
+            "group": "Vault",
+            "pages": [
+              "zh/vault/index",
+              "zh/vault/yield"
+            ]
+          },
+          {
+            "group": "安全",
+            "pages": [
+              "zh/security"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/logo2-light.svg",
+    "dark": "/logo/logo2.svg",
+    "href": "/"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Security",
+        "icon": "shield-check",
+        "href": "/security"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Project website",
+      "href": "https://proportion.fi"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/proportion_fi",
+      "telegram": "https://t.me/keysigner"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/builders",
+      "destination": "/backers"
+    },
+    {
+      "source": "/builders/onboarding",
+      "destination": "/backers/onboarding"
+    },
+    {
+      "source": "/builders/rules",
+      "destination": "/backers/rules"
+    },
+    {
+      "source": "/builders/fees",
+      "destination": "/backers/fees"
+    },
+    {
+      "source": "/ru/builders",
+      "destination": "/ru/backers"
+    },
+    {
+      "source": "/ru/builders/onboarding",
+      "destination": "/ru/backers/onboarding"
+    },
+    {
+      "source": "/ru/builders/rules",
+      "destination": "/ru/backers/rules"
+    },
+    {
+      "source": "/ru/builders/fees",
+      "destination": "/ru/backers/fees"
+    },
+    {
+      "source": "/zh/builders",
+      "destination": "/zh/backers"
+    },
+    {
+      "source": "/zh/builders/onboarding",
+      "destination": "/zh/backers/onboarding"
+    },
+    {
+      "source": "/zh/builders/rules",
+      "destination": "/zh/backers/rules"
+    },
+    {
+      "source": "/zh/builders/fees",
+      "destination": "/zh/backers/fees"
+    },
+    {
+      "source": "/traders",
+      "destination": "/funded"
+    },
+    {
+      "source": "/traders/rules",
+      "destination": "/funded/rules"
+    },
+    {
+      "source": "/traders/payouts",
+      "destination": "/funded/payouts"
+    },
+    {
+      "source": "/ru/traders",
+      "destination": "/ru/funded"
+    },
+    {
+      "source": "/ru/traders/rules",
+      "destination": "/ru/funded/rules"
+    },
+    {
+      "source": "/ru/traders/payouts",
+      "destination": "/ru/funded/payouts"
+    },
+    {
+      "source": "/zh/traders",
+      "destination": "/zh/funded"
+    },
+    {
+      "source": "/zh/traders/rules",
+      "destination": "/zh/funded/rules"
+    },
+    {
+      "source": "/zh/traders/payouts",
+      "destination": "/zh/funded/payouts"
+    }
+  ]
+}
