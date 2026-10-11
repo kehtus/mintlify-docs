@@ -38,4 +38,4 @@ Every stage of a funded account happens onchain, on Hyperliquid's L1: the contra
 - **Settlement.** A loss comes out of the backer's buffer first, then LP capital. Profit is split by the terms fixed at activation. [Profit and payouts](/funded/payouts)
 - **Payouts.** Each share is credited to a fixed address and can be claimed without anyone's approval.
 
-The risk engine and the exchange proxy act only within the rules set in the contracts. They trade through standard Hyperliquid API wallets, which can place and cancel orders but cannot withdraw or transfer funds. Settlement and every payout are computed by the contracts. [Security](/security) covers the audit and administrative controls.
+Proportion is non-custodial: funds are held by the contracts, not by the team or anyone else. The risk engine and the exchange proxy act only within the rules set in the contracts. They trade through standard Hyperliquid API wallets, which can place and cancel orders but cannot withdraw or transfer funds. Settlement and every payout are computed by the contracts. [Security](/security) covers custody and the audit.

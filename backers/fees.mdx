@@ -3,7 +3,7 @@ title: "Account Parameters and Fees"
 description: "What activating a funded account costs you, which part of it comes back, and what you choose"
 ---
 
-Activation charges you two amounts in one transaction: a buffer `B`, which stays your money and comes back when the account closes, less whatever the trader lost, and a premium `P`, which does not come back at all. The trading capital itself is not yours to fund. The vault allocates the account size `A` out of LP deposits, and you are charged `B + P` on top of it.
+Activation charges you two amounts in one transaction: a buffer `B`, which stays your money and comes back when the account closes, less whatever the trader lost and any [vault debt repayment](#vault-debt-repayment), and a premium `P`, which does not come back at all. The trading capital itself is not yours to fund. The vault allocates the account size `A` out of LP deposits, and you are charged `B + P` on top of it.
 
 ## What you choose at activation
 
@@ -29,7 +29,7 @@ peak $15,000, 30 % of the $5,000 gain       $10,500
 equity strictly below $10,500               the account closes
 ```
 
-The trailing floor in this example allows equity to fall \$4,500 from the peak; a backed account's daily floor may trigger a close sooner. If final settlement returns \$10,500, it covers the full principal and your buffer comes back whole. A floor triggers closing; it does not guarantee the amount returned, so a gap or liquidation can still consume the buffer.
+The trailing floor in this example allows equity to fall \$4,500 from the peak: the \$1,000 buffer plus 70 % of the \$5,000 gain, because the floor rises by only 30 % of it. A backed account's daily floor may trigger a close sooner. If final settlement returns \$10,500, it covers the full principal and your buffer comes back whole, apart from any [vault debt repayment](#vault-debt-repayment). A floor triggers closing; it does not guarantee the amount returned, so a gap or liquidation can still consume the buffer.
 
 ## What you pay
 
@@ -52,7 +52,7 @@ charge = B + P
 The per-account limit is the lower of 10 % of the vault's assets and \$20,000. With \$25,000 in the vault, for example, that limit is \$2,500. Available capacity can limit activation further. See [How It Works](/vault#allocation-limits).
 </Note>
 
-The buffer column is the part that can come back. Whatever closes the account, the refund depends on the principal returned at settlement: if it covers `A`, all of `B` returns; a shortfall consumes `B` dollar for dollar, up to the full buffer. `P` is not returned.
+The buffer column is the part that can come back. The refund depends on the principal returned at settlement: if it covers `A`, all of `B` returns (less any [vault debt repayment](#vault-debt-repayment) on a forfeiting close); a shortfall consumes `B` dollar for dollar, up to the full buffer. `P` is not returned.
 
 `D` prices two things at once: how far the trader may fall before the account closes, and the whole of your buffer. The premium does not move with it. `P` is a share of `A` alone, so widening the drawdown buys the trader room with your first-loss capital rather than with a larger premium.
 
@@ -69,14 +69,19 @@ A backed account's first month costs 2 % of account size and each renewal 1.5 %,
 | Its full principal | All of `B` |
 | Less than that | `B` minus the shortfall |
 | Less than `A − B` | Nothing, and the excess lands on [LPs](/vault/yield) rather than on you |
+| A forfeiting close while the vault is in debt | The above, less a [vault debt repayment](#vault-debt-repayment), within a cap |
 
 Your loss on one account is capped at `B + P`, the buffer you can lose plus the premium you never get back, and the refund is credited to your address for you to collect without anyone's approval.
 
-On the profit side, every profit withdrawal and every ordinary close pays you `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **half** of whatever profit was still in the account. The protocol takes the other half, and the vault gets none of it.
+On the profit side, every profit withdrawal and every ordinary close pays you `builderPoolBps` of the profit, the share you fixed at activation. On a forfeiting close the trader receives nothing and you receive **half** of whatever profit was still in the account. The protocol takes the other half, and the vault gets none of the profit.
 
 <Warning>
 The buffer is real money and it is spent before LP capital is. A trader who gives back the designed drawdown costs you the whole of `B` on that account, and nothing you earned on other accounts is netted against it. On a backed account the daily floor closes a losing day at about half of `B` unless the close overshoots; see [Protocol Rules](/backers/rules#daily-drawdown).
 </Warning>
+
+### Vault debt repayment
+
+If losses beyond other accounts' buffers have left the vault in debt, a forfeiting close (a drawdown breach or the trader's request) lets the vault keep part of your unused buffer instead of returning it. This is a last resort and it is capped: at most 30 cents of each dollar of accepted peak profit above `A`, and never more than the debt or your unused buffer. It is automatic and comes out of your refund, so your loss on one account stays within `B + P`. It cannot be switched off at activation, and no other close repays anything. A worked example is on [Yield and Risks](/vault/yield#vault-debt).
 
 ## Who may activate
 

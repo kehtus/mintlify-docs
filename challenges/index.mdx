@@ -22,7 +22,7 @@ The contracts record the payment, its lock and the final outcome.
 | Forfeited | Trader | Same as rejected |
 | Expired | Anyone, after 30 days | Same as rejected |
 
-A promotion is atomic: the lock is released, `MainVault` collects `B + P`, and the funded account exists with its buffer, or the whole transaction reverts. Any remaining available balance stays with the backer. Unused buffer from that account returns to the backer's balance in `ChallengeVault` when it closes.
+A promotion is atomic: the lock is released, `MainVault` collects `B + P`, and the funded account exists with its buffer, or the whole transaction reverts. Any remaining available balance stays with the backer. Unused buffer from that account returns to the backer's balance in `ChallengeVault` when it closes, less any [vault debt repayment](/backers/fees#vault-debt-repayment) on a forfeiting close.
 
 ## What is not on-chain
 

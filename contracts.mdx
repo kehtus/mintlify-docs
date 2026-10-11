@@ -1,6 +1,6 @@
 ---
 title: "Contracts and Roles"
-description: "What each contract does and which roles administer it"
+description: "What each contract does and what each role can do"
 ---
 
 {/* Sources: EVM/src/funded/MAIN_ARCH.md and EVM/src/challenge/arch.md. This page describes contract roles rather than deployment addresses. */}
@@ -18,7 +18,7 @@ The protocol contracts run on HyperEVM; funded accounts trade on HyperCore. Hype
 
 | Contract | What it does |
 |---|---|
-| `MainVault` (proxy) | Holds the USDC, mints LP shares, funds and settles every funded account. UUPS proxy; the owner can replace the implementation |
+| `MainVault` (proxy) | Holds the USDC, mints LP shares, funds and settles every funded account, and records vault debt. UUPS proxy; the owner can replace the implementation |
 | `MainVault` implementation | Vault logic that the owner can replace through a proxy upgrade |
 | `FundedAccountFactory` | Clones one `FundedAccount` per activation |
 | `FundedAccount` implementation | Logic referenced by the clones created by the factory |

@@ -19,7 +19,7 @@ description: "How to open your first funded account"
 
 The first loss is the buffer `B`. There is no separate backer deposit, and LP shares play no part in it.
 
-- You post a buffer to fund the account. Unused buffer is returned when it closes.
+- You post a buffer to fund the account. Unused buffer is returned when it closes, less any [vault debt repayment](/backers/fees#vault-debt-repayment) on a forfeiting close.
 - A loss larger than `B` lands on the LP vault as `reserveDeficit`, not on you.
 - LP shares are not required for direct funded activation. They participate in the pool's returns and losses. Publishing and selling [challenge plans](/challenges) separately requires shares and any configured minimum stake.
 - The premium `P` is charged on every activation and is not returned.

@@ -1,11 +1,11 @@
 ---
 title: "Yield and Risks"
-description: "Where LP yield comes from, what a losing account costs an LP, and what can go wrong"
+description: "Where LP yield comes from, what a losing account costs an LP, how that loss is repaid, and what can go wrong"
 ---
 
 The vault receives half of each activation premium and half of each subscription fee. Idle capital placed in Hyperlend can also earn interest. These flows raise share value, but do not guarantee a positive net return.
 
-Losses can run the other way. Every funded account carries a buffer `B` posted by its backer, and a principal loss consumes `B` before it touches LP capital. The risk engine starts closing at a floor breach, but the final execution price is not guaranteed. If a principal loss exceeds `B`, the part beyond it is `reserveDeficit`, which reduces LP assets.
+Losses can run the other way. Every funded account carries a buffer `B` posted by its backer, and a principal loss consumes `B` before it touches LP capital. The risk engine starts closing at a floor breach, but the final execution price is not guaranteed. If a principal loss exceeds `B`, the part beyond it is `reserveDeficit`, which reduces LP assets. The vault records that amount as [vault debt](#vault-debt); later closes may repay part of it, with no guarantee.
 
 ## What pays the vault
 
@@ -16,14 +16,14 @@ Losses can run the other way. Every funded account carries a buffer `B` posted b
 | Hyperlend interest | If the owner parks idle capital in Hyperlend, interest accrues in the vault's hUSDC balance and is included in LP assets |
 
 <Warning>
-A close pays the vault nothing. When an account closes for expiry, cancellation, admin action or a reached target, profit is split between trader and backer by `builderPoolBps`. When it closes on a drawdown breach or the trader's own request, the forfeited profit is split between the backer and the protocol. The vault's share is zero either way. Do not model LP return as a cut of trader profit.
+A close pays the vault no profit. When an account closes for expiry, cancellation, admin action or a reached target, profit is split between trader and backer by `builderPoolBps`. When it closes on a drawdown breach or the trader's own request, the forfeited profit is split between the backer and the protocol. The vault's share of profit is zero either way. Do not model LP return as a cut of trader profit. A close can also pass the vault a repayment of [vault debt](#vault-debt), but only while the vault is in debt.
 </Warning>
 
 ## What the vault does not earn
 
 | Flow | Recipient |
 |------|-----------|
-| Unused buffer, `reserveRefund` | The recorded reserve recipient: the backer for direct activation, or the backer's operating book in ChallengeVault for accounts activated through it |
+| Unused buffer, `reserveRefund` | The recorded reserve recipient: the backer for direct activation, or the backer's operating book in ChallengeVault for accounts activated through it. Less any vault debt repayment on a forfeiting close |
 | Ordinary close profit | Trader and backer, split by `builderPoolBps` |
 | Profit withdrawn during the account's life | Trader and backer, split by `builderPoolBps` |
 | Protocol half of premium and subscription | `protocolFeeReceiver` |
@@ -44,13 +44,37 @@ reserveDeficit  = principalLoss − reserveConsumed
 
 A deficit arises when `Q` is below `A − B`, for example after a gap, HyperCore liquidation or slippage during a forced close. The settlement formula provides no reimbursement beyond that account's buffer. Fees and interest already earned contribute to NAV, but are not a guarantee against losses.
 
+## Vault debt
+
+The vault records each `reserveDeficit` as **vault debt**. Recording the debt adds nothing to NAV: the loss has already lowered it, and the debt itself is not an asset. Only an actual repayment brings money back.
+
+Repayment is a last-resort measure, and a narrow one. It only repays a loss LPs have already taken, it runs automatically at settlement, and it is not guaranteed.
+
+It applies when an account closes on a drawdown breach or at the trader's own request (the two forfeiting closes) and the vault is in debt. The vault then keeps the smallest of three amounts: the debt, the account's unused buffer, and 30 cents of each dollar of accepted peak profit above account size ([how the floor rises](/funded/rules#the-floor)).
+
+The money comes out of the backer's unused buffer, never out of the trader's profit; on a self-funded account the trader is the backer, so it reduces their own refund. Other closes repay nothing, and neither does a close with a profit withdrawal still pending or an account whose floor still sits at `A − B`.
+
+```text
+A = $1,000, B = $100, accepted peak $1,200
+30 % of the $200 gain                         $60
+vault debt                                    $20
+drawdown breach at Q = $955: used $45, unused $55
+vault keeps min($20, $55, $60)                $20
+backer refund                                 $35
+```
+
+A repayment is added to share value evenly over 7 days, so a close does not move the share price at once. The current debt is `vaultDebt()` on `MainVault`.
+
 ## Risks
 
 Placing capital in the vault involves several risks that affect share value and LP yield.
 
 <AccordionGroup>
   <Accordion title="Overshoot below the floor" icon="zap">
-    In extreme volatility a position may realize a loss below the floor before the risk engine's close completes, and the engine is off-chain, so anything that delays its close widens the overshoot. Everything down to `A − B` is covered by the backer's buffer; the overshoot is `reserveDeficit` and lands on the share price directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage. Several overshoots in one market move add up, and a deficit is not netted against the buffers of accounts that closed whole.
+    In extreme volatility a position may realize a loss below the floor before the risk engine's close completes, and the engine is off-chain, so anything that delays its close widens the overshoot. Everything down to `A − B` is covered by the backer's buffer; the overshoot is `reserveDeficit` and lands on the share price directly. The vault's half of the activation premium partially absorbs this, but does not guarantee full coverage. Several overshoots in one market move add up. A deficit is not offset at once by the buffers of accounts that closed whole; it becomes [vault debt](#vault-debt).
+  </Accordion>
+  <Accordion title="Slow or partial debt repayment" icon="hourglass">
+    Only forfeiting closes repay debt, and only within the cap, so repayment can be slow or partial. New deficits can outpace it: a lower share price is not guaranteed to recover. In the rare case that the vault's assets fall below repayments not yet added to share value, deposits, exits and new activations stop until the last repayment has been fully added, at most 7 days; settlements and payout claims continue.
   </Accordion>
   <Accordion title="Issuance quality" icon="users">
     LPs do not participate in trader selection or activation parameter decisions; these are made by backers. The protocol does not require backers to register or obtain approval before direct activation, but each activation must satisfy the vault's parameter, liquidity and utilization limits. A backer's choices affect LP returns through its accounts' fees and any losses beyond their buffers.
@@ -76,7 +100,7 @@ Placing capital in the vault involves several risks that affect share value and 
     What the vault holds, what limits allocation, and what limits an exit
   </Card>
   <Card title="Security" icon="shield" href="/security">
-    Audit, upgrade authority, and administrative safeguards
+    Custody, the audit, and how contract changes are made
   </Card>
   <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/backers/fees">
     How `B` and `P` are priced on the account the vault funds

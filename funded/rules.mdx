@@ -23,7 +23,9 @@ Daily drawdown and the subscription apply only to backed accounts. A self-funded
 
 ## The floor
 
-Your trailing floor starts at account size minus the drawdown buffer. It adds 30 % of accepted peak profit above account size. It does not fall with equity; a successful profit withdrawal resets the peak to account size and removes that profit lock.
+Your trailing floor starts at account size minus the drawdown buffer. It adds only 30 % of accepted peak profit above account size, so for each dollar of profit the distance from your peak to the floor widens by 70 cents. It does not fall with equity; a successful profit withdrawal resets the peak to account size and removes that profit lock.
+
+On a \$10,000 account with a 10 % drawdown, the floor starts \$1,000 below the peak; after a \$15,000 peak it sits at \$10,500, \$4,500 below it. A backed account's daily floor, measured from each day's starting equity (described below), can close it sooner.
 
 The floor can rise within a session. An intraday update accepts a new peak once it is at least 1 % above the last accepted peak. The keeper evaluates that update after a fill with positive closed PnL; a mark-price rise alone does not trigger it. Daily checkpoints can also accept a higher lifetime peak without the 1 % threshold.
 

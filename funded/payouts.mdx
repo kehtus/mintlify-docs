@@ -63,9 +63,9 @@ For a backed account:
 | Admin closure | Your ordinary split |
 | Profit target reached | Your ordinary split |
 
-On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital is split in half between the backer and the protocol. The vault gets none of it. If it comes back at or below account size there is no profit to divide, and the backer's buffer absorbs the loss before LP capital does.
+On a forfeiting close your share of the remaining profit is zero, and whatever the account returns above its capital is split in half between the backer and the protocol. The vault gets none of that profit. If it comes back at or below account size there is no profit to divide, and the backer's buffer absorbs the loss before LP capital does. If the vault is in debt, a forfeiting close can also let the vault keep part of the backer's unused buffer. Nothing you are owed is touched. See [Vault debt](/vault/yield#vault-debt).
 
-On a self-funded account you are also the backer. You receive the backer's half on a forfeiting close; the protocol receives the remainder, including rounding dust. On an ordinary close both profit shares go to you.
+On a self-funded account you are also the backer. You receive the backer's half on a forfeiting close; the protocol receives the remainder, including rounding dust. On an ordinary close both profit shares go to you. Your unused buffer comes back to you too, less any vault debt repayment on a forfeiting close.
 
 <Warning>
 Voluntary closure is a forfeiting close. You can request it only while the account is flat. It forfeits your trader share of unwithdrawn close profit. If your account has no profit target and qualifies for a withdrawal, withdraw and claim that profit before requesting closure. A target account pays its ordinary profit only through a non-forfeiting close.

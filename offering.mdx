@@ -34,7 +34,7 @@ Challenges are separate: simulated evaluations traded and graded offchain. The p
   <Tab title="Backer">
     - Funded accounts without putting up the account size. You choose the trader, the account size, the drawdown, the trader's share and any profit target.
     - You keep the rest of the profit, 10–70 %, on every withdrawal and ordinary close. On a floor breach or the trader's request to close the account, the profit still in the account is split equally between you and the protocol instead.
-    - Opening an account requires a buffer equal to the drawdown amount you choose and a premium of 2 % of account size that covers the first 30 days. The buffer is returned at close, minus any trading loss. The premium is not.
+    - Opening an account requires a buffer equal to the drawdown amount you choose and a premium of 2 % of account size that covers the first 30 days. The buffer is returned at close, minus any trading loss and, on a floor breach or a request to close, any [repayment of vault debt](/vault/yield#vault-debt). The premium is not.
     - Your worst case on one account is the buffer plus the premium.
     - The protocol runs floors, settlement and payouts. Selection, pricing, brand and any vetting before activation stay yours; once an account is open, you cannot change its terms or close it.
     - Opening an account directly needs no registration and no stake. Selling challenges through the protocol requires vault shares.
@@ -44,7 +44,7 @@ Challenges are separate: simulated evaluations traded and graded offchain. The p
   <Tab title="LP">
     - Vault shares. Income is half of every premium and every subscription, plus interest on idle USDC the vault lends out. The vault takes no share of trader profit.
     - Every account carries a backer's buffer that takes losses before your capital does.
-    - A price gap, slippage, a delayed close or a fill at an off-market price can leave a loss larger than the buffer. The excess lowers the share price. USDC lent to Hyperlend carries that protocol's risk. There is no fixed yield, and a share can end up worth less than you paid.
+    - A price gap, slippage, a delayed close or a fill at an off-market price can leave a loss larger than the buffer. The excess lowers the share price. Part of it may later be repaid from the unused buffer of accounts closed on a floor breach or at the trader's request, with no guarantee. USDC lent to Hyperlend carries that protocol's risk. There is no fixed yield, and a share can end up worth less than you paid.
     - Your capital is spread across every account the vault funds; you do not pick backers or traders. There is no lock-up, but withdrawals depend on the vault's free liquidity and stop while the vault is paused.
 
     [How the Vault Works](/vault) · [Yield and Risks](/vault/yield)
@@ -52,5 +52,5 @@ Challenges are separate: simulated evaluations traded and graded offchain. The p
 </Tabs>
 
 <Note>
-[Security](/security) covers the audit and how the contracts are administered.
+Proportion is non-custodial: funds are held by the contracts, not by the team. [Security](/security) covers custody and the audit.
 </Note>

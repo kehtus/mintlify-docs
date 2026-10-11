@@ -7,7 +7,7 @@ description: "Capital and infrastructure for launching a prop firm on Hyperliqui
 
 For a backer, the funded account is the most capital-intensive part of a prop firm. Proportion funds it, enforces its floor and settles it. Evaluation, brand, marketing and trader selection stay your product. You interact with the protocol through its contracts. Trader orders pass through the exchange proxy, which checks them against the account's permissions before submitting them to Hyperliquid.
 
-The vault allocates the capital. You pay `B + P` at activation, and whatever part of `B` the trader does not lose comes back. Where that money comes from is your business: in a prop firm it is usually the fees from challenges that did not pass, or any other revenue.
+The vault allocates the capital. You pay `B + P` at activation, and whatever part of `B` the trader does not lose comes back, less any [vault debt repayment](/backers/fees#vault-debt-repayment) on a forfeiting close. Where that money comes from is your business: in a prop firm it is usually the fees from challenges that did not pass, or any other revenue.
 
 ## What Proportion gives you
 

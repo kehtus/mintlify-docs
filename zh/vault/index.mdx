@@ -26,11 +26,14 @@ totalAssets = grossAssets
             − active backer reserve
             − claimable reserve refunds
             − claimable payouts
+            − unvested debt repayment
 
 sharePrice  = totalAssets / totalShares     // 1 USDC if no shares
 ```
 
 准备金、待领取退款和待领取款项不计入 LP 净资产，因此不会抬高份额价格。在关闭结算前，`totalAllocated` 按拨付本金记账，不随账户尚未结算的盈亏变化。存款与退出使用这一链上账面状态。
+
+超出准备金的亏损会立即降低 NAV，并记为 Vault 债务（`vaultDebt()`）。只有账户因没收性关闭（`Drawdown`、`TraderRequested`）而结束、且 vault 有债务时，vault 才会自动从该账户未使用的准备金中留下一部分偿还，金额有上限且没有保证。偿还金额在 7 天内线性计入 NAV；尚未计入的部分（`unvestedRepayment()`）从净资产中扣除。详见[收益与风险](/zh/vault/yield)。
 
 所有者可以将无负债占用的闲置 USDC 存入 Hyperlend。获得的 hUSDC 及其累积利息计入 NAV，已存出的 USDC 不会重复计入。出资方准备金、退款和派付负债保留为 EVM USDC，不存入 Hyperlend。
 
@@ -63,5 +66,5 @@ LP 通过 `withdraw(shares)` 退出，无需提前通知或等待冷却期，但
 费用档位、允许的利润分成范围、没收分成及订阅费乘数是常量，修改需要更换相应实现。MainVault 的升级与风险参数修改都需在时间锁中等待 72 小时。参见[安全](/zh/security)。
 
 <Card title="收益" icon="trending-up" href="/zh/vault/yield">
-  Vault 收入从哪里来，以及什么会降低 share price
+  Vault 收入从哪里来，什么会降低 share price，以及 Vault 债务如何运作
 </Card>

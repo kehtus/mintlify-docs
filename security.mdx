@@ -1,15 +1,21 @@
 ---
 title: "Security"
-description: "Security audits, code review practices, and administrative safeguards"
+description: "Custody of funds, the audit, and how contract changes are made"
 ---
+
+## Custody
+
+Proportion is non-custodial. Funds are held by the contracts, not by the team or anyone else. Each payout is credited to a fixed address and can be claimed without anyone's approval, even while the vault is paused. The risk engine and the exchange proxy trade through Hyperliquid API wallets, which cannot withdraw or transfer funds.
+
+## Audit
 
 Proportion's smart contracts have undergone an independent security audit. The report covers the revision and scope identified in it; it does not establish that every later change has been audited. Manual review and automated analysis supplement independent audits.
 
 **Audit report:** [View the security audit report](https://beosin.com/audits/Proportion_202603161420.pdf)
 
-## Administrative security
+## Contract changes
 
-The contracts are administered by a multisig wallet through a 72-hour timelock. Every administrative change is queued onchain first and can take effect only after the delay, so anyone can see it before it applies.
+Changes to the contracts go through a multisig wallet and a 72-hour timelock: a change is queued onchain first and takes effect only after the delay, so anyone can see it before it applies. Protective actions take effect immediately.
 
 | Waits 72 hours in the timelock | Takes effect immediately |
 | --- | --- |

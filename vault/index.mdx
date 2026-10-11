@@ -15,7 +15,7 @@ description: "What the vault holds, what limits allocation, and what limits exit
 
 Between funding and settlement the risk engine watches every account and initiates closing when it breaches its floor. The trailing floor starts at account size minus the backer's buffer; profit locks and the backed account's daily floor can trigger a close above that level. The floor sets the close trigger, not a guaranteed execution price.
 
-An LP's position is shares. Fees raise the share price, a loss larger than a backer's buffer lowers it at settlement, and yield is not claimed separately.
+An LP's position is shares. Fees raise the share price, a loss larger than a backer's buffer lowers it at settlement, and any repayment of the resulting [vault debt](/vault/yield#vault-debt) raises it again, gradually. Yield is not claimed separately.
 
 Until an account settles, its allocation is carried at the original principal. Unsettled trading gains and losses do not change that figure, so deposits and exits use the vault's recorded NAV rather than a live mark of every account.
 
@@ -51,10 +51,10 @@ The premium tiers, the allowed profit-split range, the forfeiting split and the 
 
 <CardGroup cols={3}>
   <Card title="Yield and Risks" icon="trending-up" href="/vault/yield">
-    What pays LPs, and what `reserveDeficit` takes from them
+    What pays LPs, what `reserveDeficit` takes from them, and how vault debt works
   </Card>
   <Card title="Security" icon="shield" href="/security">
-    Audit, upgrade authority, and administrative safeguards
+    Custody, the audit, and how contract changes are made
   </Card>
   <Card title="Account Parameters and Fees" icon="sliders-horizontal" href="/backers/fees">
     How `B` and `P` are priced on the account the vault funds
