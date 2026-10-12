@@ -76,7 +76,7 @@ Voluntary closure is a forfeiting close. You can request it only while the accou
 Profit already accepted into a pending withdrawal is normally kept separate and paid under your ordinary split. The close reason itself does not forfeit it.
 
 <Note>
-The current implementation has a timeout exception. After seven days in `Closing`, if the EVM balance still cannot cover pending claims, a call to `closeAndReturn` can retire the missing portion. Any corresponding funds still on Core enter `Q` and follow the close reason's settlement rules; an exceptionally delayed transfer can also lose its original payout allocation. This requires a transaction, rather than happening automatically, and does not relax the full-snapshot funding requirement in `Returning`.
+The current implementation has a timeout exception. After seven days in `Closing`, if the EVM balance still cannot cover pending claims, a call to `closeAndReturn` can retire the missing portion. Any corresponding funds still on Core are counted in the returned balance and follow the close reason's settlement rules; an exceptionally delayed transfer can also lose its original payout allocation. This requires a transaction, rather than happening automatically, and does not relax the full-snapshot funding requirement in `Returning`.
 </Note>
 
 ## Next

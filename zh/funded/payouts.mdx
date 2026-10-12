@@ -72,7 +72,7 @@ vault / LP = 0
 trader     = 0
 ```
 
-未使用的 `R` 退给 `reserveRecipient`。直接出资时是出资方，自费时是交易员；通过 ChallengeVault 激活时，退回其中的出资方运营余额。只有实际本金亏损才会消耗准备金。此外，vault 有债务时，没收性关闭（`Drawdown`、`TraderRequested`）会先从未使用的 `R` 中留下一部分偿还 Vault 债务，其余照常退回；这部分只从出资方的退款中扣除，不影响交易员应得的利润。详见[收益与风险](/zh/vault/yield)。
+未使用的 `R` 退给 `reserveRecipient`。直接出资时是出资方，自费时是交易员；通过 ChallengeVault 激活时，退回其中的出资方运营余额。只有实际本金亏损才会消耗准备金。此外，vault 有债务时，没收性关闭会先从未使用的 `R` 中留下一部分偿还 Vault 债务，其余照常退回。这只从出资方的退款中扣除，不影响交易员应得的利润。详见[收益与风险](/zh/vault/yield)。
 
 ### 自愿关闭
 
