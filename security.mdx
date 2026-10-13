@@ -5,11 +5,11 @@ description: "Custody of funds, the audit, and how contract changes are made"
 
 ## Custody
 
-Proportion is non-custodial. Funds are held by the contracts, not by the team or anyone else. Each payout is credited to a fixed address and can be claimed without anyone's approval, even while the vault is paused. The risk engine and the exchange proxy trade through Hyperliquid API wallets, which cannot withdraw or transfer funds.
+Proportion is non-custodial: funds are held by the contracts, not by the team. Each payout is credited to a fixed address and can be claimed without anyone's approval, even while the vault is paused. The risk engine and the exchange proxy trade through Hyperliquid API wallets, which cannot withdraw or transfer funds.
 
 ## Audit
 
-Proportion's smart contracts have undergone an independent security audit. The report covers the revision and scope identified in it; it does not establish that every later change has been audited. Manual review and automated analysis supplement independent audits.
+Proportion's smart contracts have had an independent security audit. It covers the code revision and scope named in the report, not later changes. The code is also checked by manual review and automated analysis.
 
 **Audit report:** [View the security audit report](https://beosin.com/audits/Proportion_202603161420.pdf)
 
@@ -19,6 +19,6 @@ Changes to the contracts go through a multisig wallet and a 72-hour timelock: a 
 
 | Waits 72 hours in the timelock | Takes effect immediately |
 | --- | --- |
-| Upgrades of `MainVault` and `ChallengeVault`, ownership changes, factory and integration changes such as `setRelayer` and `setForwarder`, `setRiskConfig`, adding markets and raising leverage caps, unpausing | Pausing the vault, cancelling a queued change, disabling challenge checkout, removing a market, lowering leverage caps |
+| Upgrades of the two vaults, ownership changes, changes to the factory and integrations, risk settings, adding markets and raising leverage caps, unpausing | Pausing the vault, cancelling a queued change, stopping challenge purchases, removing a market, lowering leverage caps |
 
 The risk engine's relayer cannot upgrade the contracts, change parameters or unpause.

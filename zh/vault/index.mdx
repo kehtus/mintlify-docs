@@ -7,63 +7,49 @@ MainVault 管理 LP 存款、funded 账户本金、出资方准备金和 funded 
 
 <CardGroup cols={3}>
   <Card title="拨付" icon="banknote">
-    激活时，vault 将 LP 本金 `A` 存入 HyperCore。调用方支付 `R + P`
+    激活时，vault 将 LP 本金 `A` 存入 HyperCore。出资方另付 `R + P`
   </Card>
   <Card title="记账" icon="coins">
     `R` 属于出资方，不计入 LP 净资产。Vault 的溢价与订阅份额计入 NAV
   </Card>
   <Card title="结算" icon="rotate-ccw">
-    关闭时收回快照的 Core USDC `Q`，释放本金拨付记录，并记账准备金退款和各方利润。未归属的 EVM 余额退回 vault
+    关闭时，vault 从 HyperCore 收回账户的资金，并记录各方应得的金额
   </Card>
 </CardGroup>
 
 ## 净资产与份额
 
-```
-grossAssets = EVM USDC + hUSDC + totalAllocated
+在账户结算前，vault 按原始本金计算该账户，因此未结算的盈亏不会影响存款和退出时的份额价格。
 
-totalAssets = grossAssets
-            − active backer reserve
-            − claimable reserve refunds
-            − claimable payouts
-            − unvested debt repayment
+超出准备金的亏损会立即降低 NAV，并记为 Vault 债务。只有没收性关闭才会从被关闭账户未使用的准备金中偿还一部分，金额有上限且没有保证；偿还金额在 7 天内逐步计入 NAV。详见[收益与风险](/zh/vault/yield)。
 
-sharePrice  = totalAssets / totalShares     // 1 USDC if no shares
-```
-
-准备金、待领取退款和待领取款项不计入 LP 净资产，因此不会抬高份额价格。在关闭结算前，`totalAllocated` 按拨付本金记账，不随账户尚未结算的盈亏变化。存款与退出使用这一链上账面状态。
-
-超出准备金的亏损会立即降低 NAV，并记为 Vault 债务（`vaultDebt()`）。只有账户因没收性关闭（`Drawdown`、`TraderRequested`）而结束、且 vault 有债务时，vault 才会自动从该账户未使用的准备金中留下一部分偿还，金额有上限且没有保证。偿还金额在 7 天内线性计入 NAV；尚未计入的部分（`unvestedRepayment()`）从净资产中扣除。详见[收益与风险](/zh/vault/yield)。
-
-所有者可以将无负债占用的闲置 USDC 存入 Hyperlend。获得的 hUSDC 及其累积利息计入 NAV，已存出的 USDC 不会重复计入。出资方准备金、退款和派付负债保留为 EVM USDC，不存入 Hyperlend。
+所有者可以将闲置 USDC 存入 Hyperlend，利息同样会提高份额价格。
 
 ## 上限
 
-| 参数 | 部署配置 | 限制什么 |
+| 参数 | 当前设置 | 限制什么 |
 |---|---|---|
-| 最大利用率 | **80%** | `totalAllocated` 相对 NAV |
-| 单账户上限 | **10%** / \$20k | 单个 `A` |
+| 最大利用率 | **80%** | 拨付给 funded 账户的资本相对 vault 资产 |
+| 单账户上限 | **10%** / \$20k | 单个 funded 账户的规模 |
 | 账户规模 | \$10-\$20,000 | 每账户 `A` |
-| 回撤 | 5%-25% | 追踪 `D` |
+| 回撤 | 5%-25% | 追踪回撤 |
 | Vault 上限 | \$25,000 | Vault 资产 |
 
-激活还需要 NAV ≥ \$100（默认 `minAccountSize / maxSingleAccountBps`）。低于该值时仍可存款。
+激活还需要 NAV 至少 \$100；低于该值时仍可存款。
 
 ## 退出
 
-LP 通过 `withdraw(shares)` 退出，无需提前通知或等待冷却期，但必须满足流动性和利用率限制。
+LP 退出无需提前通知或等待冷却期，但必须满足流动性和利用率限制。
 
-退出只能动用未被准备金、退款与派付负债占用的 USDC。若闲置资金存于 Hyperlend，vault 会在同一交易中赎回所需的差额；池子无法支付时，交易回滚。退出后的利用率不得超过上限。开放的 funded 账户不会锁定 LP 份额。
+退出只能动用未被准备金、退款与派付负债占用的 USDC。若部分资金存于 Hyperlend，vault 会从中赎回所需的差额；Hyperlend 无法支付时，退出失败。退出后的利用率不得超过上限。开放的 funded 账户不会锁定 LP 份额。
 
-协议暂停时，LP 退出不可用，但 `claimPayout` 仍可调用。所有者或 relayer 可以暂停，只有所有者可以解除暂停。
-
-`deposit(amount, proposedReferrer)` 可在首次交互时绑定 LP 的推荐人。`depositFor` 不会绑定推荐人。
+协议暂停时，LP 无法退出，但交易员和出资方仍可领取派付。所有者或 relayer 可以暂停，只有所有者可以解除暂停。
 
 ## 治理
 
-所有者可通过 `setRiskConfig` 调整风险区间、利用率和限额。利用率、单账户占 NAV 比例和最大回撤有固定边界；账户规模需保持正值且最大值高于最小值，但账户规模与 vault 上限没有固定的经济上界。
+所有者可以调整账户规模和回撤区间、利用率上限和各项限额。利用率、单账户占 NAV 比例和最大回撤有固定边界；账户规模与 vault 上限可以提高，没有固定上限。
 
-费用档位、允许的利润分成范围、没收分成及订阅费乘数是常量，修改需要更换相应实现。MainVault 的升级与风险参数修改都需在时间锁中等待 72 小时。参见[安全](/zh/security)。
+费用档位、允许的利润分成范围、没收分成及订阅费乘数写在代码中，修改需要升级合约。MainVault 的升级与风险参数修改都需在时间锁中等待 72 小时。参见[安全](/zh/security)。
 
 <Card title="收益" icon="trending-up" href="/zh/vault/yield">
   Vault 收入从哪里来，什么会降低份额价格，以及 Vault 债务如何运作

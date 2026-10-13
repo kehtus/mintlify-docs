@@ -5,7 +5,7 @@ description: "What each contract does and what each role can do"
 
 {/* Sources: EVM/src/funded/MAIN_ARCH.md and EVM/src/challenge/arch.md. This page describes contract roles rather than deployment addresses. */}
 
-The protocol contracts run on HyperEVM; funded accounts trade on HyperCore. HyperEVM contract amounts use USDC with six decimals.
+The protocol contracts run on HyperEVM; funded accounts trade on HyperCore. Amounts in the contracts are in USDC with six decimals.
 
 | | |
 |---|---|
@@ -18,21 +18,21 @@ The protocol contracts run on HyperEVM; funded accounts trade on HyperCore. Hype
 
 | Contract | What it does |
 |---|---|
-| `MainVault` (proxy) | Holds the USDC, mints LP shares, funds and settles every funded account, and records vault debt. UUPS proxy; the owner can replace the implementation |
+| `MainVault` (proxy) | Holds the USDC, mints LP shares, funds and settles every funded account, and records vault debt. UUPS proxy |
 | `MainVault` implementation | Vault logic that the owner can replace through a proxy upgrade |
 | `FundedAccountFactory` | Clones one `FundedAccount` per activation |
-| `FundedAccount` implementation | Logic referenced by the clones created by the factory |
-| `Forwarder` | ERC-2771 forwarder for signed requests; the submitting relayer pays transaction gas |
+| `FundedAccount` implementation | The logic the factory's clones run |
+| `Forwarder` | ERC-2771 forwarder: you sign a request, the relayer submits it and pays the gas |
 | `ReferralRegistry` | Referral bindings shared by funded accounts and challenges |
 
 ## Challenges
 
 | Contract | What it does |
 |---|---|
-| `ChallengeVault` (proxy) | Sole holder of challenge USDC: purchase locks, outcomes, promotion into a funded account. UUPS proxy |
+| `ChallengeVault` (proxy) | Holds all challenge USDC and handles purchase locks, outcomes and promotion into a funded account. UUPS proxy |
 | `ChallengeVault` implementation | Vault logic that the owner can replace through a proxy upgrade |
-| `ChallengeFactory` | Checkout: pricing, fee routing, `buyChallenge` |
-| `ChallengePlanRegistry` | Backer plans: immutable once published, can be disabled |
+| `ChallengeFactory` | Sells challenges: pricing, fee routing, `buyChallenge` |
+| `ChallengePlanRegistry` | Backer plans; a published plan cannot be edited, only disabled |
 
 ## Roles
 

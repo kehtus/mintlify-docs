@@ -25,14 +25,12 @@ Proportion 是 Hyperliquid 上的自营交易协议。Funded 账户在 Hyperliqu
 
 ## 链上可验证的内容
 
-Funded 账户的每个环节都在 Hyperliquid 的 L1 链上完成：合约运行在 HyperEVM，交易在 HyperCore 进行。
+Funded 账户运行在 Hyperliquid 链上：合约在 HyperEVM，交易在 HyperCore。
 
 - **存款。** LP 存款、vault 份额和出资方准备金都记录在 vault 合约中。[工作原理](/zh/vault)
-- **激活。** 付款和账户条款在同一笔交易中写入，这笔交易同时把账户资本转入 HyperCore。此后规模、回撤、利润分成和目标都不能更改。[账户规则](/zh/funded/rules)
+- **激活。** 付款和账户条款在同一笔交易中写入。此后规模、回撤、利润分成和目标都不能更改。[账户规则](/zh/funded/rules)
 - **交易。** 每一笔订单、成交和持仓都记录在 HyperCore（Hyperliquid 的链上订单簿）中，对应账户的公开地址。
-- **风控检查。** 账户合约从 HyperCore 读取权益并计算下限。任何人都可以对低于下限的账户发起平仓。
-- **平仓。** 只有在 HyperCore 上的所有持仓都已平掉、资本回到 vault 之后，账户才能结算。
-- **结算。** 损失先由出资方准备金承担，再由 LP 资本承担。利润按激活时固定的条款分配。[利润与派付](/zh/funded/payouts)
-- **派付。** 每一份款项都记入固定地址，领取无需任何人批准。
+- **风控检查。** 账户合约从 HyperCore 读取权益并计算下限。任何人都可以对低于下限的账户发起关闭。
+- **结算与派付。** 损失先由出资方准备金承担，再由 LP 资本承担。利润按激活时固定的条款分配，领取无需任何人批准。[利润与派付](/zh/funded/payouts)
 
-Proportion 是非托管协议：资金由合约持有，不由团队或任何其他人持有。风控 keeper 和 exchange proxy 只在合约设定的规则内行动。它们通过 Hyperliquid 标准 API 钱包交易：API 钱包可以下单和撤单，但不能提取或转移资金。结算和每一笔派付都由合约计算。资金托管和审计见[安全](/zh/security)。
+Proportion 是非托管协议：资金由合约持有，不由团队持有。风控引擎和 exchange proxy 通过 Hyperliquid 标准 API 钱包交易：API 钱包可以下单和撤单，但不能提取或转移资金。资金托管和审计见[安全](/zh/security)。

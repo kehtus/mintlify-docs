@@ -3,27 +3,27 @@ title: "How It Works"
 description: "What the vault holds, what limits allocation, and what limits exit"
 ---
 
-`MainVault` holds the USDC. It mints LP shares, funds the trading capital of every funded account, holds each backer's buffer as money it does not own, and books every settlement.
+You deposit USDC into `MainVault` and get LP shares. The vault uses that money as the trading capital of every funded account, keeps each backer's buffer separate from LP money, and settles every account when it closes.
 
 ## Flows
 
 | Flow | What happens |
 |---|---|
-| Funding an account | The vault allocates `accountSize` and deposits it on HyperCore for the funded account. That trading capital is LP money; the backer is charged the buffer `B` and the premium `P` on top of it. See [Account Parameters and Fees](/backers/fees) |
-| Fees | The vault's half of each activation premium and each subscription payment stays on EVM and raises the share price. See [Yield and Risks](/vault/yield) |
-| Settlement | On close the vault pulls back the recovered capital, releases the allocation, and books each party's claim. See [Profit and Payouts](/funded/payouts) |
+| Funding an account | The vault puts the account's trading capital on HyperCore. That capital is LP money; the backer pays the buffer `B` and the premium `P` on top of it. See [Account Parameters and Fees](/backers/fees) |
+| Fees | Half of each activation premium and each subscription payment goes to the vault and raises the share price. See [Yield and Risks](/vault/yield) |
+| Settlement | When an account closes, the vault takes the account's funds back from HyperCore and records what each party is owed. See [Profit and Payouts](/funded/payouts) |
 
-Between funding and settlement the risk engine watches every account and initiates closing when it breaches its floor. The trailing floor starts at account size minus the backer's buffer; profit locks and the backed account's daily floor can trigger a close above that level. The floor sets the close trigger, not a guaranteed execution price.
+While an account trades, the risk engine starts closing it when equity falls below the floor. The floor starts at account size minus the backer's buffer and can rise from there. It sets when a close starts, not the price the close fills at.
 
-An LP's position is shares. Fees raise the share price, a loss larger than a backer's buffer lowers it at settlement, and any repayment of the resulting [vault debt](/vault/yield#vault-debt) raises it again, gradually. Yield is not claimed separately.
+You hold shares, and everything you earn or lose shows up in their price. Fees push it up. A loss bigger than a backer's buffer pulls it down at settlement, and any repayment of the resulting [vault debt](/vault/yield#vault-debt) slowly pushes it back up. There is nothing to claim separately.
 
-Until an account settles, its allocation is carried at the original principal. Unsettled trading gains and losses do not change that figure, so deposits and exits use the vault's recorded NAV rather than a live mark of every account.
+Until an account settles, the vault counts it at its original size, so open gains and losses do not move the share price you deposit or exit at.
 
-The owner may place idle, unencumbered USDC in Hyperlend. The vault counts the resulting hUSDC balance in its assets, and accrued interest also raises share value. Backer buffers, reserve refunds and payout liabilities stay in EVM USDC and are excluded from LP assets.
+The owner may lend idle USDC to Hyperlend, and the interest also raises the share price.
 
 ## Allocation limits
 
-| Limit | Deployment setting | What it constrains |
+| Limit | Current setting | What it limits |
 |---|---|---|
 | Max utilization | **80 %** | capital allocated to funded accounts, against the vault's assets |
 | Max single account | **10 %** of the vault's assets, capped at **\$20,000** | the size of one funded account |
@@ -33,25 +33,25 @@ The account size and drawdown a backer chooses inside these limits are on [Accou
 
 ## Exit
 
-Shares can be burned without notice or lock-up, subject to liquidity and utilization limits. A withdrawal must leave utilization at or below the ceiling and may spend only USDC the vault does not already owe in buffers, refunds and payouts. If some idle capital is in Hyperlend, the vault redeems only the cash shortfall in the same transaction. If the pool cannot supply it, the withdrawal reverts.
+An exit needs no notice and has no lock-up, but it depends on liquidity and utilization. A withdrawal goes through only if utilization stays at or below the ceiling afterwards, and only from USDC the vault does not already owe for buffers, refunds and payouts. If part of the money sits in Hyperlend, the vault takes what is missing from there. If Hyperlend cannot pay it back, the withdrawal fails.
 
-There is no share lock. A backer holding shares against live funded accounts exits on the same terms as any other LP. What can delay an exit is a busy vault: with utilization at the ceiling, a large withdrawal waits for an account to settle.
+A backer with live funded accounts exits on the same terms as any other LP. With utilization at the ceiling, a large withdrawal can go through only after an account settles.
 
 <Warning>
-Every LP withdrawal path is disabled while the protocol is paused. Pausing can be triggered by the owner or the relayer; only the owner can lift it. Trader and backer payout claims are deliberately exempt and keep working through a pause. LP exits are not.
+A pause stops all LP withdrawals. The owner or the relayer can pause; only the owner can unpause. Trader and backer payout claims keep working through a pause.
 </Warning>
 
 ## Governance
 
-The account-size band, the drawdown band, the utilization ceiling, the per-account ceiling and the vault cap are set by the owner in a single call, which waits 72 hours in the timelock. The utilization and per-account ceilings have bounds compiled into the contract, and the drawdown band cannot be raised above 50 %. The account-size band must remain positive and ordered, but it and the vault cap have no fixed economic upper limit.
+The owner can change the account-size and drawdown ranges, the utilization and per-account ceilings and the vault cap, but every change waits 72 hours in the timelock. The two ceilings have fixed bounds in the contract, and drawdown cannot go above 50 %. Account size and the vault cap have no fixed upper limit.
 
-The premium tiers, the allowed profit-split range, the forfeiting split and the subscription multiplier are constants. Changing one requires replacing the relevant implementation. Upgrades of MainVault and risk-parameter changes wait 72 hours in the timelock. See [Security](/security).
+The premium tiers, the profit-split range, the forfeiting split and the subscription multiplier are written into the code, so changing any of them takes an upgrade. Upgrades of MainVault wait 72 hours in the timelock. See [Security](/security).
 
 ## Next
 
 <CardGroup cols={3}>
   <Card title="Yield and Risks" icon="trending-up" href="/vault/yield">
-    What pays LPs, what `reserveDeficit` takes from them, and how vault debt works
+    What pays LPs, what a loss beyond the buffer costs them, and how vault debt works
   </Card>
   <Card title="Security" icon="shield" href="/security">
     Custody, the audit, and how contract changes are made
